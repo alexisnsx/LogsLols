@@ -1,1 +1,9 @@
-<h1><%= @task.title %></h1>
+<div class="container">
+  <p><%= @task.due_date %></p>
+  <p><%= @task.priority %></p>
+  <h1><%= @task.title %></h1>
+  <p><%= @task.description %></p>
+  <p><% @task.documents.each do |document| %></p>
+  <p><%= document %></p>
+  <% end %>
+</div>

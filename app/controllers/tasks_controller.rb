@@ -1,7 +1,8 @@
 class TasksController < ApplicationController
-before_action :set_task, only: [:show]
+  before_action :set_task, only: [:show]
 
   def show
+    
   end
 
   def new
