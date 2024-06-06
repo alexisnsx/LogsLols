@@ -26,3 +26,17 @@ $border-radius-xl:            .5rem;
 $border-radius-xxl:           1rem;
 
 // Override other variables below!
+// // Source mixin
+// @mixin make-container($padding-x: $container-padding-x) {
+//   width: 100%;
+//   padding-right: $padding-x;
+//   padding-left: $padding-x;
+//   margin-right: auto;
+//   margin-left: auto;
+// }
+
+// // Usage
+// .page-container {
+//   @include make-container();
+//   margin: 20px;
+// }

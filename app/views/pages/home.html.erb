@@ -1,28 +1,76 @@
 <%# main row for the entire page %>
-<div class="page-container">
-  <div class="row">
-    <%# left side comprising of chat and spotify %>
-  <div class="col left-column">
-    <%# chatbot %>
-    <div class="left-wrapper">
-      <div class="chatbot">
-        <small>
-          <strong>Alexis</strong>
-          <i>15 January 2024</i>
-        </small>
-        <p>Yo What's up</p>
+<div class="d-flex justify-content-center px-2">
+  <div class="container-fluid">
+    <div class="row">
+      <%# left side comprising of chat and spotify %>
+      <div class="col-4 left-column gap-3 border">
+        <%# chatbot %>
+        <div class="left-wrapper d-flex flex-column align-items-center">
+          <div class="chatbot">
+            <small>
+              <strong>Alexis</strong>
+              <i>15 January 2024</i>
+            </small>
+            <p>Yo What's up</p>
+          </div>
+        <%# spotify player %>
+          <div class="spotify-player">
+            <p>now playing</p>
+          </div>
+        </div>
       </div>
-    <%# spotify player %>
-      <div class="spotify-player">
-        <p>now playing</p>
+
+      <%# right side for tasks cards %>
+      <div class="col-8 border">
+        <div class="row border border-secondary">
+          <%# individual cards %>
+          <div class="col-4 border border-danger d-flex justify-content-center">
+            <div class="tasks-cards">
+              <p>card for tasks</p>
+            </div>
+          </div>
+
+          <div class="col-4 border border-danger d-flex justify-content-center">
+            <div class="tasks-cards">
+              <p>card for tasks</p>
+            </div>
+          </div>
+
+          <div class="col-4 border border-danger d-flex justify-content-center">
+            <div class="tasks-cards">
+              <p>card for tasks</p>
+            </div>
+          </div>
+
+          <div class="col-4 border border-danger d-flex justify-content-center">
+            <div class="tasks-cards">
+              <p>card for tasks</p>
+            </div>
+          </div>
+
+          <div class="col-4 border border-danger d-flex justify-content-center">
+            <div class="tasks-cards">
+              <p>card for tasks</p>
+            </div>
+          </div>
+
+          <div class="col-4 border border-danger d-flex justify-content-center">
+            <div class="tasks-cards">
+              <p>card for tasks</p>
+            </div>
+          </div>
+
+          <div class="col-4 border border-danger d-flex justify-content-center">
+            <div class="tasks-cards">
+              <p>card for tasks</p>
+            </div>
+          </div>
+
+
+        </div>
       </div>
+
+
     </div>
-  </div>
-
-    <div class="col-9">
-      <h2>right-side</h2>
-    </div>
-
-
   </div>
 </div>
