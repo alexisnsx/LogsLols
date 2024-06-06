@@ -1,14 +1,35 @@
-<div class="container">
+<div class="container p-4 form-color">
   <h1>Create New Task</h1>
 
   <%= simple_form_for @task do |f| %>
-    <%= f.input :title %>
-    <%= f.input :description %>
-    <%= f.input :due_date %>
-    <%= f.input :priority, collection: Task::PRIORITY %>
-    <%= f.input :documents, as: :file, input_html: { multiple: true } %>
-    <%= f.input :reminder_datetime %>
-    <%= f.input :status, collection: Task::STATUS %>
+    <%= f.input :title, label: "name of task" %>
+
+    <div class="row g-3">
+      <div class="col-10">
+        <%= f.input :description, label: "add details here" %>
+      </div>
+      <div class="col-2">
+        <%= f.input :priority, as: :radio_buttons, collection: Task::PRIORITY, label: "set priority" %>
+      </div>
+    </div>
+
+    <div class="row g-3" data-controller="datepicker">
+      <div class="col-6">
+        <%= f.input :due_date,
+                    as: :string,
+                    label: "when to complete",
+                    input_html: { class: "input-color", data: { "datepicker-target": "duedatepickr" } } %>
+      </div>
+      <div class="col-6">
+        <%= f.input :reminder_datetime,
+                    as: :string,
+                    label: "set a reminder",
+                    input_html: { class: "input-color", data: { "datepicker-target": "reminderpickr" } } %>
+      </div>
+    </div>
+
+    <%= f.input :documents, as: :file, input_html: { multiple: true }, label: "upload references" %>
+    <%= f.input :status, as: :boolean, checked_value: 'Completed', unchecked_value: 'Incomplete', collection: Task::STATUS, label: "completed?" %>
     <%= f.submit class:"btn btn-primary mt-3" %>
   <% end %>
 </div>

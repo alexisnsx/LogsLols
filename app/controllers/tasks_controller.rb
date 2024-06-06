@@ -24,6 +24,6 @@ before_action :set_task, only: [:show]
   end
 
   def task_params
-    params.require(:task).permit(:title, :description, :priority, :due_date, :status, :reminder_datetime, :documents)
+    params.require(:task).permit(:title, :description, :priority, :due_date, :status, :reminder_datetime, documents: [])
   end
 end
