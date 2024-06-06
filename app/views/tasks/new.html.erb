@@ -1,0 +1,14 @@
+<div class="container">
+  <h1>Create New Task</h1>
+
+  <%= simple_form_for @task do |f| %>
+    <%= f.input :title %>
+    <%= f.input :description %>
+    <%= f.input :due_date %>
+    <%= f.input :priority, collection: Task::PRIORITY %>
+    <%= f.input :documents, as: :file, input_html: { multiple: true } %>
+    <%= f.input :reminder_datetime %>
+    <%= f.input :status, collection: Task::STATUS %>
+    <%= f.submit class:"btn btn-primary mt-3" %>
+  <% end %>
+</div>
