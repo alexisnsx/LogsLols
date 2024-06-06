@@ -28,8 +28,10 @@
       </div>
     </div>
 
-    <%= f.input :documents, as: :file, input_html: { multiple: true }, label: "upload references" %>
+    <%= f.input :documents, as: :file, input_html: { multiple: true }, label: "upload documents" %>
+
     <%= f.input :status, as: :boolean, checked_value: 'Completed', unchecked_value: 'Incomplete', collection: Task::STATUS, label: "completed?" %>
+
     <%= f.submit class:"btn btn-primary mt-3" %>
   <% end %>
 </div>
