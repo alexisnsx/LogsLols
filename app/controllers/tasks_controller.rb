@@ -1,8 +1,8 @@
 class TasksController < ApplicationController
-before_action :set_task, only: [:show]
+before_action :set_task, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @tasks = Tasks.all
+    @tasks = current_user.tasks
   end
 
   def show
@@ -16,10 +16,30 @@ before_action :set_task, only: [:show]
     @task = Task.new(task_params)
     @task.user = current_user
     if @task.save
+      flash[:notice] = "'#{@task.title}' task successfully saved!"
       redirect_to task_path(@task), status: :see_other
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def edit
+  end
+
+  def update
+    if @task.update(task_params.except(:documents))
+      @task.documents.attach(task_params[:documents])
+      flash[:notice] = "'#{@task.title}' updated successfully!"
+      redirect_to task_path(@task), status: :see_other
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    @task.destroy
+    flash[:alert] = "'#{@task.title}' task deleted!"
+    redirect_to tasks_path, status: :see_other
   end
 
   private
