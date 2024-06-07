@@ -10,7 +10,7 @@
     </p>
     <div>
       <% if task.priority == "High" %>
-        <span class="rectangular-highlight">
+        <span class="rectangular-highlight bg-danger">
             High priority
         </span>
       <% elsif task.priority == "Medium" %>
@@ -27,9 +27,9 @@
       <div>
         <a href="#"><%= task.status %></a>
         <a href="#"><%= task.due_date %></a>
-        <a href="#  "><%= task.reminder_datetime %></a>
+
         <% if task.reminder_datetime %>
-          <%= icon_tag 'i class="fa-solid fa-bell' %>
+          <i class="fa-regular fa-bell"></i>
         <% end %>
       </div>
     </div>
