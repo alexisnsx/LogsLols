@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
-
+  resources :tasks
   # if we would like for the url to be custom /logslols/username
   # get '*username', to: 'pages#home'
 end

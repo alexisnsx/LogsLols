@@ -1,0 +1,25 @@
+<h1>These are my tasks</h1>
+
+<% @tasks.each do |task| %>
+  <div>
+    <h1>
+      <%= task.title %>
+    </h1>
+    <p>
+      <%= task.description %>
+    </p>
+    <div>
+      <span>
+        <%= task.priority %>
+      </span>
+      <div>
+        <a href="#"><%= task.status %></a>
+        <a href="#"><%= task.due_date %></a>
+        <a href="#  "><%= task.reminder_datetime %></a>
+        <% if task.reminder_datetime %>
+          <%= icon_tag 'i class="fa-solid fa-bell' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
