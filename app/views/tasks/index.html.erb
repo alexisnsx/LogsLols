@@ -9,9 +9,21 @@
       <%= task.description %>
     </p>
     <div>
-      <span>
-        <%= task.priority %>
-      </span>
+      <% if task.priority == "High" %>
+        <span class="rectangular-highlight">
+            High priority
+        </span>
+      <% elsif task.priority == "Medium" %>
+        <span class="rectangular-highlight bg-warning">
+            Medium priority
+        </span>
+      <% elsif task.priority == "Low" %>
+        <span class="rectangular-highlight bg-success">
+            Low priority
+        </span>
+      <% end %>
+    </div>
+
       <div>
         <a href="#"><%= task.status %></a>
         <a href="#"><%= task.due_date %></a>
