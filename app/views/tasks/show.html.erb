@@ -6,10 +6,21 @@
   <% @task.documents.each do |doc| %>
     <% url = cloudinary_url(doc.key) %>
     <% image_url = url.sub('/upload/', '/upload/f_jpg/') %>
-    <div class="col-3">
-      <a href="<%= url %>"><img src="<%= image_url %>" class="w-100" alt=""></a>
+
+    <div class="col-3 card border-0 mx-1">
+      <a href="<%= url %>"><img src="<%= image_url %>" class="w-100 border" alt=""></a>
     </div>
+
   <% end %>
   </div>
 
+  <div class="div mt-3">
+
+      <%= link_to "Edit Task", edit_task_path(@task), class: "btn btn-success" %>
+
+      <%= link_to task_path(@task), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
+        <button class="btn btn-danger text-white">Delete Task</button>
+      <% end %>
+
+  </div>
 </div>
