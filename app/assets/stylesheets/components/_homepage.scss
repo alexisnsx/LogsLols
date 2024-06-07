@@ -23,9 +23,63 @@
 //   gap: 16px;
 // }
 
-.tasks-cards {
-  background-color: lightblue;
+.task {
   width: 250px;
   height: 270px;
   margin: 10px;
+}
+
+
+.tasks-cards {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  padding: 15px;
+  border-radius: 25px;
+  transition: all 0.5s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+// .card-wrapper-top {
+//   height: 150px;
+// }
+
+.tasks-date {
+  font-size: 15px;
+}
+
+.header-with-bell > h2 {
+  font-size: 25px;
+  margin: 0;
+}
+
+.task-footer {
+  border: 1px solid grey;
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.rectangular-highlight {
+  display: inline-block;
+  padding: 8px 10px;
+  border-radius: 50px; /* Adjust this value for smoother or less smooth borders */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  font-size: 10px;
+  // margin-left: 10px;
+}
+
+.task-icons {
+  margin: 0;
+  margin-right: 10px;
+  color: black;
+  font-size: 20px;
+}
+
+
+.tasks-cards.active {
+  background-color: white;
+  width: 500px;
+  height: 600px;
+  border-radius: 25px;
+  position: fixed;
 }

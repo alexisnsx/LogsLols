@@ -24,11 +24,15 @@
       <div class="col-8 border">
         <div class="row border border-secondary">
           <%# individual cards %>
+          <%# .each goes here %>
+          
           <div class="col-4 border border-danger d-flex justify-content-center">
-            <div class="tasks-cards" data-controller="sliding-effect" data-sliding-effect-target="content" >
-              <h1>Title of this article</h1>
-              <p data-sliding-effect-target="truncate"><%= 'This is a damn long text so I am trying to make it shorter by truncating it ok.'.truncate(25) %></p>
-              <button data-action="click->sliding-effect#toggleSlide">Click Me</button>
+            <div class="task position-relative" data-controller="sliding-effect" >
+              <div class="tasks-cards position-absolute top-0 start-0" data-sliding-effect-target="content">
+                <h1>Title of this article</h1>
+                <p><%= 'This is a damn long text so I am trying to make it shorter by truncating it ok.'.truncate(25) %></p>
+                <button data-action="click->sliding-effect#toggleSlide">Click Me</button>
+              </div>
             </div>
           </div>
 

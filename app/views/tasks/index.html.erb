@@ -1,37 +1,48 @@
 <h1>These are my tasks</h1>
 
 <% @tasks.each do |task| %>
-  <div>
-    <h1>
-      <%= task.title %>
-    </h1>
-    <p>
-      <%= task.description %>
-    </p>
-    <div>
-      <% if task.priority == "High" %>
-        <span class="rectangular-highlight bg-danger">
-            High priority
-        </span>
-      <% elsif task.priority == "Medium" %>
-        <span class="rectangular-highlight bg-warning">
-            Medium priority
-        </span>
-      <% elsif task.priority == "Low" %>
-        <span class="rectangular-highlight bg-success">
-            Low priority
-        </span>
-      <% end %>
-    </div>
+  <div class="col-4 border border-danger d-flex justify-content-center">
+    <div class="task position-relative" data-controller="sliding-effect" >
+      <div class="tasks-cards d-flex flex-column position-absolute top-0 start-0" data-sliding-effect-target="content">
+        <div class="flex-grow-1">
+          <p class="tasks-date m-0">Due Date: <%= task.due_date %></p>
+          <div class="header-with-bell d-flex justify-content-between align-items-center">
+            <h2><%= task.title.truncate(17) %></h2>
+            <% if task.reminder_datetime %>
+              <i class="fa-regular fa-bell fs-4"></i>
+            <% end %>
+          </div>
+          <p class= "mt-2"><%= task.description %></p>
+        </div>
 
-      <div>
-        <a href="#"><%= task.status %></a>
-        <a href="#"><%= task.due_date %></a>
+          <div class=" task-footer d-flex align-items-center">
+            <div class="flex-grow-1">
+              <% if task.priority == "High" %>
+                <span class="rectangular-highlight bg-danger">
+                    High priority
+                </span>
+              <% elsif task.priority == "Medium" %>
+                <span class="rectangular-highlight bg-warning">
+                    Medium priority
+                </span>
+              <% elsif task.priority == "Low" %>
+                <span class="rectangular-highlight bg-success">
+                    Low priority
+                </span>
+              <% end %>
+            </div>
 
-        <% if task.reminder_datetime %>
-          <i class="fa-regular fa-bell"></i>
-        <% end %>
+              <%# think of logic to make it clickable %>
+            <p class="task-icons"><i class="fa-regular fa-circle-check"></i></p>
+            <p class="task-icons"><%= link_to task_path(task), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
+              <i class="fa-regular fa-trash-can text-dark"></i>
+            <% end %></p>
+            <p class="task-icons" data-action="click->sliding-effect#toggleSlide"><i class="fa-solid fa-square-arrow-up-right"></i></p>
+
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
 <% end %>

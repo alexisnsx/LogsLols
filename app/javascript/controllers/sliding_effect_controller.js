@@ -9,16 +9,10 @@ export default class extends Controller {
   }
 
   toggleSlide() {
-    console.log(this.contentTarget);
-    // console.log(this.hereTarget.innerHTML)
-    // this.contentTarget.classList.toggle("effect");
-    this.contentTarget.classList.toggle("task-show-card")
-    // this.hereTarget.innerHTML = this.contentTarget.innerHTML
-    // this.contentTarget.classList.toggle("d-none")
-    // this.hereTarget.classList.toggle("effect")
-    // this.hereTarget.classList.toggle("effect")
-
-
+    this.contentTarget.classList.toggle("active");
+    this.contentTarget.innerHTML = "Heee"
+    fetch(url)
+    
   }
 }
 
