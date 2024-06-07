@@ -1,0 +1,28 @@
+.dimmed-page {
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100vw;
+  height: 100vh;
+}
+
+
+.task-show-card {
+  background-color: white;
+  width: 500px;
+  height: 600px;
+  border-radius: 25px;
+  position: fixed;
+  transition: all 0.5s;
+}
+
+// .edit {
+//   position: fixed;
+//   top: 50px;
+//   // right: -600px;
+//   transition: 0.5s ease;
+// }
+
+// .effect {
+//   transform: scale(0);
+//   transform-origin: left top;
+//   transition: transform 300ms;
+// }
