@@ -1,9 +1,15 @@
-<div class="container">
-  <p><%= @task.due_date %></p>
-  <p><%= @task.priority %></p>
+<div class="container p-4">
+
   <h1><%= @task.title %></h1>
-  <p><%= @task.description %></p>
-  <p><% @task.documents.each do |document| %></p>
-  <p><%= document %></p>
+
+  <div class="row">
+  <% @task.documents.each do |doc| %>
+    <% url = cloudinary_url(doc.key) %>
+    <% image_url = url.sub('/upload/', '/upload/f_jpg/') %>
+    <div class="col-3">
+      <a href="<%= url %>"><img src="<%= image_url %>" class="w-100" alt=""></a>
+    </div>
   <% end %>
+  </div>
+
 </div>

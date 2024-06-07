@@ -1,6 +1,10 @@
 class TasksController < ApplicationController
   before_action :set_task, only: [:show]
 
+  def index
+    @tasks = Tasks.all
+  end
+
   def show
     
   end
@@ -25,6 +29,6 @@ class TasksController < ApplicationController
   end
 
   def task_params
-    params.require(:task).permit(:title, :description, :priority, :due_date, :status, :reminder_datetime, :documents)
+    params.require(:task).permit(:title, :description, :priority, :due_date, :status, :reminder_datetime, documents: [])
   end
 end
