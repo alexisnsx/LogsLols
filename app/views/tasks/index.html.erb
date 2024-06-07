@@ -1,0 +1,37 @@
+<h1>These are my tasks</h1>
+
+<% @tasks.each do |task| %>
+  <div>
+    <h1>
+      <%= task.title %>
+    </h1>
+    <p>
+      <%= task.description %>
+    </p>
+    <div>
+      <% if task.priority == "High" %>
+        <span class="rectangular-highlight bg-danger">
+            High priority
+        </span>
+      <% elsif task.priority == "Medium" %>
+        <span class="rectangular-highlight bg-warning">
+            Medium priority
+        </span>
+      <% elsif task.priority == "Low" %>
+        <span class="rectangular-highlight bg-success">
+            Low priority
+        </span>
+      <% end %>
+    </div>
+
+      <div>
+        <a href="#"><%= task.status %></a>
+        <a href="#"><%= task.due_date %></a>
+
+        <% if task.reminder_datetime %>
+          <i class="fa-regular fa-bell"></i>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
