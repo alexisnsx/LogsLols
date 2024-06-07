@@ -11,12 +11,22 @@
 require 'date'
 
 puts 'Destroying database'
+Conversation.destroy_all
+Chat.destroy_all
 Task.destroy_all
 User.destroy_all
 
 puts 'creating new users'
 
 alexis = User.create!(email: 'alexis@test.com', password: '123abc')
+
+puts 'creating new chat'
+
+chat = Chat.create!(user: alexis)
+
+puts 'creating new conversation'
+
+Conversation.create!(user_message: "Tell me a joke", ai_message: "Knock knock! Who's there? Said the knocker.", chat: chat)
 
 puts 'creating new tasks'
 
