@@ -29,6 +29,9 @@ gem "jbuilder"
 # Image and document storage
 gem "cloudinary"
 
+# Openai
+gem "ruby-openai"
+
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 

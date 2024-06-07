@@ -9,6 +9,9 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
   resources :tasks
+  resources :chats, only: [ :index, :show, :create, :delete ] do
+    resources :conversations, only: [ :index, :new, :create, :show ]
+  end
 
   # if we would like for the url to be custom /logslols/username
   # get '*username', to: 'pages#home'
