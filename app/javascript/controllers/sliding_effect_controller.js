@@ -39,18 +39,25 @@ export default class extends Controller {
     this.contentTarget.classList.toggle("active");
     const url = `/tasks/${this.idValue}/edit`
 
-    const response = await fetch(url, {
-      headers: { 'Accept': 'text/html'
+    if (this.isOriginal) {
+      try {
+        const response = await fetch(url , {
+          headers: { 'Accept': 'text/html'
+          }
+        });
+        if (response.ok) {
+          const newContent = await response.text();
+          this.contentTarget.innerHTML = newContent
+        } else {
+          console.error("Failed to load new content");
+        }
+      } catch (error) {
+        console.error("Error fetching new content", error);
       }
-    });
-    if (response.ok) {
-      const newContent = await response.text();
-      this.contentTarget.innerHTML = newContent
     } else {
-      console.error("Failed to load new content");
+      this.contentTarget.innerHTML = this.originalContent;
     }
-  } catch (error) {
-    console.error("Error fetching new content", error);
+    this.isOriginal = !this.isOriginal;
   }
 }
 
