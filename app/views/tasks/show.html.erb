@@ -1,29 +1,47 @@
-<div class="container p-5">
+<div class="container p-2" style="height: 100%;">
+  <div class="row" style="height: 100%;">
+    <div class="col-11">
+      <div>
+        <% if @task.priority == "High" %>
+          <span class="rectangular-highlight bg-danger">
+              High priority
+          </span>
+        <% elsif @task.priority == "Medium" %>
+          <span class="rectangular-highlight bg-warning">
+              Medium priority
+          </span>
+        <% elsif @task.priority == "Low" %>
+          <span class="rectangular-highlight bg-success">
+              Low priority
+          </span>
+        <% end %>
+      </div>
 
-  <h1><%= @task.title %></h1>
-  <p><%= @task.description %></p>
-  <p><%= @task.due_date %></p>
-  <p><%= @task.priority %></p>
+      <h1><%= @task.title %></h1>
+      <p><%= @task.description %></p>
 
-  <div class="row">
-  <% @task.documents.each do |doc| %>
-    <% url = cloudinary_url(doc.key) %>
-    <% image_url = url.sub('/upload/', '/upload/f_jpg/') %>
+      <div class="row">
+      <% @task.documents.each do |doc| %>
+        <% url = cloudinary_url(doc.key) %>
+        <% image_url = url.sub('/upload/', '/upload/f_jpg/') %>
 
-    <div class="col-3 card border-0 mx-1">
-      <a href="<%= url %>"><img src="<%= image_url %>" class="w-100 border" alt=""></a>
+        <div class="col-3 card border-0 mx-1">
+          <a href="<%= url %>"><img src="<%= image_url %>" class="w-100 border" alt=""></a>
+        </div>
+
+      <% end %>
+      </div>
     </div>
 
-  <% end %>
-  <button data-action="click->sliding-effect#toggleSlide">big card</button>
+    <div class="col-1 d-flex flex-column justify-content-end">
+      <p class="task-icons" data-action="click->sliding-effect#toggleSlide"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
+      <p class="task-icons"><i class="fa-regular fa-circle-check"></i></p>
+      <p class="task-icons"><%= link_to task_path(@task), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
+        <i class="fa-regular fa-trash-can text-dark"></i>
+      <% end %></p>
+      <p class="task-icons"><%= link_to edit_task_path(@task) do %>
+        <i class="fa-regular fa-pen-to-square"></i>
+      <% end %></p>
+    </div>
   </div>
-
-<div class="div mt-3">
-
-    <%= link_to "Edit Task", edit_task_path(@task), class: "btn btn-success" %>
-
-    <%= link_to task_path(@task), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
-      <button class="btn btn-danger text-white">Delete Task</button>
-    <% end %>
-
 </div>

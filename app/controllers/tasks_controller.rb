@@ -8,7 +8,7 @@ class TasksController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.js { render partial: 'show' }
+      format.js { render partial: 'show', locals: { task: @task } }
     end
   end
 
