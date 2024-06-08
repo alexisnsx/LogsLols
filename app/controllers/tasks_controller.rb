@@ -28,13 +28,17 @@ class TasksController < ApplicationController
   end
 
   def edit
+    respond_to do |format|
+      format.html
+      format.js { render partial: 'form', locals: { task: @task } }
+    end
   end
 
   def update
     if @task.update(task_params.except(:documents))
       @task.documents.attach(task_params[:documents])
       flash[:notice] = "'#{@task.title}' updated successfully!"
-      redirect_to task_path(@task), status: :see_other
+      redirect_to root_path, status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end

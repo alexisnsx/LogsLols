@@ -17,7 +17,7 @@ export default class extends Controller {
     if (this.isOriginal) {
       try {
         const response = await fetch(url , {
-          headers: { 'Accept' :'text/html'
+          headers: { 'Accept': 'text/html'
           }
         });
         if (response.ok) {
@@ -34,11 +34,27 @@ export default class extends Controller {
     }
     this.isOriginal = !this.isOriginal;
   }
+
+  async loadEdit() {
+    this.contentTarget.classList.toggle("active");
+    const url = `/tasks/${this.idValue}/edit`
+
+    const response = await fetch(url, {
+      headers: { 'Accept': 'text/html'
+      }
+    });
+    if (response.ok) {
+      const newContent = await response.text();
+      this.contentTarget.innerHTML = newContent
+    } else {
+      console.error("Failed to load new content");
+    }
+  } catch (error) {
+    console.error("Error fetching new content", error);
+  }
 }
 
-async loadEdit() {
-  
-}
+
 
 // on click
 // add class of transform
