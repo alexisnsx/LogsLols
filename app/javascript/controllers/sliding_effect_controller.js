@@ -36,6 +36,10 @@ export default class extends Controller {
   }
 }
 
+async loadEdit() {
+  
+}
+
 // on click
 // add class of transform
 // tranform accordingly

@@ -6,12 +6,19 @@
       <div class="col-4 left-column gap-3 border">
         <%# chatbot %>
         <div class="left-wrapper d-flex flex-column align-items-center">
-          <div class="chatbot">
-            <small>
-              <strong>Alexis</strong>
-              <i>15 January 2024</i>
-            </small>
-            <p>Yo What's up</p>
+          <div class=" d-flex justify-content-around row chat-wrapper">
+            <div class="chatbot">
+              <small>
+                <strong>Alexis</strong>
+                <i>15 January 2024</i>
+              </small>
+              <p>Yo What's up</p>
+            </div>
+            <div class="home-icons col-1 d-flex flex-column justify-content-end fs-3">
+            <p><i class="fa-regular fa-calendar"></i></p>
+            <p><i class="fa-regular fa-calendar"></i></p>
+            <p><i class="fa-regular fa-calendar"></i></p>
+            </div>
           </div>
         <%# spotify player %>
           <div class="spotify-player">
@@ -20,8 +27,11 @@
         </div>
       </div>
 
+      <%# <div class="col-1">
+      </div> %>
+
       <%# right side for tasks cards %>
-      <div class="col-8 border">
+      <div class="col-8 px-5 border border-success">
         <div class="row">
           <%# individual cards %>
           <%# .each goes here %>
