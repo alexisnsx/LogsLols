@@ -29,5 +29,8 @@
 
     <%= f.input :status, as: :boolean, checked_value: 'Completed', unchecked_value: 'Incomplete', collection: Task::STATUS, label: "completed?" %>
 
-    <%= f.submit class:"btn btn-primary mt-3" %>
+    <div class="d-flex justify-content-between align-items-center">
+      <%= f.submit class:"btn btn-primary mt-3" %>
+      <p data-action="click->sliding-effect#loadEdit" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
+    </div>
   <% end %>
