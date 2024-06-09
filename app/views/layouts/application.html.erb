@@ -12,7 +12,19 @@
 
   <body>
     <%= render "shared/flashes" %>
+    <div class="container"
+    data-controller="reminder-subscription"
+    data-chatroom-subscription-user-id-value="<%=current_user.id%>"
+    >
+      <h1><%= current_user.email %></h1>
+      <h1><%= current_user.id %></h1>
 
+      <ul class="" data-reminder-subscription-target="reminders">
+        <% current_user.reminders.each do |reminder| %>
+          <li><%= reminder.task.title %></li>
+        <% end %>
+      </ul>
+    </div>
     <%= yield %>
   </body>
 </html>
