@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   resources :chats, only: [ :index, :show, :create, :delete ] do
     resources :conversations, only: [ :index, :new, :create, :show ]
   end
+  resources :conversation_responses, only: [ :index ]
 
   # if we would like for the url to be custom /logslols/username
   # get '*username', to: 'pages#home'

@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-before_action :set_task, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_task, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @tasks = current_user.tasks
@@ -7,6 +7,10 @@ before_action :set_task, only: [ :show, :edit, :update, :destroy ]
   end
 
   def show
+    respond_to do |format|
+      format.html
+      format.js { render partial: 'show', locals: { task: @task } }
+    end
   end
 
   def new
@@ -31,6 +35,10 @@ before_action :set_task, only: [ :show, :edit, :update, :destroy ]
   end
 
   def edit
+    respond_to do |format|
+      format.html
+      format.js { render partial: 'form', locals: { task: @task } }
+    end
   end
 
   def update
@@ -38,7 +46,7 @@ before_action :set_task, only: [ :show, :edit, :update, :destroy ]
     if @task.update(task_params.except(:documents))
       @task.documents.attach(task_params[:documents])
       flash[:notice] = "'#{@task.title}' updated successfully!"
-      redirect_to task_path(@task), status: :see_other
+      redirect_to root_path, status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end

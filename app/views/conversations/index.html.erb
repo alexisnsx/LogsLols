@@ -1,4 +1,13 @@
-<h1>Talk to me, Seymour</h1>
+<div class="d-flex flex-column chat-container container" data-controller="conversation">
+  <h1>Talk to me, AI</h1>
 
-<p><%= @message %></p>
-<p>token count = <%= @count %></p>
+  <section class="chat-responses flex-grow-1 text-wrap" data-conversation-target="response">
+  </section>
+
+  <div class="flex-shrink-0">
+    <%= simple_form_for [ @chat, @conversation ], data: { action: "conversation#generateResponse" } do |f| %>
+      <%= f.input :user_message, input_html: { data: { conversation_target: "prompt" } } %>
+      <%= f.submit class:"btn btn-primary mt-3" %>
+    <% end %>
+  </div>
+</div>
