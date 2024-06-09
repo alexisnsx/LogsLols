@@ -38,8 +38,13 @@ class ConversationsController < ApplicationController
   # my_asst = client.assistants.create(parameters: params)
 
   def index
-    @client = OpenAI::Client.new
-    @assistant_id = ENV.fetch("OPENAI_ASSISTANT_ID")
+    @chat = Chat.find(params[:chat_id])
+    @conversation = Conversation.new
+    # @response = ChatService::OpenAiCompletion.new(message: "What should I eat for breakfast today?").call
+    # @count = OpenAI.rough_token_count(@response)
+
+    # @client = OpenAI::Client.new
+    # @assistant_id = ENV.fetch("OPENAI_ASSISTANT_ID")
     # Note to team-mates: You can add raise here and type '@client.assistants.retrieve(assistant_id)' in browser console to see details of the assistant created
 
   #   response = client.chat(
@@ -50,6 +55,5 @@ class ConversationsController < ApplicationController
   #   })
   #   @message = response.dig("choices", 0, "message", "content")
   #   @count = OpenAI.rough_token_count(@message)
-    raise
   end
 end
