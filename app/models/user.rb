@@ -5,5 +5,6 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :tasks
+  has_many :reminders, through: :tasks
   has_many :chats
 end

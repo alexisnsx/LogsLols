@@ -1,4 +1,17 @@
 <h1>These are my tasks</h1>
+<div class="container"
+data-controller="reminder-subscription"
+data-chatroom-subscription-user-id-value="<%=current_user.id%>"
+>
+  <h1><%= current_user.email %></h1>
+  <h1><%= current_user.id %></h1>
+
+  <ul class="" data-reminder-subscription-target="reminders">
+    <% current_user.reminders.each do |reminder| %>
+      <li><%= reminder.task.title %></li>
+    <% end %>
+  </ul>
+</div>
 
 <% @tasks.each do |task| %>
   <div>
@@ -23,7 +36,6 @@
         </span>
       <% end %>
     </div>
-
       <div>
         <a href="#"><%= task.status %></a>
         <a href="#"><%= task.due_date %></a>
@@ -32,6 +44,5 @@
           <i class="fa-regular fa-bell"></i>
         <% end %>
       </div>
-    </div>
   </div>
 <% end %>

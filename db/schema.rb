@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_06_150900) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_08_033112) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -59,6 +59,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_06_150900) do
     t.index ["chat_id"], name: "index_conversations_on_chat_id"
   end
 
+  create_table "reminders", force: :cascade do |t|
+    t.bigint "task_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["task_id"], name: "index_reminders_on_task_id"
+  end
+
   create_table "tasks", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -89,5 +96,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_06_150900) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "chats", "users"
   add_foreign_key "conversations", "chats"
+  add_foreign_key "reminders", "tasks"
   add_foreign_key "tasks", "users"
 end
