@@ -25,10 +25,11 @@ export default class extends Controller {
   }
 
   #createMessage(text) {
-    const content = document.createElement('p') // pre element preserves spaces and line breaks
-    content.innerText = `${text}`
-    this.responseTarget.appendChild(content)
-    return content
+    const contentElement = document.createElement('pre') // pre element preserves spaces and line breaks
+    contentElement.classList.add('text-break')
+    contentElement.innerText = `${text}`
+    this.responseTarget.appendChild(contentElement)
+    return contentElement
   }
 
   #setupEventSource() {

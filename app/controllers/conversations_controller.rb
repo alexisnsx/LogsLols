@@ -27,7 +27,7 @@ class ConversationsController < ApplicationController
   }
 
   # params = {
-  #     model: "gpt-3.5-turbo-16k",
+  #     model: "gpt-3.5-turbo-1106",
   #     name: "My Task Assistant",
   #     description: nil,
   #     instructions: "You are a productivity assistant. When asked a question, provide answers that can help the user fulfill his tasks.",
@@ -49,7 +49,7 @@ class ConversationsController < ApplicationController
 
   #   response = client.chat(
   #   parameters: {
-  #       model: "gpt-3.5-turbo-16k",
+  #       model: "gpt-3.5-turbo-1106",
   #       messages: [{ role: "user", content: "Tell me a joke!"}],
   #       temperature: 0.7,
   #   })

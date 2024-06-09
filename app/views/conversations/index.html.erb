@@ -1,8 +1,7 @@
 <div class="d-flex flex-column chat-container container" data-controller="conversation">
   <h1>Talk to me, AI</h1>
 
-  <section class="chat-responses flex-grow-1" data-conversation-target="response">
-
+  <section class="chat-responses flex-grow-1 text-wrap" data-conversation-target="response">
   </section>
 
   <div class="flex-shrink-0">
@@ -11,8 +10,4 @@
       <%= f.submit class:"btn btn-primary mt-3" %>
     <% end %>
   </div>
-
-  <p><%= @response %></p>
-  <p>token count = <%= @count %></p>
-
 </div>
