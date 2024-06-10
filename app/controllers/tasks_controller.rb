@@ -8,12 +8,16 @@ class TasksController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.js { render partial: 'show', locals: { task: @task }, formats: [:html] }
+      format.text { render partial: 'show', locals: { task: @task }, formats: [:html] }
     end
   end
 
   def new
     @task = Task.new
+    respond_to do |format|
+      format.html
+      format.text { render partial: 'new', locals: { task: @task }, formats: [:html] }
+    end
   end
 
   def create
@@ -21,31 +25,34 @@ class TasksController < ApplicationController
     @task.user = current_user
 
     respond_to do |format|
-    if @task.save
-      format.html ( redirect_to task_path(@task) )
-      format.json
-      flash[:notice] = "'#{@task.title}' successfully saved!"
-    else
-      format.html { render "tasks/new", status: :unprocessable_entity }
-      format.json
+      if @task.save
+        format.html { redirect_to task_path(@task) }
+        format.json
+        flash[:notice] = "'#{@task.title}' task successfully saved!"
+      else
+        format.html { render "tasks/new", status: :unprocessable_entity }
+        format.json
+      end
     end
   end
 
   def edit
     respond_to do |format|
       format.html
-      format.text { render partial: 'tasks/form', locals: { task: @task} , formats: [:html] }
+      format.text { render partial: 'edit', locals: { task: @task }, formats: [:html] }
     end
   end
 
   def update
     respond_to do |format|
       if @task.update(task_params.except(:documents))
-          @task.documents.attach(task_params[:documents])
-          flash[:notice] = "'#{@task.title}' updated successfully!"
-      # redirect_to root_path, status: :see_other
-    else
-      render :edit, status: :unprocessable_entity
+        @task.documents.attach(task_params[:documents])
+        format.html { redirect_to task_path(@task) }
+        format.json { render json: { success: true, task: @task } }
+      else
+        format.html { render "tasks/edit", status: :unprocessable_entity }
+        format.json { render json: { success: false, errors: @task.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -65,6 +72,23 @@ class TasksController < ApplicationController
     @task.update(status: 'Incomplete')
     # flash[:notice] = "'#{@task.title}' marked as incomplete"
     render status: 200, json: { message: 'OK'}
+  end
+
+  def get_tasks_due
+    current_time = Time.zone.now
+    @tasks = Task.where("reminder_datetime <= ? AND status != ?", current_time, 'notified')
+    reminders = @tasks
+
+    ReminderChannel.broadcast_to(
+      current_user,
+      {
+        task_ids: @tasks.pluck(:id),
+        reminders: render_to_string(partial: "tasks/reminders", locals: {reminders: reminders}, formats: [:html])
+      }
+    )
+
+    @tasks.update_all(status: 'notified')
+    head :ok
   end
 
   private

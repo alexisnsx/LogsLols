@@ -67,18 +67,17 @@ export default class extends Controller {
 
   send(e) {
     e.preventDefault()
-    console.log(this.formTarget.action);
     fetch(this.formTarget.action, {
       method: 'PATCH',
       headers: {
+        "X-CSRF-Token": this.csrfToken,
         "Accept": "application/json"
       },
       body: new FormData(this.formTarget)
     })
     .then(response => response.json())
     .then((data) => {
-      console.log(data);
-      debugger
+      console.log(data.form);
     })
   }
 
