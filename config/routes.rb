@@ -8,7 +8,9 @@ Rails.application.routes.draw do
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
+
   resources :tasks do
+    resources :reminders, only: [ :create]
     member do
       patch :complete
       patch :incomplete
@@ -21,4 +23,5 @@ Rails.application.routes.draw do
 
   # if we would like for the url to be custom /logslols/username
   # get '*username', to: 'pages#home'
+  get "get_tasks_due", to: "tasks#get_tasks_due"
 end
