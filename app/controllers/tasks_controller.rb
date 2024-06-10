@@ -39,7 +39,7 @@ class TasksController < ApplicationController
   def edit
     respond_to do |format|
       format.html
-      format.js { render partial: 'form', locals: { task: @task } }
+      format.text { render partial: 'edit', locals: { task: @task }, formats: [:html] }
     end
   end
 

@@ -45,7 +45,7 @@ export default class extends Controller {
     if (this.isOriginal) {
       try {
         const response = await fetch(url , {
-          headers: { 'Accept': 'text/html'
+          headers: { 'Accept': 'text/plain'
           }
         });
         if (response.ok) {
