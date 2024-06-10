@@ -33,9 +33,8 @@
               <% end %>
             </div>
 
-              <%# think of logic to make it clickable %>
             <p class="task-icons"><i class="fa-regular fa-circle-check"></i></p>
-            <p class="task-icons"><%= link_to task_path(task), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
+            <p class="task-icons"><%= link_to task_path(@task), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
               <i class="fa-regular fa-trash-can text-dark"></i>
             <% end %></p>
             <p class="task-icons" data-action="click->sliding-effect#toggleSlide"><i class="fa-solid fa-square-arrow-up-right"></i></p>
