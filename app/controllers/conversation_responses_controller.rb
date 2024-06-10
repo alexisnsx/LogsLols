@@ -7,7 +7,7 @@ class ConversationResponsesController < ApplicationController
     prompt = params[:prompt]
 
     # Change this service whenever another is needed
-    ChatService::GroqToolUseStream.new(prompt: prompt, response: response).call
+    ChatService::GroqCompletionStream.new(prompt: prompt, response: response).call
 
   end
 end
