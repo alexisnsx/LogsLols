@@ -2,12 +2,13 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="sliding-effect"
 export default class extends Controller {
-  static targets = ["content", "truncate"]
+  static targets = ["content", "truncate", "checkbox"]
   static values = { id: String };
 
   connect() {
     this.originalContent = this.contentTarget.innerHTML
     this.isOriginal = true
+    this.csrfToken = document.head.querySelector("[name~=csrf-token][content]").content;
   }
 
   async toggleSlide() {
@@ -58,6 +59,30 @@ export default class extends Controller {
       this.contentTarget.innerHTML = this.originalContent;
     }
     this.isOriginal = !this.isOriginal;
+  }
+
+  toggleCheckbox(event) {
+    if (event.currentTarget.className.includes('fa-regular')) {
+      event.currentTarget.className = event.currentTarget.className.replace('fa-regular', 'fa-solid')
+      const url = `/tasks/${this.idValue}/complete`
+      fetch(url, {
+        method: 'PATCH',
+        headers: {
+          "X-CSRF-Token": this.csrfToken,
+          "Accept": "application/json"
+        }
+      })
+    } else {
+      event.currentTarget.className = event.currentTarget.className.replace('fa-solid', 'fa-regular')
+      const url = `/tasks/${this.idValue}/incomplete`
+      fetch(url, {
+        method: 'PATCH',
+        headers: {
+          "X-CSRF-Token": this.csrfToken,
+          "Accept": "application/json"
+        }
+      })
+    }
   }
 }
 
