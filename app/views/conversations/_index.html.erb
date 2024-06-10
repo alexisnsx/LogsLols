@@ -5,9 +5,8 @@
   </section>
 
   <div class="flex-shrink-0">
-    <%= simple_form_for [ @chat, @conversation ], data: { action: "conversation#generateResponse" } do |f| %>
-      <%= f.input :user_message, input_html: { data: { conversation_target: "prompt" } } %>
-      <%= f.submit class:"btn btn-primary mt-3" %>
+    <%= simple_form_for [ chat, conversation ], data: { action: "conversation#generateResponse" } do |f| %>
+      <%= f.input :user_message, as: :string, input_html: { data: { conversation_target: "prompt" } } %>
     <% end %>
   </div>
 </div>

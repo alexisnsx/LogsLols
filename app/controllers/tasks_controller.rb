@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-before_action :set_task, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_task, only: [ :show, :edit, :update, :destroy, :complete, :incomplete ]
 
   def index
     @tasks = current_user.tasks
@@ -9,12 +9,16 @@ before_action :set_task, only: [ :show, :edit, :update, :destroy ]
   def show
     respond_to do |format|
       format.html
-      format.js { render partial: 'show', locals: { task: @task } }
+      format.text { render partial: 'show', locals: { task: @task }, formats: [:html] }
     end
   end
 
   def new
     @task = Task.new
+    respond_to do |format|
+      format.html
+      format.text { render partial: 'new', locals: { task: @task }, formats: [:html] }
+    end
   end
 
   def create
@@ -23,11 +27,6 @@ before_action :set_task, only: [ :show, :edit, :update, :destroy ]
     @task.user = current_user
     if @task.save
       flash[:notice] = "'#{@task.title}' task successfully saved!"
-      # ReminderChannel.broadcast_to(
-      #   current_user,
-      #   "<li>#{@task.title}</li>"
-      #   #render_to_string(partial: "message", locals: {message: @message})
-      # )
       redirect_to task_path(@task), status: :see_other
     else
       render :new, status: :unprocessable_entity
@@ -35,6 +34,10 @@ before_action :set_task, only: [ :show, :edit, :update, :destroy ]
   end
 
   def edit
+    respond_to do |format|
+      format.html
+      format.js { render partial: 'form', locals: { task: @task } }
+    end
   end
 
   def update
@@ -50,8 +53,20 @@ before_action :set_task, only: [ :show, :edit, :update, :destroy ]
 
   def destroy
     @task.destroy
-    flash[:alert] = "'#{@task.title}' task deleted!"
-    redirect_to tasks_path, status: :see_other
+    flash[:alert] = "'#{@task.title}' deleted!"
+    redirect_to root_path, status: :see_other
+  end
+
+  def complete
+    @task.update(status: 'Complete')
+    # flash[:notice] = "'#{@task.title}' marked as complete"
+    render status: 200, json: { message: 'OK'}
+  end
+
+  def incomplete
+    @task.update(status: 'Incomplete')
+    # flash[:notice] = "'#{@task.title}' marked as incomplete"
+    render status: 200, json: { message: 'OK'}
   end
 
   def get_tasks_due

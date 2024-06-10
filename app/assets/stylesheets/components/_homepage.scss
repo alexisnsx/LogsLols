@@ -4,7 +4,7 @@
 }
 
 .chatbot {
-  background-color: grey;
+  background-color: rgb(254, 254, 254);
   border-radius: 300px 300px 0 0;
   height: 740px;
   width: 370px;
@@ -12,9 +12,33 @@
 
 .spotify-player {
   width: 100%;
-  background-color: green;
   margin-top: 10px;
-  height: 150px;
+}
+
+.new-task {
+  background-color: white;
+  width: 500px;
+  height: 700px;
+
+}
+
+.popup {
+  display: none;
+  position: absolute;
+  top: 40%; /* Adjust as needed */
+  left: 49%; /* Adjust as needed */
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  padding: 15px;
+  border-radius: 22px;
+  transition: all 1s;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.popup.active {
+  display: block;
+  width: 500px;
+  height: 700px;
 }
 
 .chat-wrapper {
@@ -23,7 +47,7 @@
 
 .task {
   width: 243px;
-  height: 278px;
+  height: 230px;
   margin: 10px;
 }
 
@@ -37,9 +61,6 @@
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
-// .card-wrapper-top {
-//   height: 150px;
-// }
 
 .tasks-date {
   font-size: 15px;
@@ -71,7 +92,6 @@
   color: black;
   font-size: 15px;
 }
-
 
 .tasks-cards.active {
   background-color: white;

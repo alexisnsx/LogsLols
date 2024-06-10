@@ -1,31 +1,5 @@
 class ConversationsController < ApplicationController
 
-  def get_weather(location)
-    "Weather is fine!"
-  end
-
-  WEATHER_TOOL = {
-    type: "function",
-    function: {
-      name: "get_weather",
-      description: "Get the current weather in a given location",
-      parameters: {
-        type: :object,
-        properties: {
-          location: {
-            type: :string,
-            description: "The city and state, e.g. San Francisco, CA",
-          },
-          unit: {
-            type: "string",
-            enum: %w[celsius fahrenheit],
-          },
-        },
-        required: ["location"],
-      },
-    },
-  }
-
   # params = {
   #     model: "gpt-3.5-turbo-1106",
   #     name: "My Task Assistant",

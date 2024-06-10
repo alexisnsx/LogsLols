@@ -2,12 +2,14 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="sliding-effect"
 export default class extends Controller {
-  static targets = ["content", "truncate"]
+  static targets = ["content", "checkbox"]
   static values = { id: String };
 
   connect() {
     this.originalContent = this.contentTarget.innerHTML
     this.isOriginal = true
+    this.handleDocumentClick = this.handleDocumentClick.bind(this)
+    this.csrfToken = document.head.querySelector("[name~=csrf-token][content]").content;
   }
 
   async toggleSlide() {
@@ -17,12 +19,13 @@ export default class extends Controller {
     if (this.isOriginal) {
       try {
         const response = await fetch(url , {
-          headers: { 'Accept': 'text/html'
+          headers: { 'Accept': 'text/plain'
           }
         });
         if (response.ok) {
           const newContent = await response.text();
           this.contentTarget.innerHTML = newContent
+          // TODO: find a way to scroll this shit
         } else {
           console.error("Failed to load new content");
         }
@@ -32,6 +35,7 @@ export default class extends Controller {
     } else {
       this.contentTarget.innerHTML = this.originalContent;
     }
+    document.addEventListener("click", this.handleDocumentClick);
     this.isOriginal = !this.isOriginal;
   }
 
@@ -42,7 +46,7 @@ export default class extends Controller {
     if (this.isOriginal) {
       try {
         const response = await fetch(url , {
-          headers: { 'Accept': 'text/html'
+          headers: { 'Accept': 'text/plain'
           }
         });
         if (response.ok) {
@@ -58,6 +62,47 @@ export default class extends Controller {
       this.contentTarget.innerHTML = this.originalContent;
     }
     this.isOriginal = !this.isOriginal;
+  }
+
+  close() {
+    this.contentTarget.classList.remove("active")
+    this.resetContent()
+    document.removeEventListener("click", this.handleDocumentClick)
+  }
+
+  handleDocumentClick(event) {
+    // Check if the click happened outside the popup and open button
+    if (!this.contentTarget.contains(event.target)) {
+      this.close()
+    }
+  }
+
+  resetContent() {
+    this.contentTarget.innerHTML = this.originalContent
+  }
+
+  toggleCheckbox(event) {
+    if (event.currentTarget.className.includes('fa-regular')) {
+      event.currentTarget.className = event.currentTarget.className.replace('fa-regular', 'fa-solid')
+      const url = `/tasks/${this.idValue}/complete`
+      fetch(url, {
+        method: 'PATCH',
+        headers: {
+          "X-CSRF-Token": this.csrfToken,
+          "Accept": "application/json"
+        }
+      })
+    } else {
+      event.currentTarget.className = event.currentTarget.className.replace('fa-solid', 'fa-regular')
+      const url = `/tasks/${this.idValue}/incomplete`
+      fetch(url, {
+        method: 'PATCH',
+        headers: {
+          "X-CSRF-Token": this.csrfToken,
+          "Accept": "application/json"
+        }
+      })
+    }
   }
 }
 

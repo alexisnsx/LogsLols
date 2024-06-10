@@ -3,26 +3,18 @@
   <div class="container-fluid">
     <div class="row">
       <%# left side comprising of chat and spotify %>
-      <div class="col-4 left-column gap-3 border">
+      <div class="col-4 left-column gap-3 border vh-100">
         <%# chatbot %>
         <div class="left-wrapper d-flex flex-column align-items-center">
           <div class=" d-flex justify-content-around row chat-wrapper">
             <div class="chatbot">
-              <small>
-                <strong>Alexis</strong>
-                <i>15 January 2024</i>
-              </small>
-              <p>Yo What's up</p>
-            </div>
-            <div class="home-icons col-1 d-flex flex-column align-items-center justify-content-end fs-3">
-            <p><i class="fa-regular fa-calendar"></i></p>
-            <p><i class="fa-solid fa-chalkboard"></i></p>
-            <p><i class="fa-regular fa-square-plus"></i></p>
+              <%= render 'conversations/index', chat: @chat, conversation: @conversation %>
+
             </div>
           </div>
         <%# spotify player %>
           <div class="spotify-player">
-            <p>now playing</p>
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZEVXcXgSoEyYCZer?utm_source=generator&theme=0" width="100%" height="200px" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
           </div>
         </div>
       </div>
@@ -31,11 +23,20 @@
       </div> %>
 
       <%# right side for tasks cards %>
-      <div class="col-8 px-5 border border-success">
+      <div class="col-8 border border-success" data-controller="new-task">
         <div class="row">
-          <%# individual cards %>
-          <%# .each goes here %>
-        <%= render 'tasks/index', tasks: @tasks %>
+          <div class="position relative home-icons col-1 d-flex flex-column align-items-center justify-content-start fs-3">
+            <p><i class="fa-regular fa-calendar"></i></p>
+            <p><i class="fa-solid fa-chalkboard"></i></p>
+            <p data-action="click->new-task#addNewTask"><i class="fa-regular fa-square-plus"></i></p>
+            <p data-new-task-target="newcontent" class="popup new-task"></p>
+          </div>
+
+          <div class="col-11">
+            <div class="row" data-new-task-target="insertform">
+              <%= render 'tasks/index', tasks: @tasks %>
+            </div>
+          </div>
         </div>
       </div>
 
