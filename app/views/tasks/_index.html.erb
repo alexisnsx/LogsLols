@@ -1,7 +1,7 @@
-<% tasks.each do |task| %>
+<% tasks.each_with_index do |task, index| %>
   <div class="col-4 d-flex justify-content-center mb-1">
     <div class="task position-relative" data-controller="sliding-effect" data-sliding-effect-id-value="<%= task.id %>">
-      <div class="tasks-cards d-flex flex-column position-absolute top-0 start-0" data-sliding-effect-target="content">
+      <div class="tasks-cards d-flex flex-column position-absolute top-0 <%= index % 3 === 0 ? "start-0": "end-0" %>" data-sliding-effect-target="content">
         <div class="flex-grow-1 px-1">
           <div class="d-flex align-items-center mb-2">
             <p class="tasks-date m-0 flex-grow-1">Due: <%= task.due_date %></p>
@@ -48,3 +48,10 @@
     </div>
   </div>
 <% end %>
+
+
+<%# <ul>
+  <li></li>
+  <li></li>
+  <li></li>
+</ul> %>
