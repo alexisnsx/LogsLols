@@ -5,12 +5,9 @@
       <%# left side comprising of chat and spotify %>
       <div class="col-4 left-column gap-3 border vh-100">
         <%# chatbot %>
-        <div class="left-wrapper d-flex flex-column align-items-center">
-          <div class=" d-flex justify-content-around row chat-wrapper">
-            <div class="chatbot">
+        <div class="d-flex flex-column align-items-start">
+          <div class="mb-auto d-flex justify-content-around chat-wrapper">
               <%= render 'conversations/index', chat: @chat, conversation: @conversation %>
-
-            </div>
           </div>
         <%# spotify player %>
           <div class="spotify-player">
