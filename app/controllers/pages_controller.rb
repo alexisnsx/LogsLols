@@ -2,6 +2,6 @@ class PagesController < ApplicationController
   # skip_before_action :authenticate_user!, only: [ :home ]
 
   def home
-    @tasks = current_user.tasks.order(:id)
+    @tasks = current_user.tasks.order(:id).reverse
   end
 end

@@ -18,13 +18,13 @@ export default class extends Controller {
     if (this.isOriginal) {
       try {
         const response = await fetch(url , {
-          headers: { 'Accept': 'text/html'
+          headers: { 'Accept': 'text/plain'
           }
         });
         if (response.ok) {
           const newContent = await response.text();
           this.contentTarget.innerHTML = newContent
-          this.contentTarget.scrollTop = this.contentTarget.scrollHeight
+          // TODO: find a way to scroll this shit
         } else {
           console.error("Failed to load new content");
         }

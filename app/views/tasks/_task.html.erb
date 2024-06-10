@@ -1,0 +1,48 @@
+<div id="task-<%= task.id %>" class="col-4 d-flex justify-content-center mb-1">
+    <div class="task position-relative" data-controller="sliding-effect" data-sliding-effect-id-value="<%= task.id %>">
+      <div class="tasks-cards d-flex flex-column position-absolute top-0 <%= index % 3 === 0 ? "start-0": "end-0" %>" data-sliding-effect-target="content">
+        <div class="flex-grow-1 px-1">
+          <div class="d-flex align-items-center mb-2">
+            <p class="tasks-date m-0 flex-grow-1">Due: <%= task.due_date %></p>
+            <% if task.reminder_datetime %>
+              <i class="fa-regular fa-bell fs-5"></i>
+            <% end %>
+            <p class="task-icons" data-action="click->sliding-effect#toggleSlide"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
+
+          </div>
+
+          <div class="px-2">
+            <h2><%= task.title.truncate(10) %></h2>
+
+            <p class= "mt-2"><%= task.description.truncate(70) %></p>
+          </div>
+        </div>
+
+        <div class=" task-footer d-flex align-items-center">
+          <div class="flex-grow-1">
+            <% if task.priority == "High" %>
+              <span class="rectangular-highlight bg-danger">
+                  High priority
+              </span>
+            <% elsif task.priority == "Medium" %>
+              <span class="rectangular-highlight bg-warning">
+                  Medium priority
+              </span>
+            <% elsif task.priority == "Low" %>
+              <span class="rectangular-highlight bg-success">
+                  Low priority
+              </span>
+            <% end %>
+          </div>
+
+            <%# think of logic to make it clickable %>
+          <p class="task-icons"><i class="fa-regular fa-circle-check"></i></p>
+          <p class="task-icons"><%= link_to task_path(task), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
+            <i class="fa-regular fa-trash-can text-dark"></i>
+          <% end %></p>
+          <p data-action="click->sliding-effect#loadEdit" class="task-icons"><i class="fa-regular fa-pen-to-square"></i></p>
+
+        </div>
+      </div>
+    </div>
+  </div>

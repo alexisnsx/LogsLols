@@ -1,4 +1,9 @@
-  <%= simple_form_for @task do |f| %>
+  <%= simple_form_for @task,
+  data: {
+        new_task_target: "form",
+        action: "submit->new-task#send"
+      } do |f| %>
+
     <%= f.input :title, label: "name of task" %>
 
     <div class="row g-3">
