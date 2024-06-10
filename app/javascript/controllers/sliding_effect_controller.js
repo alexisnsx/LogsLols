@@ -10,6 +10,7 @@ export default class extends Controller {
     this.isOriginal = true
     this.handleDocumentClick = this.handleDocumentClick.bind(this)
     this.csrfToken = document.head.querySelector("[name~=csrf-token][content]").content;
+    console.log(this.contentTarget);
   }
 
   async toggleSlide() {
@@ -63,6 +64,18 @@ export default class extends Controller {
     }
     document.addEventListener("click", this.handleDocumentClick);
     this.isOriginal = !this.isOriginal;
+  }
+
+  async changeEdit() {
+    console.log("changed");
+    const url = `/tasks/${this.idValue}/edit`
+
+    const response = await fetch(url, {
+      headers: { 'Accept': 'text/plain'
+      }
+    })
+    const newContent = await response.text();
+    this.contentTarget.innerHTML = newContent
   }
 
   close() {

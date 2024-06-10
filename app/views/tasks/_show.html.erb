@@ -42,9 +42,7 @@
         <i class="fa-regular fa-trash-can text-dark"></i>
       <% end %></p>
 
-      <p class="task-icons"><%= link_to edit_task_path(@task) do %>
-        <i class="fa-regular fa-pen-to-square"></i>
-      <% end %></p>
+      <p data-action="click->sliding-effect#changeEdit" class="task-icons"><i class="fa-regular fa-pen-to-square"></i></p>
     </div>
   </div>
 </div>

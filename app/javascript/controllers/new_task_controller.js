@@ -5,6 +5,7 @@ export default class extends Controller {
   static targets = ["newcontent", "form", "insertform"]
 
   connect() {
+    this.handleDocumentClick = this.handleDocumentClick.bind(this)
   }
 
   async addNewTask() {
@@ -17,8 +18,8 @@ export default class extends Controller {
     });
 
     const newContent = await response.text();
-    console.log(newContent);
     this.newcontentTarget.innerHTML = newContent
+    document.addEventListener("click", this.handleDocumentClick);
   }
 
   send (e) {
@@ -32,7 +33,7 @@ export default class extends Controller {
     .then((data) => {
       this.formTarget.outerHTML = data.form
       this.newcontentTarget.classList.remove("active")
-      debugger
+
       if (data.inserted_item) {
         this.insertformTarget.insertAdjacentHTML("afterbegin", data.inserted_item)
       }
@@ -41,7 +42,7 @@ export default class extends Controller {
 
 
   close() {
-    this.contentTarget.classList.remove("active")
+    this.newcontentTarget.classList.remove("active")
     document.removeEventListener("click", this.handleDocumentClick)
   }
 

@@ -28,7 +28,7 @@ class TasksController < ApplicationController
       if @task.save
         format.html { redirect_to task_path(@task) }
         format.json
-        flash[:notice] = "'#{@task.title}' task successfully saved!"
+        # flash[:notice] = "'#{@task.title}' task successfully saved!"
       else
         format.html { render "tasks/new", status: :unprocessable_entity }
         format.json
