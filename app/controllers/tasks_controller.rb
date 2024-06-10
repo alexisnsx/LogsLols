@@ -47,7 +47,7 @@ class TasksController < ApplicationController
   def destroy
     @task.destroy
     flash[:alert] = "'#{@task.title}' task deleted!"
-    redirect_to tasks_path, status: :see_other
+    redirect_to root_path, status: :see_other
   end
 
   private
