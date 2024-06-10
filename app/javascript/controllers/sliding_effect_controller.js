@@ -24,6 +24,7 @@ export default class extends Controller {
         if (response.ok) {
           const newContent = await response.text();
           this.contentTarget.innerHTML = newContent
+          this.contentTarget.scrollTop = this.contentTarget.scrollHeight
         } else {
           console.error("Failed to load new content");
         }
