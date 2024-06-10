@@ -25,7 +25,6 @@ export default class extends Controller {
       }
     )
     setInterval(()=>{
-      console.log('Fetching tasks', new Date());
       fetch("/get_tasks_due", {
         headers: {
           Accept: "application/json",
@@ -36,7 +35,6 @@ export default class extends Controller {
   }
 
   disconnect() {
-    console.log("Unsubscribed from the reminder")
     this.subscription.unsubscribe()
     clearInterval()
   }
