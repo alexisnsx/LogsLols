@@ -62,11 +62,21 @@ export default class extends Controller {
     this.isOriginal = !this.isOriginal;
   }
 
+  close() {
+    this.contentTarget.classList.remove("active")
+    this.resetContent()
+    document.removeEventListener("click", this.handleDocumentClick)
+  }
+
   handleDocumentClick(event) {
     // Check if the click happened outside the popup and open button
     if (!this.contentTarget.contains(event.target)) {
-      this.contentTarget.classList.remove("active")
+      this.close()
     }
+  }
+
+  resetContent() {
+    this.contentTarget.innerHTML = this.originalContent
   }
 }
 
