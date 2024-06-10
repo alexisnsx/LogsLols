@@ -71,6 +71,23 @@ class TasksController < ApplicationController
     render status: 200, json: { message: 'OK'}
   end
 
+  def get_tasks_due
+    current_time = Time.zone.now
+    @tasks = Task.where("reminder_datetime <= ? AND status != ?", current_time, 'notified')
+    reminders = @tasks
+
+    ReminderChannel.broadcast_to(
+      current_user,
+      {
+        task_ids: @tasks.pluck(:id),
+        reminders: render_to_string(partial: "tasks/reminders", locals: {reminders: reminders}, formats: [:html])
+      }
+    )
+
+    @tasks.update_all(status: 'notified')
+    head :ok
+  end
+
   private
   def set_task
     @task = Task.find(params[:id])
