@@ -3,7 +3,6 @@ class TasksController < ApplicationController
 
   def index
     @tasks = current_user.tasks
-    @reminder = Reminder.new
   end
 
   def show
@@ -23,29 +22,32 @@ class TasksController < ApplicationController
 
   def create
     @task = Task.new(task_params)
-    @task.reminder_datetime.change(usec: 0)
     @task.user = current_user
-    if @task.save
-      flash[:notice] = "'#{@task.title}' task successfully saved!"
-      redirect_to task_path(@task), status: :see_other
-    else
-      render :new, status: :unprocessable_entity
+
+    respond_to do |format|
+      if @task.save
+        format.html { redirect_to task_path(@task) }
+        format.json
+        flash[:notice] = "'#{@task.title}' task successfully saved!"
+      else
+        format.html { render "tasks/new", status: :unprocessable_entity }
+        format.json
+      end
     end
   end
 
   def edit
     respond_to do |format|
       format.html
-      format.js { render partial: 'form', locals: { task: @task } }
+      format.text { render partial: 'edit', locals: { task: @task }, formats: [:html] }
     end
   end
 
   def update
-    @task.reminder_datetime.change(usec: 0)
     if @task.update(task_params.except(:documents))
       @task.documents.attach(task_params[:documents])
       flash[:notice] = "'#{@task.title}' updated successfully!"
-      redirect_to task_path(@task), status: :see_other
+      redirect_to root_path, status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end
