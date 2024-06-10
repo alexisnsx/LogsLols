@@ -3,5 +3,7 @@ class PagesController < ApplicationController
 
   def home
     @tasks = current_user.tasks.order(:id)
+    @chat = current_user.chats.where(status:"current")[0]
+    @conversation = Conversation.new
   end
 end
