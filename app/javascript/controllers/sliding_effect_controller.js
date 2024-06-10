@@ -2,12 +2,13 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="sliding-effect"
 export default class extends Controller {
-  static targets = ["content", "truncate"]
+  static targets = ["content"]
   static values = { id: String };
 
   connect() {
     this.originalContent = this.contentTarget.innerHTML
     this.isOriginal = true
+    this.handleDocumentClick = this.handleDocumentClick.bind(this)
   }
 
   async toggleSlide() {
@@ -32,6 +33,7 @@ export default class extends Controller {
     } else {
       this.contentTarget.innerHTML = this.originalContent;
     }
+    document.addEventListener("click", this.handleDocumentClick);
     this.isOriginal = !this.isOriginal;
   }
 
@@ -58,6 +60,13 @@ export default class extends Controller {
       this.contentTarget.innerHTML = this.originalContent;
     }
     this.isOriginal = !this.isOriginal;
+  }
+
+  handleDocumentClick(event) {
+    // Check if the click happened outside the popup and open button
+    if (!this.contentTarget.contains(event.target)) {
+      this.contentTarget.classList.remove("active")
+    }
   }
 }
 
