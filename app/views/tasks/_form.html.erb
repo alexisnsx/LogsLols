@@ -1,7 +1,9 @@
   <%= simple_form_for @task,
   data: {
         new_task_target: "form",
-        action: "submit->new-task#send"
+        sliding_effect_target: "form",
+        action: "submit->new-task#send",
+        action: "submit->sliding-effect#send"
       } do |f| %>
 
     <%= f.input :title, label: "name of task" %>

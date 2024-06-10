@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="sliding-effect"
 export default class extends Controller {
-  static targets = ["content", "checkbox"]
+  static targets = ["content", "checkbox", "form"]
   static values = { id: String };
 
   connect() {
@@ -10,7 +10,6 @@ export default class extends Controller {
     this.isOriginal = true
     this.handleDocumentClick = this.handleDocumentClick.bind(this)
     this.csrfToken = document.head.querySelector("[name~=csrf-token][content]").content;
-    console.log(this.contentTarget);
   }
 
   async toggleSlide() {
@@ -64,6 +63,23 @@ export default class extends Controller {
     }
     document.addEventListener("click", this.handleDocumentClick);
     this.isOriginal = !this.isOriginal;
+  }
+
+  send(e) {
+    e.preventDefault()
+    console.log(this.formTarget.action);
+    fetch(this.formTarget.action, {
+      method: 'PATCH',
+      headers: {
+        "Accept": "application/json"
+      },
+      body: new FormData(this.formTarget)
+    })
+    .then(response => response.json())
+    .then((data) => {
+      console.log(data);
+      debugger
+    })
   }
 
   async changeEdit() {
