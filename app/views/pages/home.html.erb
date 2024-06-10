@@ -25,11 +25,12 @@
       <%# right side for tasks cards %>
       <div class="col-8 border border-success" data-controller="new-task">
         <div class="row">
-          <div class="position relative home-icons col-1 d-flex flex-column align-items-center justify-content-start fs-3">
-            <p><i class="fa-regular fa-calendar"></i></p>
-            <p><i class="fa-solid fa-chalkboard"></i></p>
-            <p data-action="click->new-task#addNewTask"><i class="fa-regular fa-square-plus"></i></p>
-            <p data-new-task-target="newcontent" class="popup new-task"></p>
+          <div class="position relative home-icons col-1 d-flex flex-column align-items-center justify-content-start">
+            <p><i class="fa-regular fa-calendar fs-3"></i></p>
+            <p><i class="fa-solid fa-chalkboard fs-3"></i></p>
+            <p data-action="click->new-task#addNewTask"><i class="fa-regular fa-square-plus fs-3"></i></p>
+            <div class="new-task popup" data-new-task-target="newcontent">
+            </div>
           </div>
 
           <div class="col-11">

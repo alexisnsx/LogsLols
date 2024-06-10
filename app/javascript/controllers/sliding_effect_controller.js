@@ -61,6 +61,7 @@ export default class extends Controller {
     } else {
       this.contentTarget.innerHTML = this.originalContent;
     }
+    document.addEventListener("click", this.handleDocumentClick);
     this.isOriginal = !this.isOriginal;
   }
 
@@ -105,12 +106,3 @@ export default class extends Controller {
     }
   }
 }
-
-
-
-// on click
-// add class of transform
-// tranform accordingly
-// transform: translateX for sliding
-// append dimmed page to bodyhtml
-// append this.contentTarget into HTML

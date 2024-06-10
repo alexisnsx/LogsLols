@@ -15,7 +15,9 @@ export default class extends Controller {
       headers: { 'Accept': 'text/plain'
       }
     });
+
     const newContent = await response.text();
+    console.log(newContent);
     this.newcontentTarget.innerHTML = newContent
   }
 
@@ -36,4 +38,18 @@ export default class extends Controller {
       }
     })
   }
+
+
+  close() {
+    this.contentTarget.classList.remove("active")
+    document.removeEventListener("click", this.handleDocumentClick)
+  }
+
+  handleDocumentClick(event) {
+    // Check if the click happened outside the popup and open button
+    if (!this.newcontentTarget.contains(event.target)) {
+      this.close()
+    }
+  }
+
 }

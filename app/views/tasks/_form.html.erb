@@ -36,6 +36,10 @@
 
     <div class="d-flex justify-content-between align-items-center">
       <%= f.submit class:"btn btn-primary mt-3" %>
+        <% if @task.persisted? %>
       <p data-action="click->sliding-effect#loadEdit" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
+      <% else %>
+        <p data-action="click->new-task#addNewTask" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
+      <% end %>
     </div>
   <% end %>
