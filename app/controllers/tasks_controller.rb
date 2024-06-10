@@ -8,29 +8,38 @@ class TasksController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.js { render partial: 'show', locals: { task: @task } }
+      format.text { render partial: 'show', locals: { task: @task }, formats: [:html] }
     end
   end
 
   def new
     @task = Task.new
+    respond_to do |format|
+      format.html
+      format.text { render partial: 'new', locals: { task: @task }, formats: [:html] }
+    end
   end
 
   def create
     @task = Task.new(task_params)
     @task.user = current_user
-    if @task.save
-      flash[:notice] = "'#{@task.title}' successfully saved!"
-      redirect_to task_path(@task), status: :see_other
-    else
-      render :new, status: :unprocessable_entity
+
+    respond_to do |format|
+      if @task.save
+        format.html { redirect_to task_path(@task) }
+        format.json
+        flash[:notice] = "'#{@task.title}' task successfully saved!"
+      else
+        format.html { render "tasks/new", status: :unprocessable_entity }
+        format.json
+      end
     end
   end
 
   def edit
     respond_to do |format|
       format.html
-      format.js { render partial: 'form', locals: { task: @task } }
+      format.text { render partial: 'edit', locals: { task: @task }, formats: [:html] }
     end
   end
 
