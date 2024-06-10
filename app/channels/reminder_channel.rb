@@ -1,7 +1,5 @@
 class ReminderChannel < ApplicationCable::Channel
   def subscribed
-    # stream_from "some_channel"
-    puts "reminder channel subscribed to #{current_user.id}"
     stream_for current_user
   end
 

@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: [ :show, :edit, :update, :destroy ]
+before_action :set_task, only: [ :show, :edit, :update, :destroy ]
 
   def index
     @tasks = current_user.tasks
@@ -35,10 +35,6 @@ class TasksController < ApplicationController
   end
 
   def edit
-    respond_to do |format|
-      format.html
-      format.js { render partial: 'form', locals: { task: @task } }
-    end
   end
 
   def update
@@ -46,7 +42,7 @@ class TasksController < ApplicationController
     if @task.update(task_params.except(:documents))
       @task.documents.attach(task_params[:documents])
       flash[:notice] = "'#{@task.title}' updated successfully!"
-      redirect_to root_path, status: :see_other
+      redirect_to task_path(@task), status: :see_other
     else
       render :edit, status: :unprocessable_entity
     end
@@ -59,23 +55,19 @@ class TasksController < ApplicationController
   end
 
   def get_tasks_due
-    current_time = DateTime.now
-    current_time.change(usec: 0)
-    # find tasks where reminder_datet ime === current_time
-    puts 'get_tasks_due'
-    puts current_time
-    # handling for multiple tasks
-    @task = Task.all[0]
-    # @task = Task.find_by(reminder_datetime: current_time)
-    puts "tasks:"
-    puts @task
-    if @task
-      ReminderChannel.broadcast_to(
-        current_user,
-        "<li>#{@task.title}</li>"
-        #render_to_string(partial: "message", locals: {message: @message})
-      )
-    end
+    current_time = Time.zone.now
+    @tasks = Task.where("reminder_datetime <= ? AND status != ?", current_time, 'notified')
+    reminders = @tasks
+
+    ReminderChannel.broadcast_to(
+      current_user,
+      {
+        task_ids: @tasks.pluck(:id),
+        reminders: render_to_string(partial: "tasks/reminders", locals: {reminders: reminders}, formats: [:html])
+      }
+    )
+
+    @tasks.update_all(status: 'notified')
     head :ok
   end
 
