@@ -3,10 +3,10 @@
   <div class="container-fluid">
     <div class="row">
       <%# left side comprising of chat and spotify %>
-      <div class="col-4 left-column gap-3 border vh-100">
+      <div class="col-4 left-column gap-3 border vh-100 sticky-top">
         <%# chatbot %>
         <div class="d-flex flex-column align-items-start">
-          <div class="d-flex justify-content-around chat-wrapper">
+          <div class="d-flex justify-content-around chat-wrapper mb-2">
 
               <%= render 'conversations/index', chat: @chat, conversation: @conversation %>
 
