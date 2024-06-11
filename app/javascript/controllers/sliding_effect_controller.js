@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="sliding-effect"
 export default class extends Controller {
-  static targets = ["content", "checkbox"]
+  static targets = ["content", "checkbox", "form"]
   static values = { id: String };
 
   connect() {
@@ -61,7 +61,35 @@ export default class extends Controller {
     } else {
       this.contentTarget.innerHTML = this.originalContent;
     }
+    document.addEventListener("click", this.handleDocumentClick);
     this.isOriginal = !this.isOriginal;
+  }
+
+  send(e) {
+    e.preventDefault()
+    fetch(this.formTarget.action, {
+      method: 'PATCH',
+      headers: {
+        "Accept": "text/plain"
+      },
+      body: new FormData(this.formTarget)
+    })
+    .then(response => response.text())
+    .then((data) => {
+      this.contentTarget.outerHTML = data
+    })
+  }
+
+  async changeEdit() {
+    console.log("changed");
+    const url = `/tasks/${this.idValue}/edit`
+
+    const response = await fetch(url, {
+      headers: { 'Accept': 'text/plain'
+      }
+    })
+    const newContent = await response.text();
+    this.contentTarget.innerHTML = newContent
   }
 
   close() {
@@ -105,12 +133,3 @@ export default class extends Controller {
     }
   }
 }
-
-
-
-// on click
-// add class of transform
-// tranform accordingly
-// transform: translateX for sliding
-// append dimmed page to bodyhtml
-// append this.contentTarget into HTML
