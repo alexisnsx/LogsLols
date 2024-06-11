@@ -30,7 +30,7 @@ class TasksController < ApplicationController
         format.json
         flash[:notice] = "'#{@task.title}' task successfully saved!"
       else
-        format.html { render "tasks/new", status: :unprocessable_entity }
+        format.html
         format.json
       end
     end
@@ -91,7 +91,7 @@ class TasksController < ApplicationController
   end
 
   private
-  
+
   def set_task
     @task = Task.find(params[:id])
   end
