@@ -35,7 +35,7 @@ export default class extends Controller {
     } else {
       this.contentTarget.innerHTML = this.originalContent;
     }
-    document.addEventListener("click", this.handleDocumentClick);
+    // document.addEventListener("click", this.handleDocumentClick);
     this.isOriginal = !this.isOriginal;
 
     console.log(this.originalContent);
@@ -63,7 +63,7 @@ export default class extends Controller {
     } else {
       this.contentTarget.innerHTML = this.originalContent;
     }
-    document.addEventListener("click", this.handleDocumentClick);
+    // document.addEventListener("click", this.handleDocumentClick);
     this.isOriginal = !this.isOriginal;
   }
 
