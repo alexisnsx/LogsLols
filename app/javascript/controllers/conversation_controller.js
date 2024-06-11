@@ -10,9 +10,9 @@ export default class extends Controller {
 
   generateResponse(event) {
     event.preventDefault()
-    this.#createLabel('You')
+    this.#createLabel('you')
     this.#createMessage(this.promptTarget.value)
-    this.#createLabel('AI')
+    this.#createLabel('assistant')
     this.currentContent = this.#createMessage("")
     this.#setupEventSource()
     this.promptTarget.value = ""
@@ -25,7 +25,7 @@ export default class extends Controller {
   }
 
   #createMessage(text) {
-    const contentElement = document.createElement('pre') // pre element preserves spaces and line breaks
+    const contentElement = document.createElement('p') // pre element preserves spaces and line breaks
     contentElement.classList.add('text-break')
     contentElement.innerText = `${text}`
     this.responseTarget.appendChild(contentElement)
