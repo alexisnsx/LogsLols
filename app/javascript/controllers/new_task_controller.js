@@ -19,7 +19,7 @@ export default class extends Controller {
 
     const newContent = await response.text();
     this.newcontentTarget.innerHTML = newContent
-    document.addEventListener("click", this.handleDocumentClick);
+    // document.addEventListener("click", this.handleDocumentClick);
   }
 
   send(e) {
@@ -31,7 +31,6 @@ export default class extends Controller {
     })
     .then(response => response.json())
     .then((data) => {
-      debugger
       this.formTarget.outerHTML = data.form
       this.newcontentTarget.classList.remove("active")
 
