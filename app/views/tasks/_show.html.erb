@@ -2,18 +2,20 @@
   <div class="row" style="height: 100%;">
     <div class="col-11">
       <div>
-        <% if @task.priority == "High" %>
-          <span class="rectangular-highlight bg-danger">
-              High priority
-          </span>
-        <% elsif @task.priority == "Medium" %>
-          <span class="rectangular-highlight bg-warning">
-              Medium priority
-          </span>
-        <% elsif @task.priority == "Low" %>
-          <span class="rectangular-highlight bg-success">
-              Low priority
-          </span>
+        <% if @task.priority %>
+          <% if @task.priority == "High" %>
+            <span class="rectangular-highlight bg-danger">
+                High priority
+            </span>
+          <% elsif @task.priority == "Medium" %>
+            <span class="rectangular-highlight bg-warning">
+                Medium priority
+            </span>
+          <% elsif @task.priority == "Low" %>
+            <span class="rectangular-highlight bg-success">
+                Low priority
+            </span>
+          <% end %>
         <% end %>
       </div>
 
