@@ -1,12 +1,14 @@
-<div class="d-flex flex-column chat-container container" data-controller="conversation">
-  <h1>Talk to me, AI</h1>
+<div class="d-flex flex-column chat-container container chatbot mt-2" data-controller="conversation">
+  <div class="d-flex w-70 justify-content-center">
+    <%= image_tag "pet.png", height: 50, width: 50, alt: "pet" %>
+  </div>
 
-  <section class="chat-responses flex-grow-1 text-wrap" data-conversation-target="response">
+  <section class="chat-responses flex-grow-1 px-2" data-conversation-target="response">
   </section>
 
   <div class="flex-shrink-0">
     <%= simple_form_for [ chat, conversation ], data: { action: "conversation#generateResponse" } do |f| %>
-      <%= f.input :user_message, as: :string, input_html: { data: { conversation_target: "prompt" } } %>
+      <%= f.input :user_message, label: "ask me anything", as: :string, input_html: { data: { conversation_target: "prompt" } } %>
     <% end %>
   </div>
 </div>
