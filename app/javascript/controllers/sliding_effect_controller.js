@@ -37,6 +37,8 @@ export default class extends Controller {
     }
     document.addEventListener("click", this.handleDocumentClick);
     this.isOriginal = !this.isOriginal;
+
+    console.log(this.originalContent);
   }
 
   async loadEdit() {
@@ -106,11 +108,12 @@ export default class extends Controller {
   }
 
   resetContent() {
+    // change the original content
     this.contentTarget.innerHTML = this.originalContent
   }
 
   toggleCheckbox(event) {
-    if (event.currentTarget.className.includes('fa-regular')) {
+    if (event.currentTarget.className.contains('fa-regular')) {
       event.currentTarget.className = event.currentTarget.className.replace('fa-regular', 'fa-solid')
       const url = `/tasks/${this.idValue}/complete`
       fetch(url, {
@@ -133,3 +136,13 @@ export default class extends Controller {
     }
   }
 }
+
+// ideally toggling open/close should have 2 controllers so that the method isn't too long / confusing
+
+// should do the togglecheckbox on the backend instead
+// checking the backend status if it is 'completed' or 'incomplete'
+// checking on the backend is better than being dependant on a class name.
+// backend should get the data to check if it's working or not
+// ideally the response should bring back the partial so that we can replace the icon on front end.
+// innerHTML.replace('fa-regular', 'fa-solid')
+// original content.replace('fa-regular', 'fa-solid')
