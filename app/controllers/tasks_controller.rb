@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: [ :show, :edit, :update, :destroy, :complete, :incomplete ]
+  before_action :set_task, only: [ :show, :edit, :update, :destroy, :complete, :incomplete, :completion ]
 
   def index
     @tasks = current_user.tasks
@@ -51,6 +51,20 @@ class TasksController < ApplicationController
         @task.documents.attach(task_params[:documents])
         format.html { redirect_to root_path }
         format.text { render partial: "tasks/task", locals: { task: @task, index: @index }, formats: [:html] }
+      end
+    end
+  end
+
+  def completion
+    respond_to do |format|
+      if @task.status == 'Complete'
+        @task.update(status: 'Incomplete')
+        format.html
+        format.text { render partial: "checkbox", locals: { task: @task }, formats: [:html] }
+      else
+        @task.update(status: 'Complete')
+        format.html
+        format.text { render partial: "checkbox", locals: { task: @task }, formats: [:html] }
       end
     end
   end

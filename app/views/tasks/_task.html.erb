@@ -33,8 +33,7 @@
       <% end %>
     </div>
 
-      <%# think of logic to make it clickable %>
-    <p class="task-icons"><i class="<%= task.status === "Complete" ? "fa-solid" : "fa-regular" %> fa-circle-check btn px-0 border-0" data-sliding-effect-target="checkbox" data-action="click->sliding-effect#toggleCheckbox"></i></p>
+    <p class="task-icons"><i class="<%= task.status === "Complete" ? "fa-solid" : "fa-regular" %> fa-circle-check btn px-0 border-0" data-sliding-effect-target="checkbox" data-action="click->sliding-effect#toggleCheckbox" data-sliding-effect-status-value="<%= task.status %>"></i></p>
     <p class="task-icons"><%= link_to task_path(task), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
       <i class="fa-regular fa-trash-can text-dark"></i>
     <% end %></p>

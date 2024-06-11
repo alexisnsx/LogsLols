@@ -113,27 +113,35 @@ export default class extends Controller {
   }
 
   toggleCheckbox(event) {
-    if (event.currentTarget.className.contains('fa-regular')) {
-      event.currentTarget.className = event.currentTarget.className.replace('fa-regular', 'fa-solid')
-      const url = `/tasks/${this.idValue}/complete`
-      fetch(url, {
-        method: 'PATCH',
-        headers: {
-          "X-CSRF-Token": this.csrfToken,
-          "Accept": "application/json"
-        }
-      })
-    } else {
-      event.currentTarget.className = event.currentTarget.className.replace('fa-solid', 'fa-regular')
-      const url = `/tasks/${this.idValue}/incomplete`
-      fetch(url, {
-        method: 'PATCH',
-        headers: {
-          "X-CSRF-Token": this.csrfToken,
-          "Accept": "application/json"
-        }
-      })
-    }
+    const url = `/tasks/${this.idValue}/completion`
+    fetch(url, {
+      method: 'PATCH',
+      headers: {
+        "X-CSRF-Token": this.csrfToken,
+        "Accept": "text/plain"
+      }
+    })
+    // if (event.currentTarget.className.contains('fa-regular')) {
+    //   event.currentTarget.className = event.currentTarget.className.replace('fa-regular', 'fa-solid')
+    //   const url = `/tasks/${this.idValue}/complete`
+    //   fetch(url, {
+    //     method: 'PATCH',
+    //     headers: {
+    //       "X-CSRF-Token": this.csrfToken,
+    //       "Accept": "application/json"
+    //     }
+    //   })
+    // } else {
+    //   event.currentTarget.className = event.currentTarget.className.replace('fa-solid', 'fa-regular')
+    //   const url = `/tasks/${this.idValue}/incomplete`
+    //   fetch(url, {
+    //     method: 'PATCH',
+    //     headers: {
+    //       "X-CSRF-Token": this.csrfToken,
+    //       "Accept": "application/json"
+    //     }
+    //   })
+    // }
   }
 }
 
@@ -146,3 +154,6 @@ export default class extends Controller {
 // ideally the response should bring back the partial so that we can replace the icon on front end.
 // innerHTML.replace('fa-regular', 'fa-solid')
 // original content.replace('fa-regular', 'fa-solid')
+
+
+// get task.status value from fronted
