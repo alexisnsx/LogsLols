@@ -31,7 +31,6 @@ export default class extends Controller {
     })
     .then(response => response.json())
     .then((data) => {
-      debugger
       this.formTarget.outerHTML = data.form
       this.newcontentTarget.classList.remove("active")
 
