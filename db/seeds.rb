@@ -48,19 +48,11 @@ new_tasks = [
     user: alexis },
 
   { title: 'Signing and stamping',
-    description: 'Get printed documents to head for authorisation',
+    description: 'Get printed documents to finance head for authorisation',
     priority: 'High',
     documents_path: ['documents/CPF.pdf'],
     due_date: Date.today,
     reminder_datetime: DateTime.now + 120.minutes,
-    user: alexis },
-
-  { title: 'Archiving',
-    description: 'File documents and pass to archives',
-    priority: 'Low',
-    documents_path: ['documents/activestorage.pdf'],
-    due_date: Date.new(2024, 05, 31),
-    reminder_datetime: DateTime.new(2024, 05, 30, 18, 00, 00),
     user: alexis },
 
   { title: 'Prepare inter-co reconciliations',
@@ -71,42 +63,69 @@ new_tasks = [
     reminder_datetime: DateTime.new(2024, 05, 19, 15, 30, 00),
     user: alexis },
 
-  { title: 'This is another sample task',
-    description: 'A long description is a detailed text description of an image that can be several paragraphs long and/or may contain other elements such as tables and lists. This technique is generally used for complex images where spatial information needs to be conveyed to the reader such as maps, graphs, and diagrams.',
+  { title: 'Project Management',
+    description: 'Prepare project to develop a comprehensive plan outlining timelines, milestones, and key deliverables. Stakeholders meeting with all project stakeholders to discuss project goals and expectations.',
     priority: 'Medium',
     documents_path: ['documents/pdpc-guidelines.pdf'],
     due_date: Date.new(2024, 05, 20),
     user: alexis },
 
-  { title: 'Remember to buy dinner',
-    description: 'Dinner is very important we all need to eat',
+  { title: 'Personal Development',
+    description: 'Complete LeWagon Bootcamp. Finish the Web Developement course to improve/web development coding skills.',
     priority: 'High',
     documents_path: ['documents/pdpc-guidelines.pdf'],
     due_date: Date.new(2024, 05, 20),
     reminder_datetime: DateTime.new(2024, 05, 19, 15, 30, 00),
     user: alexis },
 
-  { title: 'Stop playing games',
-    description: 'You need to sleep early so that you stop falling asleep in class',
+  { title: 'Office Administration',
+    description: 'Inventory Check: Conduct a detailed inventory check of all office supplies and reorder any necessary items.
+    ',
     priority: 'Medium',
     documents_path: ['documents/pdpc-guidelines.pdf'],
     due_date: Date.new(2024, 05, 20),
     user: alexis },
 
-  { title: 'Finish your codes',
-    description: 'We need to finish this project so that we can submit it. Yay i guess',
+  { title: 'Marketing Campaign',
+    description: 'Social Media Content Plan to develop a content calendar for social media posts for the next quarter, focusing on engagement and brand awareness. Create email newsletter draft for the monthly email newsletter, including articles, news, and updates.
+    ',
     priority: 'Medium',
     documents_path: ['documents/pdpc-guidelines.pdf'],
     due_date: Date.new(2024, 05, 20),
     user: alexis },
 
-  { title: 'What is life',
-    description: 'Life is a quality that distinguishes matter that has biological processes, such as signaling and self-sustaining processes, from matter that does not.',
+  { title: 'Event Planning',
+    description: 'Venue booking. Please conduct research and book a suitable venue for the annual company retreat, ensuring it meets all requirements and budget constraints. Guest List Finalization: Compile and finalize the guest list for the upcoming conference, ensuring all key stakeholders are included.',
+    priority: 'Low',
+    documents_path: ['documents/pdpc-guidelines.pdf'],
+    due_date: Date.new(2024, 05, 20),
+    reminder_datetime: DateTime.new(2024, 05, 19, 15, 30, 00),
+    user: alexis },
+
+  { title: 'Financial Management',
+  description: 'Monthly Budget Review: Analyze and review the monthly budget, track expenses, and adjust allocations as needed to stay within financial goals.',
+  priority: 'Low',
+  documents_path: ['documents/pdpc-guidelines.pdf'],
+  due_date: Date.new(2024, 05, 20),
+  reminder_datetime: DateTime.new(2024, 05, 19, 15, 30, 00),
+  user: alexis },
+
+  { title: 'Health and Wellness',
+    description: 'Weekly meal plan to prepare meals for the upcoming week, focusing on balanced nutrition and portion control to maintain a healthy diet. Exercise routine to follow a personalized exercise routine, including a mix of cardio, strength training, and flexibility exercises, to achieve fitness goals.',
+    priority: 'Low',
+    documents_path: ['documents/pdpc-guidelines.pdf'],
+    due_date: Date.new(2024, 05, 20),
+    reminder_datetime: DateTime.new(2024, 05, 19, 15, 30, 00),
+    user: alexis },
+
+  { title: 'Customer Support',
+    description: 'Resolve Customer Tickets: Review and resolve all outstanding customer support tickets, ensuring timely and satisfactory responses to all inquiries and issues.',
     priority: 'Low',
     documents_path: ['documents/pdpc-guidelines.pdf'],
     due_date: Date.new(2024, 05, 20),
     reminder_datetime: DateTime.new(2024, 05, 19, 15, 30, 00),
     user: alexis }
+
 ]
 
 new_tasks.each do |attributes|
