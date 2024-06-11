@@ -31,7 +31,6 @@ export default class extends Controller {
         }
       });
     }, 10000);
-
   }
 
   disconnect() {
