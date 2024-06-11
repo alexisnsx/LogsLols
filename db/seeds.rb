@@ -99,7 +99,7 @@ new_tasks = [
     priority: 'Low',
     documents_path: ['documents/pdpc-guidelines.pdf'],
     due_date: Date.new(2024, 05, 20),
-    reminder_datetime: DateTime.new(2024, 05, 19, 15, 30, 00),
+    reminder_datetime: DateTime.new(2024, 07, 19, 15, 30, 00),
     user: alexis },
 
   { title: 'Financial Management',
@@ -107,7 +107,7 @@ new_tasks = [
   priority: 'Low',
   documents_path: ['documents/pdpc-guidelines.pdf'],
   due_date: Date.new(2024, 05, 20),
-  reminder_datetime: DateTime.new(2024, 05, 19, 15, 30, 00),
+  reminder_datetime: DateTime.new(2024, 07, 19, 15, 30, 00),
   user: alexis },
 
   { title: 'Health and Wellness',
@@ -115,7 +115,7 @@ new_tasks = [
     priority: 'Low',
     documents_path: ['documents/pdpc-guidelines.pdf'],
     due_date: Date.new(2024, 05, 20),
-    reminder_datetime: DateTime.new(2024, 05, 19, 15, 30, 00),
+    reminder_datetime: DateTime.new(2024, 07, 19, 15, 30, 00),
     user: alexis },
 
   { title: 'Customer Support',
