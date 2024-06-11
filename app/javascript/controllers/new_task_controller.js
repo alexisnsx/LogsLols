@@ -19,7 +19,7 @@ export default class extends Controller {
 
     const newContent = await response.text();
     this.newcontentTarget.innerHTML = newContent
-    document.addEventListener("click", this.handleDocumentClick);
+    // document.addEventListener("click", this.handleDocumentClick);
   }
 
   send(e) {
