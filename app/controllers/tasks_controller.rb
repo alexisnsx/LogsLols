@@ -75,7 +75,7 @@ class TasksController < ApplicationController
 
   def get_tasks_due
     current_time = Time.zone.now
-    @tasks = Task.where("reminder_datetime <= ? AND status != ?", current_time, 'notified')
+    @tasks = Task.where.not(reminder_datetime: nil)
     reminders = @tasks
 
     ReminderChannel.broadcast_to(
@@ -86,7 +86,7 @@ class TasksController < ApplicationController
       }
     )
 
-    @tasks.update_all(status: 'notified')
+    @tasks.update_all(reminder_datetime: nil)
     head :ok
   end
 
