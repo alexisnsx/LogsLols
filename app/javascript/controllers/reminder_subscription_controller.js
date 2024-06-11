@@ -11,7 +11,7 @@ export default class extends Controller {
         received: data => {
           // update the class of all the due tasks
           data.task_ids.forEach(id => {
-            const taskElement = document.querySelector(`#tasks-${id}`);
+            const taskElement = document.querySelector(`#task-${id}`);
             taskElement.classList.add('task-due')
           });
 
@@ -25,7 +25,6 @@ export default class extends Controller {
       }
     )
     setInterval(()=>{
-      console.log('Fetching tasks', new Date());
       fetch("/get_tasks_due", {
         headers: {
           Accept: "application/json",
@@ -35,7 +34,6 @@ export default class extends Controller {
   }
 
   disconnect() {
-    console.log("Unsubscribed from the reminder")
     this.subscription.unsubscribe()
     clearInterval()
   }
