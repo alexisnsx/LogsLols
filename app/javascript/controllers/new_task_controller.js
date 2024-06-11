@@ -22,7 +22,7 @@ export default class extends Controller {
     document.addEventListener("click", this.handleDocumentClick);
   }
 
-  send (e) {
+  send(e) {
     e.preventDefault()
     fetch(this.formTarget.action, {
       method: "POST",
@@ -31,6 +31,7 @@ export default class extends Controller {
     })
     .then(response => response.json())
     .then((data) => {
+      debugger
       this.formTarget.outerHTML = data.form
       this.newcontentTarget.classList.remove("active")
 

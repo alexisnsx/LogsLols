@@ -26,7 +26,7 @@ class TasksController < ApplicationController
 
     respond_to do |format|
       if @task.save
-        format.html { redirect_to task_path(@task) }
+        format.html { redirect_to root_path }
         format.json
         flash[:notice] = "'#{@task.title}' task successfully saved!"
       else
@@ -44,14 +44,13 @@ class TasksController < ApplicationController
   end
 
   def update
+    tasks = Task.all
+    @index = tasks.index(@task)
     respond_to do |format|
       if @task.update(task_params.except(:documents))
         @task.documents.attach(task_params[:documents])
-        format.html { redirect_to task_path(@task) }
-        format.json { render json: { success: true, task: @task } }
-      else
-        format.html { render "tasks/edit", status: :unprocessable_entity }
-        format.json { render json: { success: false, errors: @task.errors.full_messages }, status: :unprocessable_entity }
+        format.html { redirect_to root_path }
+        format.text { render partial: "tasks/task", locals: { task: @task, index: @index }, formats: [:html] }
       end
     end
   end
