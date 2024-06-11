@@ -2,8 +2,7 @@
     data: {
         new_task_target: "form",
         sliding_effect_target: "form",
-        action: "submit->new-task#send",
-        action: "submit->sliding-effect#update"
+        action: ("submit->new-task#submit submit->sliding-effect#update")
     } do |f| %>
 
     <%= f.input :title, label: "name of task" %>
@@ -41,7 +40,7 @@
         <% if @task.persisted? %>
       <p data-action="click->sliding-effect#closeEdit" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
       <% else %>
-        <p data-action="click->new-task#addNewTask" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
+        <p data-action="click->new-task#closeCreate" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
       <% end %>
     </div>
   <% end %>

@@ -46,7 +46,6 @@ export default class extends Controller {
   // fetch form from edit and display on the card.
 
   openEdit() {
-    console.log(this.contentTarget.innerHTML);
     this.contentTarget.classList.add("active")
 
     const url = `/tasks/${this.idValue}/edit`
@@ -65,7 +64,6 @@ export default class extends Controller {
   // card should go back to original content
 
   closeEdit() {
-    console.log('can close');
     this.contentTarget.classList.remove("active")
     this.contentTarget.innerHTML = this.originalContent
   }
@@ -86,8 +84,6 @@ export default class extends Controller {
     })
     .then(response => response.text())
     .then((data) => {
-      console.log(this.originalContent);
-      console.log(data);
       this.contentTarget.classList.remove("active")
       this.contentTarget.innerHTML = data
       // this.contentTarget.outerHTML = data
@@ -109,6 +105,9 @@ export default class extends Controller {
     this.contentTarget.innerHTML = newContent
   }
 
+
+  // to close the card anywhere on the page
+
   close() {
     this.contentTarget.classList.remove("active")
     this.resetContent()
@@ -127,6 +126,9 @@ export default class extends Controller {
     this.contentTarget.innerHTML = this.originalContent
   }
 
+  // to make sure check box is corrected
+  // need to replace from this.originalContent too
+  
   toggleCheckbox(event) {
     if (event.currentTarget.className.contains('fa-regular')) {
       event.currentTarget.className = event.currentTarget.className.replace('fa-regular', 'fa-solid')
