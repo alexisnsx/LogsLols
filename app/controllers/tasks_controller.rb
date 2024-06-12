@@ -57,12 +57,12 @@ class TasksController < ApplicationController
 
   def completion
     respond_to do |format|
-      if @task.status == 'Complete'
-        @task.update(status: 'Incomplete')
+      if @task.status == 'Incomplete'
+        @task.update(status: 'Complete')
         format.html
         format.text { render partial: "checkbox", locals: { task: @task }, formats: [:html] }
       else
-        @task.update(status: 'Complete')
+        @task.update(status: 'Incomplete')
         format.html
         format.text { render partial: "checkbox", locals: { task: @task }, formats: [:html] }
       end

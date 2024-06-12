@@ -11,12 +11,12 @@ export default class extends Controller {
     this.csrfToken = document.head.querySelector("[name~=csrf-token][content]").content;
   }
 
-  // showing more details of the card
-  // when pressing the button on the small card,
-  // document add class of active to make it bigger
-  // document fetches the new display to display.
-
-
+  /**
+   * showing more details of the card
+   * when pressing the button on the small card,
+   * document add class of active to make it bigger
+   * document fetches the new display to display.
+   */
   openCard() {
     this.contentTarget.classList.add("active")
 
@@ -128,7 +128,7 @@ export default class extends Controller {
 
   // to make sure check box is corrected
   // need to replace from this.originalContent too
-  
+
   toggleCheckbox(event) {
     const url = `/tasks/${this.idValue}/completion`
     fetch(url, {
@@ -138,6 +138,14 @@ export default class extends Controller {
         "Accept": "text/plain"
       }
     })
+    .then(response => response.text())
+    .then((data) => {
+      // console.log(this.checkboxTarget);
+      this.checkboxTarget.outerHTML = data
+      this.originalContent.replace(this.checkboxTarget, data)
+
+    })
+  }
     // if (event.currentTarget.className.contains('fa-regular')) {
     //   event.currentTarget.className = event.currentTarget.className.replace('fa-regular', 'fa-solid')
     //   const url = `/tasks/${this.idValue}/complete`
@@ -159,7 +167,7 @@ export default class extends Controller {
     //     }
     //   })
     // }
-  }
+
 }
 
 // ideally toggling open/close should have 2 controllers so that the method isn't too long / confusing
