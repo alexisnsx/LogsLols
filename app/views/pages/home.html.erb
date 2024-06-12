@@ -20,6 +20,11 @@
 
       <%# right side for tasks cards %>
       <div class="col-8" data-controller="new-task">
+      <div class>
+        <%= label_tag :query, "Find task keywords" %>
+        <%= text_field_tag :query, params[:query], placeholder: 'Keyword(s)...' %>
+        <%= submit_tag 'Find' %>
+      </div>
         <div class="row">
           <div class="mt-4 position relative home-icons col-1 d-flex flex-column align-items-center justify-content-start">
             <p><i class="fa-regular fa-calendar fs-3"></i></p>
