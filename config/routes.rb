@@ -12,9 +12,8 @@ Rails.application.routes.draw do
   resources :tasks do
     resources :reminders, only: [ :create]
     member do
-      patch :complete
-      patch :incomplete
       patch :completion
+      get 'original'
     end
   end
   resources :chats, only: [ :index, :show, :create, :delete ] do

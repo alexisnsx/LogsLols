@@ -38,7 +38,7 @@ export default class extends Controller {
 
   closeCard() {
     this.contentTarget.classList.remove("active")
-    this.contentTarget.innerHTML = this.originalContent
+    this.getOriginalContent()
   }
 
   // load edit page
@@ -65,7 +65,7 @@ export default class extends Controller {
 
   closeEdit() {
     this.contentTarget.classList.remove("active")
-    this.contentTarget.innerHTML = this.originalContent
+    this.getOriginalContent()
   }
 
   // update the form once it is edited
@@ -73,23 +73,23 @@ export default class extends Controller {
   // update form accordingly
   // update this.originalContent so that form remains the same no matter what.
 
-  update(e) {
-    e.preventDefault()
-    fetch(this.formTarget.action, {
-      method: 'PATCH',
-      headers: {
-        "Accept": "text/plain"
-      },
-      body: new FormData(this.formTarget)
-    })
-    .then(response => response.text())
-    .then((data) => {
-      this.contentTarget.classList.remove("active")
-      this.contentTarget.innerHTML = data
-      // this.contentTarget.outerHTML = data
-      this.originalContent = data
-    })
-  }
+  // update(e) {
+  //   e.preventDefault()
+  //   fetch(this.formTarget.action, {
+  //     method: 'PATCH',
+  //     headers: {
+  //       "Accept": "text/plain"
+  //     },
+  //     body: new FormData(this.formTarget)
+  //   })
+  //   .then(response => response.text())
+  //   .then((data) => {
+  //     this.contentTarget.classList.remove("active")
+  //     this.contentTarget.innerHTML = data
+  //     // this.contentTarget.outerHTML = data
+  //     this.originalContent = data
+  //   })
+  // }
 
   // brings you to edit form from 'more details' page
 
@@ -142,8 +142,19 @@ export default class extends Controller {
     .then((data) => {
       // console.log(this.checkboxTarget);
       this.checkboxTarget.outerHTML = data
-      this.originalContent.replace(this.checkboxTarget, data)
+      // this.originalContent.replace(this.checkboxTarget, data)
 
+    })
+  }
+
+  getOriginalContent() {
+    const url = `/tasks/${this.idValue}/original`
+    fetch (url, { headers: {
+      "Accept": "text/plain" },
+    })
+    .then(response => response.text())
+    .then((data) => {
+      this.contentTarget.innerHTML = data
     })
   }
     // if (event.currentTarget.className.contains('fa-regular')) {

@@ -1,8 +1,7 @@
   <%= simple_form_for @task,
     data: {
-        new_task_target: "form",
-        sliding_effect_target: "form",
-        action: ("submit->new-task#submit submit->sliding-effect#update")
+        task_cards_target: "form",
+        action: ("submit->task-cards#submit")
     } do |f| %>
 
     <%= f.input :title, label: "name of task" %>
@@ -38,9 +37,9 @@
     <div class="d-flex justify-content-between align-items-center">
       <%= f.submit class:"btn btn-primary mt-3" %>
         <% if @task.persisted? %>
-      <p data-action="click->sliding-effect#closeEdit" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
+      <p data-action="click->task-cards#closeEdit" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
       <% else %>
-        <p data-action="click->new-task#closeCreate" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
+        <p data-action="click->task-cards#closeCreate" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
       <% end %>
     </div>
   <% end %>
