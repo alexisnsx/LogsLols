@@ -60,7 +60,7 @@ new_tasks = [
     priority: 'Medium',
     documents_path: ['documents/pdpc-guidelines.pdf'],
     due_date: Date.new(2024, 05, 20),
-    reminder_datetime: DateTime.new(2024, 05, 19, 15, 30, 00),
+    reminder_datetime: DateTime.new(2024, 05, 12, 10, 30, 00),
     user: alexis },
 
   { title: 'Project Management',
@@ -75,7 +75,7 @@ new_tasks = [
     priority: 'High',
     documents_path: ['documents/pdpc-guidelines.pdf'],
     due_date: Date.new(2024, 05, 20),
-    reminder_datetime: DateTime.new(2024, 05, 19, 15, 30, 00),
+    reminder_datetime: DateTime.new(2024, 05, 12, 10, 30, 00),
     user: alexis },
 
   { title: 'Office Administration',
@@ -99,7 +99,7 @@ new_tasks = [
     priority: 'Low',
     documents_path: ['documents/pdpc-guidelines.pdf'],
     due_date: Date.new(2024, 05, 20),
-    reminder_datetime: DateTime.new(2024, 07, 19, 15, 30, 00),
+    reminder_datetime: DateTime.new(2024, 05, 12, 10, 30, 00),
     user: alexis },
 
   { title: 'Financial Management',
