@@ -2,12 +2,13 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="task-cards"
 export default class extends Controller {
-  static targets = ["content", "checkbox", "form", "newcontent", "insertform"]
+  static targets = ["content", "checkbox", "newcontent", "insertform"]
   static values = { id: String };
 
   connect() {
+    this.csrfToken = document.head.querySelector("[name~=csrf-token][content]").content;
+    // this.handleDocumentClick = this.handleDocumentClick.bind(this);
 }
-
 
   openCreate() {
     this.newcontentTarget.classList.add("active")
@@ -32,9 +33,7 @@ export default class extends Controller {
 
 submit(e) {
   e.preventDefault()
-  console.log(e.currentTarget.action, e.currentTarget.method);
   const cardActive = e.currentTarget.closest('div[data-id]')
-
 
   fetch(e.currentTarget.action, {
     method: e.currentTarget.method,
@@ -50,19 +49,8 @@ submit(e) {
       cardActive.classList.remove("active")
       cardActive.innerHTML = data.updated_form
     }
-  //   console.log(data);
-
-
-  //   // if data.inserted_item
-  //   // elsif data.updated_form
-  //   // insert back into the content target
-  //   // this.originalcontent()
   })
 }
-
-
-// copy new-task over
-// check if submit beforebegin works.
 
 /**
    * showing more details of the card
@@ -73,8 +61,6 @@ submit(e) {
 openCard(e) {
   const cardActive = e.currentTarget.closest('div[data-id]')
   cardActive.classList.add("active")
-  console.log(cardActive.innerHTML);
-  // const cardContent = e.currentTarget.closest('.card-wrapper')
   const url = `/tasks/${cardActive.dataset.id}`
   fetch (url, { headers: {
     "Accept": "text/plain" },
@@ -83,7 +69,7 @@ openCard(e) {
   .then((data) => {
     cardActive.innerHTML = data
   })
-  // document.addEventListener("click", this.handleDocumentClick);
+  // document.addEventListener("click", this.handleDocumentClick(e));
 }
 
 // press the button on the form itself
@@ -95,9 +81,6 @@ closeCard(e) {
   cardActive.classList.remove("active")
   const id = cardActive.dataset.id
   this.getOriginalContent(id, cardActive)
-  // managed to fetch data
-  // where do data go
-  // inside card content
 }
 
 // load edit page
@@ -130,55 +113,13 @@ closeEdit(e) {
   this.getOriginalContent(id, cardActive)
 }
 
-// update the form once it is edited
-// need to listen to submit and fetch the patch details
-// update form accordingly
-// update this.originalContent so that form remains the same no matter what.
-
-// update(e) {
-//   e.preventDefault()
-//   fetch(this.formTarget.action, {
-//     method: 'PATCH',
-//     headers: {
-//       "Accept": "text/plain"
-//     },
-//     body: new FormData(this.formTarget)
-//   })
-//   .then(response => response.text())
-//   .then((data) => {
-//     this.contentTarget.classList.remove("active")
-//     this.contentTarget.innerHTML = data
-//     // this.contentTarget.outerHTML = data
-//     this.originalContent = data
-//   })
-// }
-
-
-// to close the card anywhere on the page
-
-close() {
-  this.contentTarget.classList.remove("active")
-  this.resetContent()
-  document.removeEventListener("click", this.handleDocumentClick)
-}
-
-handleDocumentClick(event) {
-  // Check if the click happened outside the popup and open button
-  if (!this.contentTarget.contains(event.target)) {
-    this.close()
-  }
-}
-
-resetContent() {
-  // change the original content
-  this.contentTarget.innerHTML = this.originalContent
-}
 
 // to make sure check box is corrected
 // need to replace from this.originalContent too
 
-toggleCheckbox(event) {
-  const url = `/tasks/${this.idValue}/completion`
+toggleCheckbox(e) {
+  const cardActive = e.currentTarget.closest('div[data-id]')
+  const url = `/tasks/${cardActive.dataset.id}/completion`
   fetch(url, {
     method: 'PATCH',
     headers: {
@@ -188,10 +129,7 @@ toggleCheckbox(event) {
   })
   .then(response => response.text())
   .then((data) => {
-    // console.log(this.checkboxTarget);
     this.checkboxTarget.outerHTML = data
-    // this.originalContent.replace(this.checkboxTarget, data)
-
   })
 }
 
@@ -205,26 +143,50 @@ getOriginalContent(id, cardActive) {
     cardActive.innerHTML = data;
   })
 }
-  // if (event.currentTarget.className.contains('fa-regular')) {
-  //   event.currentTarget.className = event.currentTarget.className.replace('fa-regular', 'fa-solid')
-  //   const url = `/tasks/${this.idValue}/complete`
-  //   fetch(url, {
-  //     method: 'PATCH',
-  //     headers: {
-  //       "X-CSRF-Token": this.csrfToken,
-  //       "Accept": "application/json"
-  //     }
-  //   })
-  // } else {
-  //   event.currentTarget.className = event.currentTarget.className.replace('fa-solid', 'fa-regular')
-  //   const url = `/tasks/${this.idValue}/incomplete`
-  //   fetch(url, {
-  //     method: 'PATCH',
-  //     headers: {
-  //       "X-CSRF-Token": this.csrfToken,
-  //       "Accept": "application/json"
-  //     }
-  //   })
-  // }
+
+delete(e) {
+  e.preventDefault()
+  const cardActive = e.currentTarget.closest('div[data-id]')
+  if(confirm('Are you sure')) {
+    const eventTarget = e.currentTarget
+    const url = `/tasks/${cardActive.dataset.id}`
+    fetch(url, {
+      method: 'DELETE',
+      headers: {
+        "X-CSRF-Token": this.csrfToken,
+        "Accept": "text/plain"
+      }
+    })
+    .then(response => response.text())
+    .then((data) => {
+      const toDelete = eventTarget.closest('.col-4')
+      toDelete.parentElement.removeChild(toDelete)
+      document.body.insertAdjacentHTML("beforeend", data)
+    })
+  }
+}
+
+// to close the card anywhere on the page
+
+// close(e) {
+//   const cardActive = e.currentTarget.closest('div[data-id]')
+//   cardActive.classList.remove("active")
+//   // this.resetContent()
+//   document.removeEventListener("click", this.handleDocumentClick(e))
+// }
+
+// handleDocumentClick(e) {
+//   // Check if the click happened outside the popup and open button
+//   const cardActive = e.currentTarget.closest('div[data-id]')
+//   if (!cardActive.contains(e.target)) {
+//     this.close(e)
+//   }
+// }
+
+// resetContent(e) {
+//   // change the original content
+//   const cardActive = e.currentTarget.closest('div[data-id]')
+//   cardActive.innerHTML = this.getOriginalContent()
+// }
 
 }

@@ -34,7 +34,7 @@
     </div>
 
     <p class="task-icons"><i class="<%= task.status === "Complete" ? "fa-solid" : "fa-regular" %> fa-circle-check btn px-0 border-0" data-task-cards-target="checkbox" data-action="click->task-cards#toggleCheckbox" data-task-cards-status-value="<%= task.status %>"></i></p>
-    <p class="task-icons"><%= link_to task_path(task), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
+    <p class="task-icons"><%= link_to task_path(task), data: { turbo: false, turbo_method: :delete, turbo_confirm: "Are you sure?", action: "click->task-cards#delete" } do %>
       <i class="fa-regular fa-trash-can text-dark"></i>
     <% end %></p>
     <p data-action="click->task-cards#openEdit" class="task-icons"><i class="fa-regular fa-pen-to-square"></i></p>
