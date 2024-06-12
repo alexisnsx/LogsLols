@@ -11,7 +11,7 @@ export default class extends Controller {
         received: data => {
           // update the class of all the due tasks
           data.task_ids.forEach(id => {
-            const taskElement = document.querySelector(`#task-${id}`);
+            const taskElement = document.querySelector(`#task-${id} .tasks-cards`);
             taskElement.classList.add('task-due')
           });
 
