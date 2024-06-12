@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     member do
       patch :complete
       patch :incomplete
+      patch :completion
     end
   end
   resources :chats, only: [ :index, :show, :create, :delete ] do
