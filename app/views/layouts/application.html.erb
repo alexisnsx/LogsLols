@@ -15,8 +15,7 @@
     <% if user_signed_in? %>
     <div class="d-flex justify-content-end align-items-end"
         data-controller="reminder-subscription"
-        data-reminder-subscription-user-id-value="<%=current_user.id%>"
-    >
+        data-reminder-subscription-user-id-value="<%=current_user.id%>">
     </div>
     <% end %>
     <%= yield %>
