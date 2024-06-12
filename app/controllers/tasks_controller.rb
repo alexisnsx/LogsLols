@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: [ :show, :edit, :update, :destroy, :complete, :incomplete ]
+  before_action :set_task, only: [ :show, :edit, :update, :destroy, :complete, :incomplete, :completion ]
 
   def index
     @tasks = current_user.tasks
@@ -30,7 +30,7 @@ class TasksController < ApplicationController
         format.json
         flash[:notice] = "'#{@task.title}' task successfully saved!"
       else
-        format.html
+        format.html { render partial: 'new', status: :unprocessable_entity }
         format.json
       end
     end
@@ -55,6 +55,20 @@ class TasksController < ApplicationController
     end
   end
 
+  def completion
+    respond_to do |format|
+      if @task.status == 'Incomplete'
+        @task.update(status: 'Complete')
+        format.html
+        format.text { render partial: "checkbox", locals: { task: @task }, formats: [:html] }
+      else
+        @task.update(status: 'Incomplete')
+        format.html
+        format.text { render partial: "checkbox", locals: { task: @task }, formats: [:html] }
+      end
+    end
+  end
+
   def destroy
     @task.destroy
     flash[:alert] = "'#{@task.title}' deleted!"
@@ -75,7 +89,7 @@ class TasksController < ApplicationController
 
   def get_tasks_due
     current_time = Time.zone.now
-    @tasks = Task.where("reminder_datetime <= ? AND status != ?", current_time, 'notified')
+    @tasks = Task.where.not(reminder_datetime: nil)
     reminders = @tasks
 
     ReminderChannel.broadcast_to(
@@ -86,7 +100,7 @@ class TasksController < ApplicationController
       }
     )
 
-    @tasks.update_all(status: 'notified')
+    @tasks.update_all(reminder_datetime: nil)
     head :ok
   end
 

@@ -36,9 +36,9 @@
     </div>
 
     <div class="col-1 d-flex flex-column justify-content-end">
-      <p class="task-icons" data-action="click->sliding-effect#toggleSlide"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
+      <p class="task-icons" data-action="click->sliding-effect#closeCard"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
 
-      <p class="task-icons"><i class="<%= task.status === "Complete" ? "fa-solid" : "fa-regular" %> fa-circle-check btn px-0 border-0" data-sliding-effect-target="checkbox" data-action="click->sliding-effect#toggleCheckbox"></i></p>
+      <%= render "tasks/checkbox", task: task %>
 
       <p class="task-icons"><%= link_to task_path(@task), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
         <i class="fa-regular fa-trash-can text-dark"></i>

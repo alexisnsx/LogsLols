@@ -8,21 +8,33 @@ export default class extends Controller {
     this.handleDocumentClick = this.handleDocumentClick.bind(this)
   }
 
-  async addNewTask() {
-    this.newcontentTarget.classList.toggle("active")
+  // when clicking on the button
+  // pop up appears
+  // create form appears
+
+  openCreate() {
+    this.newcontentTarget.classList.add("active")
+
     const url = '/tasks/new'
-
-    const response = await fetch(url, {
-      headers: { 'Accept': 'text/plain'
-      }
-    });
-
-    const newContent = await response.text();
-    this.newcontentTarget.innerHTML = newContent
-    // document.addEventListener("click", this.handleDocumentClick);
+    fetch(url, {
+      headers: { 'Accept': 'text/plain' }
+    })
+    .then(response => response.text())
+    .then((data) => {
+      this.newcontentTarget.innerHTML = data ;
+      document.addEventListener("click", this.handleDocumentClick);
+    })
   }
 
-  send(e) {
+
+  closeCreate() {
+    this.newcontentTarget.classList.remove("active")
+  }
+
+  // listens to submit button on form
+  // prevents default action
+
+  submit(e) {
     e.preventDefault()
     fetch(this.formTarget.action, {
       method: "POST",
@@ -31,15 +43,17 @@ export default class extends Controller {
     })
     .then(response => response.json())
     .then((data) => {
-      this.formTarget.outerHTML = data.form
-      this.newcontentTarget.classList.remove("active")
 
       if (data.inserted_item) {
         this.insertformTarget.insertAdjacentHTML("afterbegin", data.inserted_item)
+        this.newcontentTarget.classList.remove("active")
       }
+      this.formTarget.outerHTML = data.form
     })
   }
 
+
+  // to close the card anywhere on the page
 
   close() {
     this.newcontentTarget.classList.remove("active")
