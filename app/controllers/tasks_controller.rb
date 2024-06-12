@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: [ :show, :edit, :update, :destroy, :completion ]
+  before_action :set_task, only: [ :show, :edit, :update, :destroy, :original, :completion ]
 
   def index
     @tasks = current_user.tasks
@@ -36,6 +36,16 @@ class TasksController < ApplicationController
     end
   end
 
+  def original
+    tasks = Task.all
+    @index = tasks.index(@task)
+    respond_to do |format|
+      format.html
+      # format.text { render plain: 'test' }
+      format.text { render partial: 'tasks/task', locals: { task: @task, index: @index }, formats: [:html] }
+    end
+  end
+
   def edit
     respond_to do |format|
       format.html
@@ -50,7 +60,8 @@ class TasksController < ApplicationController
       if @task.update(task_params.except(:documents))
         @task.documents.attach(task_params[:documents])
         format.html { redirect_to root_path }
-        format.text { render partial: "tasks/task", locals: { task: @task, index: @index }, formats: [:html] }
+        format.json
+        # format.json { render partial: "tasks/task", locals: { task: @task, index: @index }, formats: [:html] }
       end
     end
   end
