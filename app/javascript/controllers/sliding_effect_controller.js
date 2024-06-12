@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="sliding-effect"
 export default class extends Controller {
-  static targets = ["content", "checkbox", "form"]
+  static targets = ["content", "checkbox", "form", "tasks"]
   static values = { id: String };
 
   connect() {
@@ -146,39 +146,25 @@ export default class extends Controller {
 
     })
   }
-    // if (event.currentTarget.className.contains('fa-regular')) {
-    //   event.currentTarget.className = event.currentTarget.className.replace('fa-regular', 'fa-solid')
-    //   const url = `/tasks/${this.idValue}/complete`
-    //   fetch(url, {
-    //     method: 'PATCH',
-    //     headers: {
-    //       "X-CSRF-Token": this.csrfToken,
-    //       "Accept": "application/json"
-    //     }
-    //   })
-    // } else {
-    //   event.currentTarget.className = event.currentTarget.className.replace('fa-solid', 'fa-regular')
-    //   const url = `/tasks/${this.idValue}/incomplete`
-    //   fetch(url, {
-    //     method: 'PATCH',
-    //     headers: {
-    //       "X-CSRF-Token": this.csrfToken,
-    //       "Accept": "application/json"
-    //     }
-    //   })
-    // }
 
+  delete(event) {
+    event.preventDefault()
+    if(confirm('Are you sure')) {
+      const eventTarget = event.currentTarget
+      const url = `/tasks/${this.idValue}`
+      fetch(url, {
+        method: 'DELETE',
+        headers: {
+          "X-CSRF-Token": this.csrfToken,
+          "Accept": "text/plain"
+        }
+      })
+      .then(response => response.text())
+      .then((data) => {
+        const toDelete = eventTarget.closest(`#task-${this.idValue}`);
+        toDelete.parentElement.removeChild(toDelete)
+        document.body.insertAdjacentHTML("beforeend", data)
+      })
+    }
+  }
 }
-
-// ideally toggling open/close should have 2 controllers so that the method isn't too long / confusing
-
-// should do the togglecheckbox on the backend instead
-// checking the backend status if it is 'completed' or 'incomplete'
-// checking on the backend is better than being dependant on a class name.
-// backend should get the data to check if it's working or not
-// ideally the response should bring back the partial so that we can replace the icon on front end.
-// innerHTML.replace('fa-regular', 'fa-solid')
-// original content.replace('fa-regular', 'fa-solid')
-
-
-// get task.status value from fronted
