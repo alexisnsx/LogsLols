@@ -8,51 +8,57 @@ export default class extends Controller {
     console.log("connected!");
   }
 
-  generateResponse(event) {
+  noStreamingResponse(event) {
     event.preventDefault()
-    this.#createLabel('you')
-    this.#createMessage(this.promptTarget.value)
-    this.#createLabel('assistant')
-    this.currentContent = this.#createMessage("")
-    this.#setupEventSource()
-    this.promptTarget.value = ""
+    const url = `/conversation_responses?prompt=${this.promptTarget.value}`
+    fetch(url)
   }
 
-  #createLabel(text) {
-    const label = document.createElement('strong')
-    label.innerText = `${text}`
-    this.responseTarget.appendChild(label)
-  }
+  // generateResponse(event) {
+  //   event.preventDefault()
+  //   this.#createLabel('you')
+  //   this.#createMessage(this.promptTarget.value)
+  //   this.#createLabel('assistant')
+  //   this.currentContent = this.#createMessage("")
+  //   this.#setupEventSource()
+  //   this.promptTarget.value = ""
+  // }
 
-  #createMessage(text) {
-    const contentElement = document.createElement('p') // pre element preserves spaces and line breaks
-    contentElement.classList.add('text-break')
-    contentElement.innerText = `${text}`
-    this.responseTarget.appendChild(contentElement)
-    return contentElement
-  }
+  // #createLabel(text) {
+  //   const label = document.createElement('strong')
+  //   label.innerText = `${text}`
+  //   this.responseTarget.appendChild(label)
+  // }
 
-  #setupEventSource() {
-    this.eventSource = new EventSource(`/conversation_responses?prompt=${this.promptTarget.value}`)
-    this.eventSource.addEventListener("message", this.#handleMessage.bind(this))
-    this.eventSource.addEventListener("error", this.#handleError.bind(this)) // we get this error event automatically once the server closes the connection
-  }
+  // #createMessage(text) {
+  //   const contentElement = document.createElement('p') // pre element preserves spaces and line breaks
+  //   contentElement.classList.add('text-break')
+  //   contentElement.innerText = `${text}`
+  //   this.responseTarget.appendChild(contentElement)
+  //   return contentElement
+  // }
 
-  #handleMessage(event) {
-    const parsedData = JSON.parse(event.data)
-    this.currentContent.innerHTML += parsedData.message
-    this.responseTarget.scrollTop = this.responseTarget.scrollHeight
-  }
+  // #setupEventSource() {
+  //   this.eventSource = new EventSource(`/conversation_responses?prompt=${this.promptTarget.value}`)
+  //   this.eventSource.addEventListener("message", this.#handleMessage.bind(this))
+  //   this.eventSource.addEventListener("error", this.#handleError.bind(this)) // we get this error event automatically once the server closes the connection
+  // }
 
-  #handleError(event) {
-    if (event.eventPhase === EventSource.CLOSED) { // check that the server really did close the connection
-      this.eventSource.close() // then close the eventsource on the client
-    }
-  }
+  // #handleMessage(event) {
+  //   const parsedData = JSON.parse(event.data)
+  //   this.currentContent.innerHTML += parsedData.message
+  //   this.responseTarget.scrollTop = this.responseTarget.scrollHeight
+  // }
 
-  disconnect() {
-    if (this.eventSource) { // if event source somehow still open, close it!!
-      this.eventSource.close()
-    }
-  }
+  // #handleError(event) {
+  //   if (event.eventPhase === EventSource.CLOSED) { // check that the server really did close the connection
+  //     this.eventSource.close() // then close the eventsource on the client
+  //   }
+  // }
+
+  // disconnect() {
+  //   if (this.eventSource) { // if event source somehow still open, close it!!
+  //     this.eventSource.close()
+  //   }
+  // }
 }

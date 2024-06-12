@@ -11,20 +11,15 @@ class GroqchatService
 
   class CompletionStream < GroqchatService
     def calling
-      reply = client.chat([
-        {role: "user", content: "What's the next day after Wednesday?"},
-        {role: "assistant", content: "The next day after Wednesday is Thursday."},
-        {role: "user", content: "What's the next day after that?"}
-      ])
-      puts reply
+      llama8b_client.chat("Hello, world!")
     end
 
-    def call
-      @client.chat(messages) do |content|
-        print content
-      end
-      puts
-    end
+    # def call
+    #   @client.chat(messages) do |content|
+    #     print content
+    #   end
+    #   puts
+    # end
 
   end
 
