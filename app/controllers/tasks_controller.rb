@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: [ :show, :edit, :update, :destroy, :complete, :incomplete, :completion ]
+  before_action :set_task, only: [ :show, :edit, :update, :destroy, :completion ]
 
   def index
     @tasks = current_user.tasks
@@ -70,21 +70,17 @@ class TasksController < ApplicationController
   end
 
   def destroy
-    @task.destroy
-    flash[:alert] = "'#{@task.title}' deleted!"
-    redirect_to root_path, status: :see_other
-  end
-
-  def complete
-    @task.update(status: 'Complete')
-    # flash[:notice] = "'#{@task.title}' marked as complete"
-    render status: 200, json: { message: 'OK'}
-  end
-
-  def incomplete
-    @task.update(status: 'Incomplete')
-    # flash[:notice] = "'#{@task.title}' marked as incomplete"
-    render status: 200, json: { message: 'OK'}
+    notice = @task.title
+    respond_to do |format|
+      if @task.destroy
+        # head :ok
+        format.html
+        format.text { render partial: "notice", locals: { notice: notice }, formats: [:html]}
+      else
+        format.html { render partial: 'index', status: :unprocessable_entity }
+        format.json
+      end
+    end
   end
 
   def get_tasks_due

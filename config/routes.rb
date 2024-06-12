@@ -12,8 +12,6 @@ Rails.application.routes.draw do
   resources :tasks do
     resources :reminders, only: [ :create]
     member do
-      patch :complete
-      patch :incomplete
       patch :completion
     end
   end
