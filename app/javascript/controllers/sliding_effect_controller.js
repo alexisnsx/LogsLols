@@ -7,67 +7,73 @@ export default class extends Controller {
 
   connect() {
     this.originalContent = this.contentTarget.innerHTML
-    this.isOriginal = true
     this.handleDocumentClick = this.handleDocumentClick.bind(this)
     this.csrfToken = document.head.querySelector("[name~=csrf-token][content]").content;
   }
 
-  async toggleSlide() {
-    this.contentTarget.classList.toggle("active");
+  // showing more details of the card
+  // when pressing the button on the small card,
+  // document add class of active to make it bigger
+  // document fetches the new display to display.
+
+
+  openCard() {
+    this.contentTarget.classList.add("active")
+
     const url = `/tasks/${this.idValue}`
-
-    if (this.isOriginal) {
-      try {
-        const response = await fetch(url , {
-          headers: { 'Accept': 'text/plain'
-          }
-        });
-        if (response.ok) {
-          const newContent = await response.text();
-          this.contentTarget.innerHTML = newContent
-          // TODO: find a way to scroll this shit
-        } else {
-          console.error("Failed to load new content");
-        }
-      } catch (error) {
-        console.error("Error fetching new content", error);
-      }
-    } else {
-      this.contentTarget.innerHTML = this.originalContent;
-    }
+    fetch (url, { headers: {
+      "Accept": "text/plain" },
+    })
+    .then(response => response.text())
+    .then((data) => {
+      this.contentTarget.innerHTML = data
+      // console.log(data);
+    })
     document.addEventListener("click", this.handleDocumentClick);
-    this.isOriginal = !this.isOriginal;
-
-    console.log(this.originalContent);
   }
 
-  async loadEdit() {
-    this.contentTarget.classList.toggle("active");
+  // press the button on the form itself
+  // card should be able to close
+  // card should go back to original content
+
+  closeCard() {
+    this.contentTarget.classList.remove("active")
+    this.contentTarget.innerHTML = this.originalContent
+  }
+
+  // load edit page
+  // press the icon, card should zoom in
+  // fetch form from edit and display on the card.
+
+  openEdit() {
+    this.contentTarget.classList.add("active")
+
     const url = `/tasks/${this.idValue}/edit`
-
-    if (this.isOriginal) {
-      try {
-        const response = await fetch(url , {
-          headers: { 'Accept': 'text/plain'
-          }
-        });
-        if (response.ok) {
-          const newContent = await response.text();
-          this.contentTarget.innerHTML = newContent
-        } else {
-          console.error("Failed to load new content");
-        }
-      } catch (error) {
-        console.error("Error fetching new content", error);
-      }
-    } else {
-      this.contentTarget.innerHTML = this.originalContent;
-    }
+    fetch (url, { headers: {
+      "Accept": "text/plain" },
+    })
+    .then(response => response.text())
+    .then((data) => {
+      this.contentTarget.innerHTML = data
+    })
     document.addEventListener("click", this.handleDocumentClick);
-    this.isOriginal = !this.isOriginal;
   }
 
-  send(e) {
+  // close edit form by pressing the arrow button on the inside
+  // card should minimize
+  // card should go back to original content
+
+  closeEdit() {
+    this.contentTarget.classList.remove("active")
+    this.contentTarget.innerHTML = this.originalContent
+  }
+
+  // update the form once it is edited
+  // need to listen to submit and fetch the patch details
+  // update form accordingly
+  // update this.originalContent so that form remains the same no matter what.
+
+  update(e) {
     e.preventDefault()
     fetch(this.formTarget.action, {
       method: 'PATCH',
@@ -78,9 +84,14 @@ export default class extends Controller {
     })
     .then(response => response.text())
     .then((data) => {
-      this.contentTarget.outerHTML = data
+      this.contentTarget.classList.remove("active")
+      this.contentTarget.innerHTML = data
+      // this.contentTarget.outerHTML = data
+      this.originalContent = data
     })
   }
+
+  // brings you to edit form from 'more details' page
 
   async changeEdit() {
     console.log("changed");
@@ -93,6 +104,9 @@ export default class extends Controller {
     const newContent = await response.text();
     this.contentTarget.innerHTML = newContent
   }
+
+
+  // to close the card anywhere on the page
 
   close() {
     this.contentTarget.classList.remove("active")
@@ -112,6 +126,9 @@ export default class extends Controller {
     this.contentTarget.innerHTML = this.originalContent
   }
 
+  // to make sure check box is corrected
+  // need to replace from this.originalContent too
+  
   toggleCheckbox(event) {
     const url = `/tasks/${this.idValue}/completion`
     fetch(url, {

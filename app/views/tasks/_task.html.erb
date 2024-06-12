@@ -1,18 +1,18 @@
-<div class="tasks-cards d-flex flex-column position-absolute top-0 <%= index % 3 === 0 ? "start-0": "end-0" %>" data-sliding-effect-target="content">
+
   <div class="flex-grow-1 px-1">
     <div class="d-flex align-items-center mb-2">
       <p class="tasks-date m-0 flex-grow-1">Due: <%= task.due_date %></p>
       <% if task.reminder_datetime %>
         <i class="fa-regular fa-bell fs-5"></i>
       <% end %>
-      <p class="task-icons" data-action="click->sliding-effect#toggleSlide"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
+      <p class="task-icons" data-action="click->sliding-effect#openCard"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
 
     </div>
 
     <div class="task-font-size px-2">
       <h2><%= task.title %></h2>
 
-      <p class= "mt-2"><%= task.description.truncate(65) %></p>
+      <p class= "mt-2"><%= task.description.truncate(50) %></p>
     </div>
   </div>
 
@@ -37,7 +37,7 @@
     <p class="task-icons"><%= link_to task_path(task), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
       <i class="fa-regular fa-trash-can text-dark"></i>
     <% end %></p>
-    <p data-action="click->sliding-effect#loadEdit" class="task-icons"><i class="fa-regular fa-pen-to-square"></i></p>
+    <p data-action="click->sliding-effect#openEdit" class="task-icons"><i class="fa-regular fa-pen-to-square"></i></p>
 
   </div>
-</div>
+

@@ -3,7 +3,7 @@
   <div class="container-fluid">
     <div class="row">
       <%# left side comprising of chat and spotify %>
-      <div class="col-4 left-column gap-3 border vh-100 sticky-top">
+      <div class="col-4 left-column gap-3 vh-100 sticky-top">
         <%# chatbot %>
         <div class="d-flex flex-column align-items-start">
           <div class="d-flex justify-content-around chat-wrapper mb-2">
@@ -19,12 +19,12 @@
       </div>
 
       <%# right side for tasks cards %>
-      <div class="col-8 border border-success" data-controller="new-task">
+      <div class="col-8" data-controller="new-task">
         <div class="row">
           <div class="mt-4 position relative home-icons col-1 d-flex flex-column align-items-center justify-content-start">
             <p><i class="fa-regular fa-calendar fs-3"></i></p>
             <p><i class="fa-solid fa-chalkboard fs-3"></i></p>
-            <p data-action="click->new-task#addNewTask"><i class="fa-regular fa-square-plus fs-3"></i></p>
+            <p data-action="click->new-task#openCreate"><i class="fa-regular fa-square-plus fs-3"></i></p>
             <div class="new-task popup" data-new-task-target="newcontent">
             </div>
           </div>
