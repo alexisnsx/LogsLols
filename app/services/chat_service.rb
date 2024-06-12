@@ -66,7 +66,6 @@ class ChatService
   end
 
   class GroqCompletionStream < ChatService
-    # Consider refactor using https://github.com/drnic/groq-ruby
     def initialize(prompt:, response:)
       @prompt = prompt
       @response = response
