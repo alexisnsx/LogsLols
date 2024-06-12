@@ -60,7 +60,7 @@ class TasksController < ApplicationController
       if @task.update(task_params.except(:documents))
         @task.documents.attach(task_params[:documents])
         format.html { redirect_to root_path }
-        format.json 
+        format.json
         # format.json { render partial: "tasks/task", locals: { task: @task, index: @index }, formats: [:html] }
       end
     end
@@ -81,9 +81,17 @@ class TasksController < ApplicationController
   end
 
   def destroy
-    @task.destroy
-    flash[:alert] = "'#{@task.title}' deleted!"
-    redirect_to root_path, status: :see_other
+    notice = @task.title
+    respond_to do |format|
+      if @task.destroy
+        # head :ok
+        format.html
+        format.text { render partial: "notice", locals: { notice: notice }, formats: [:html]}
+      else
+        format.html { render partial: 'index', status: :unprocessable_entity }
+        format.json
+      end
+    end
   end
 
   def get_tasks_due
