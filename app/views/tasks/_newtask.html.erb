@@ -1,6 +1,6 @@
-<div id="task-<%= task.id %>" class="col-4 d-flex justify-content-center mb-1">
-    <div class="task position-relative" data-controller="sliding-effect" data-sliding-effect-id-value="<%= task.id %>">
-      <div class="tasks-cards d-flex flex-column position-absolute top-0 <%= index % 3 === 0 ?  "start-0": "end-0" %>" data-sliding-effect-target="content">
+<div class="col-4 d-flex justify-content-center mb-1 <%= task.status === "due" && "task-due" %>">
+    <div class="task position-relative">
+      <div data-id="<%= task.id %>" data-task-cards-target="content" class="tasks-cards d-flex flex-column position-absolute top-0 <%= index % 3 === 0 ? "start-0": "end-0" %>">
         <%= render "tasks/task", task: task, index: index %>
       </div>
     </div>
