@@ -108,7 +108,10 @@ class GroqchatService
   end
 
   def tavily_search
-    url = "https://api.tavily.com/"
+    url = "https://api.tavily.com/search"
+    # travily needs the base url as a fetch reponse with the nested requirements in the json body. 
+
+
   end
 
   def tools
