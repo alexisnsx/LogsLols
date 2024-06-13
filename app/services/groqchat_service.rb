@@ -45,8 +45,8 @@ class GroqchatService
 
       first_reply = llama70b_client.chat(messages, tools: tools)
 
-      # Catch malformed first_reply i.e. no content and no tool calls e.g.{"role"=>""}, {"role"=>"assistant", "content"=>"<tool-use>{}</tool-use>"}. StandardError triggers RescueStream
-      if first_reply.nil? || !first_reply.include?("content" && "tool_calls") || first_reply["content"].include?("<tool-use>")
+      # Catch malformed first_reply i.e. no content and no tool calls e.g.{"role"=>""}, {"role"=>"assistant", "content"=>"<tool-use>{}</tool-use>"}, ool-use//{ "tool_calls": [ { "id": "pending", "type": "function", "function": { "name": "get_weather_report" }, "parameters": { "city": "romance" } } ]}</tool-use>. StandardError triggers RescueStream
+      if (first_reply.nil? || !first_reply.include?("content") || first_reply["content"].include?("tool-use")) && !first_reply.include?("tool_calls")
         raise StandardError
       end
 
@@ -96,7 +96,7 @@ class GroqchatService
     end
 
     def call
-      rescue_msg = "Great question! As I am still developing, I may not have understood your question. Could you try rephrasing?"
+      rescue_msg = "Great question! As I am still a young LLM, I may not be able to answer your question or I sometimes get stuck. Could you try rephrasing or ask another question instead?"
       stream_direct(@response, rescue_msg)
     end
   end
