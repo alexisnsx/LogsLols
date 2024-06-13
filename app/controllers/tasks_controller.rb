@@ -2,7 +2,14 @@ class TasksController < ApplicationController
   before_action :set_task, only: [ :show, :edit, :update, :destroy, :original, :completion ]
 
   def index
+    @tasks = Task.all
     @tasks = current_user.tasks
+    @query = params[:search]
+    if query.present?
+      @tasks = Task.text_search(query)
+    else
+      @tasks = Task.all
+    end
   end
 
   def show
@@ -105,6 +112,27 @@ class TasksController < ApplicationController
 
     @tasks.update_all(reminder_datetime: nil)
     head :ok
+  end
+
+  def search
+    @query = params[:q]
+    @tasks = Task.search_full_text(@query)
+
+    render json: {
+      task_cards: render_to_string(
+        partial: 'tasks/index',
+        locals: { tasks: @tasks },
+        formats: [:html]
+      )
+    }
+    # @tasks = Task.where("description ILIKE ?", "%#{@query}%")
+    # render json: {
+    #   task_cards: render_to_string(
+    #     partial: 'tasks/index',
+    #     locals: { tasks: @tasks },
+    #     formats: [:html]
+    #   )
+    # }
   end
 
   private
