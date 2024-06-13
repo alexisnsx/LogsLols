@@ -42,31 +42,32 @@ class GroqchatService
           )),
         U(@prompt)
       ]
-      first_reply = llama70b_client.chat(messages, tools: tools)
+      first_reply = llama8b_client.chat(messages, tools: tools)
       first_reply = first_reply.symbolize_keys
       pp "--------------This is the first reply:---------------"
       pp first_reply
-      messages << first_reply
+
+      return stream_response(@response, messages) if !first_reply.include?(:tool_calls)
+
+      tool_call_id = first_reply[:tool_calls].first["id"]
+      func = first_reply[:tool_calls].first["function"]["name"]
+      args = first_reply[:tool_calls].first["function"]["arguments"]
+      args = JSON.parse(args).symbolize_keys
       tool_response = ""
 
-      if first_reply.include?(:tool_calls)
-        tool_call_id = first_reply[:tool_calls].first["id"]
-        func = first_reply[:tool_calls].first["function"]["name"]
-        args = first_reply[:tool_calls].first["function"]["arguments"]
-        args = JSON.parse(args).symbolize_keys
-        case func
-        when "get_weather_report"
-          begin
-            tool_response = get_weather_report(**args)
-            messages << T(tool_response, tool_call_id: tool_call_id, name: func)
-            stream_response(@response, messages)
-          rescue => e
-            puts "An error occurred: #{e.message}"
-            stream_response(@response, messages)
-          end
+      return stream_response(@response, messages) if !tools.include?(func)
+
+      messages << first_reply
+      case func
+      when "get_weather_report"
+        begin
+          tool_response = get_weather_report(**args)
+          messages << T(tool_response, tool_call_id: tool_call_id, name: func)
+          stream_response(@response, messages)
+        rescue => e
+          puts "An error occurred: #{e.message}"
+          stream_response(@response, messages)
         end
-      else
-        stream_response(@response, messages)
       end
     end
   end
@@ -77,7 +78,7 @@ class GroqchatService
     sse = SSE.new(response.stream, event: "message")
     metadata = ""
     begin
-    mixtral7b_client.chat(messages, stream: ->(chunk, response) {
+      llama8b_client.chat(messages, stream: ->(chunk, response) {
       unless chunk == nil
         sse.write({ message: chunk })
       else
@@ -135,6 +136,10 @@ class GroqchatService
 
   def mixtral7b_client
     @_mixtral7b_client ||= Groq::Client.new(api_key: ENV["GROQ_API_KEY"], model_id: "mixtral-8x7b-32768")
+  end
+
+  def llama8b_client
+    @_llama8b_client ||= Groq::Client.new(api_key: ENV["GROQ_API_KEY"], model_id: "llama3-8b-8192")
   end
 
   def llama70b_client
