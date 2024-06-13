@@ -107,6 +107,10 @@ class GroqchatService
     tool_response
   end
 
+  def tavily_search
+    url = "https://api.tavily.com/"
+  end
+
   def tools
     [{
       type: "function",
