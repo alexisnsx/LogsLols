@@ -104,6 +104,18 @@ class TasksController < ApplicationController
     head :ok
   end
 
+  def search
+    @query = params[:q]
+    @tasks = Task.where("title ILIKE ?", "%#{@query}%")
+    render json: {
+      task_cards: render_to_string(
+        partial: 'tasks/index',
+        locals: { tasks: @tasks },
+        formats: [:html]
+      )
+    }
+  end
+
   private
 
   def set_task

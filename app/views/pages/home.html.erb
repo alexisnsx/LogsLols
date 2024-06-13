@@ -1,7 +1,7 @@
 <%# main row for the entire page %>
 <div class="d-flex justify-content-center px-2">
   <div class="container-fluid">
-    <div class="row">
+    <div class="row" data-controller="text-search">
       <%# left side comprising of chat and spotify %>
       <div class="col-4 left-column gap-3 vh-100 sticky-top">
         <%# chatbot %>
@@ -20,21 +20,24 @@
 
       <%# right side for tasks cards %>
       <div class="col-8" data-controller="new-task">
-        <div class="row">
-          <div class="mt-4 position relative home-icons col-1 d-flex flex-column align-items-center justify-content-start">
-            <p><i class="fa-regular fa-calendar fs-3"></i></p>
-            <p><i class="fa-solid fa-chalkboard fs-3"></i></p>
-            <p data-action="click->new-task#openCreate"><i class="fa-regular fa-square-plus fs-3"></i></p>
-            <div class="new-task popup" data-new-task-target="newcontent">
-            </div>
-          </div>
-
-          <div class="col-11">
-            <div class="row" data-new-task-target="insertform">
-              <%= render 'tasks/index', tasks: @tasks %>
-            </div>
+      <form class="form-inline my-2 my-lg-0" action="<%= search_path %>" method="get">
+        <input class="form-control mr-sm-2" type="search" placeholder="Text search" aria-label="Search" name="texts"  data-action="keyup->text-search#searchTask" data-text-search-target="search">
+      </form>
+      <div class="row">
+        <div class="mt-4 position relative home-icons col-1 d-flex flex-column align-items-center justify-content-start">
+          <p><i class="fa-regular fa-calendar fs-3"></i></p>
+          <p><i class="fa-solid fa-chalkboard fs-3"></i></p>
+          <p data-action="click->new-task#openCreate"><i class="fa-regular fa-square-plus fs-3"></i></p>
+          <div class="new-task popup" data-new-task-target="newcontent">
           </div>
         </div>
+
+        <div class="col-11">
+          <div class="row" data-new-task-target="insertform" data-text-search-target="results">
+            <%= render 'tasks/index', tasks: @tasks %>
+          </div>
+        </div>
+      </div>
       </div>
 
 

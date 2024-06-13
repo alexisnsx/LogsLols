@@ -6,4 +6,12 @@ class Task < ApplicationRecord
   validates :title, presence: true
   validates :status, inclusion: { in: STATUS }
   validates :priority, inclusion: { in: PRIORITY }
+
+  def self.search(query)
+    if query.present?
+      where('title LIKE ? OR content LIKE ?', "%#{task}%")
+    else
+      all
+    end
+  end
 end
