@@ -1,16 +1,16 @@
 
-  <div class="flex-grow-1 px-1">
+  <div class="card-wrapper flex-grow-1 px-1">
     <div class="d-flex align-items-center mb-2">
       <p class="tasks-date m-0 flex-grow-1">Due: <%= task.due_date %></p>
       <% if task.reminder_datetime %>
         <i class="fa-regular fa-bell fs-5"></i>
       <% end %>
-      <p class="task-icons" data-action="click->sliding-effect#openCard"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
+      <p class="task-icons" data-action="click->task-cards#openCard"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
 
     </div>
 
     <div class="task-font-size px-2">
-      <h2><%= task.title %></h2>
+      <h2 class="task-header"><%= task.title %></h2>
 
       <p class= "mt-2"><%= task.description.truncate(50) %></p>
     </div>
@@ -33,11 +33,10 @@
       <% end %>
     </div>
 
-    <p class="task-icons"><i class="<%= task.status === "Complete" ? "fa-solid" : "fa-regular" %> fa-circle-check btn px-0 border-0" data-sliding-effect-target="checkbox" data-action="click->sliding-effect#toggleCheckbox" data-sliding-effect-status-value="<%= task.status %>"></i></p>
-    <p class="task-icons"><%= link_to task_path(task), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } do %>
+    <p class="task-icons"><i class="<%= task.status === "Complete" ? "fa-solid" : "fa-regular" %> fa-circle-check btn px-0 border-0" data-task-cards-target="checkbox" data-action="click->task-cards#toggleCheckbox" data-task-cards-status-value="<%= task.status %>"></i></p>
+    <p class="task-icons"><%= link_to task_path(task), data: { turbo: false, turbo_method: :delete, turbo_confirm: "Are you sure?", action: "click->task-cards#delete" } do %>
       <i class="fa-regular fa-trash-can text-dark"></i>
     <% end %></p>
-    <p data-action="click->sliding-effect#openEdit" class="task-icons"><i class="fa-regular fa-pen-to-square"></i></p>
+    <p data-action="click->task-cards#openEdit" class="task-icons"><i class="fa-regular fa-pen-to-square"></i></p>
 
   </div>
-

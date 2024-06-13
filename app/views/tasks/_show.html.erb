@@ -20,9 +20,11 @@
       </div>
 
       <h1><%= @task.title %></h1>
-      <p><%= @task.description %></p>
+      <div class="task-description overflow-auto">
+        <p><%= @task.description %></p>
+      </div>
 
-      <div class="row">
+      <div class="row position-fixed bottom-0 mb-4">
       <% @task.documents.each do |doc| %>
         <% url = cloudinary_url(doc.key) %>
         <% image_url = url.sub('/upload/', '/upload/f_jpg/') %>
@@ -36,7 +38,7 @@
     </div>
 
     <div class="col-1 d-flex flex-column justify-content-end">
-      <p class="task-icons" data-action="click->sliding-effect#closeCard"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
+      <p class="task-icons" data-action="click->task-cards#closeCard"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
 
       <%= render "tasks/checkbox", task: task %>
 
@@ -44,7 +46,7 @@
         <i class="fa-regular fa-trash-can text-dark"></i>
       <% end %></p>
 
-      <p data-action="click->sliding-effect#changeEdit" class="task-icons"><i class="fa-regular fa-pen-to-square"></i></p>
+      <p data-action="click->task-cards#openEdit" class="task-icons"><i class="fa-regular fa-pen-to-square"></i></p>
     </div>
   </div>
 </div>

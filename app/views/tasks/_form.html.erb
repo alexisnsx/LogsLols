@@ -1,8 +1,6 @@
   <%= simple_form_for @task,
     data: {
-        new_task_target: "form",
-        sliding_effect_target: "form",
-        action: ("submit->new-task#submit submit->sliding-effect#update")
+        action: ("submit->task-cards#submit")
     } do |f| %>
 
     <%= f.input :title, label: "name of task" %>
@@ -33,14 +31,16 @@
 
     <%= f.input :documents, as: :file, input_html: { multiple: true }, label: "upload documents (press ctrl when selecting multiple files)" %>
 
-    <%= f.input :status, as: :boolean, checked_value: 'Completed', unchecked_value: 'Incomplete', collection: Task::STATUS, label: "completed?" %>
+    <div class="d-none">
+      <%= f.input :status, as: :radio_buttons, collection: Task::STATUS, input_html: { class: "d-none", data: { "task-cards-target": "status" }} %>
+    </div>
 
     <div class="d-flex justify-content-between align-items-center">
       <%= f.submit class:"btn btn-primary mt-3" %>
         <% if @task.persisted? %>
-      <p data-action="click->sliding-effect#closeEdit" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
+      <p data-action="click->task-cards#closeEdit" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
       <% else %>
-        <p data-action="click->new-task#closeCreate" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
+        <p data-action="click->task-cards#closeCreate" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
       <% end %>
     </div>
   <% end %>

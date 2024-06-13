@@ -1,5 +1,5 @@
 <div class="reminders">
   <% reminders.each do |task| %>
-    <%= render 'shared/flashes', notice: "This task_titles is due: #{task.title}"%>
+    <%= render 'shared/flashes', notice: "This #{task.title} is due: "%>
   <% end %>
 </div>
