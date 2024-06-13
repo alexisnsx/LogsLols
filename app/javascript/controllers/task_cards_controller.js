@@ -119,6 +119,10 @@ closeEdit(e) {
 
 toggleCheckbox(e) {
   const cardActive = e.currentTarget.closest('div[data-id]')
+  const id = cardActive.dataset.id
+  const eventTarget = e.currentTarget
+  // console.log(e.currentTarget.outerHTML);
+  // take event target closest div = checkbox.
   const url = `/tasks/${cardActive.dataset.id}/completion`
   fetch(url, {
     method: 'PATCH',
@@ -129,7 +133,9 @@ toggleCheckbox(e) {
   })
   .then(response => response.text())
   .then((data) => {
-    this.checkboxTarget.outerHTML = data
+    const toUpdate = eventTarget.closest('.task-icons')
+    toUpdate.outerHTML = data
+    // cardActive.innerHTML = this.getOriginalContent(id, cardActive)
   })
 }
 
