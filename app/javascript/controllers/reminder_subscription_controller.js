@@ -24,13 +24,13 @@ export default class extends Controller {
         }
       }
     )
-    setInterval(()=>{
-      fetch("/get_tasks_due", {
-        headers: {
-          Accept: "application/json",
-        }
-      });
-    }, 10000);
+    // setInterval(()=>{
+    //   fetch("/get_tasks_due", {
+    //     headers: {
+    //       Accept: "application/json",
+    //     }
+    //   });
+    // }, 10000);
   }
 
   disconnect() {

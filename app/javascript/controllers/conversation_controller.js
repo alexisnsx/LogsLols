@@ -6,6 +6,7 @@ export default class extends Controller {
 
   connect() {
     console.log("connected!");
+    this.csrfToken = document.head.querySelector("[name~=csrf-token][content]").content;
   }
 
   generateResponse(event) {
@@ -29,6 +30,7 @@ export default class extends Controller {
     contentElement.classList.add('text-break')
     contentElement.innerText = `${text}`
     this.responseTarget.appendChild(contentElement)
+    this.responseTarget.scrollTop = this.responseTarget.scrollHeight
     return contentElement
   }
 
