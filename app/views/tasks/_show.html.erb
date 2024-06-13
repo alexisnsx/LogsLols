@@ -20,9 +20,11 @@
       </div>
 
       <h1><%= @task.title %></h1>
-      <p><%= @task.description %></p>
+      <div class="task-description overflow-auto">
+        <p><%= @task.description %></p>
+      </div>
 
-      <div class="row">
+      <div class="row position-fixed bottom-0 mb-4">
       <% @task.documents.each do |doc| %>
         <% url = cloudinary_url(doc.key) %>
         <% image_url = url.sub('/upload/', '/upload/f_jpg/') %>
