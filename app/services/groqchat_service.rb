@@ -107,30 +107,38 @@ class GroqchatService
     tool_response
   end
 
-  def tavily_search()
+  def tavily_search(query:)
     url = "https://api.tavily.com/search"
+    response = RestClient.post(url,
+      {
+        api_key: "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",
+        query:,
+        search_depth: "basic",
+        include_answer: true,
+        include_images: false,
+        include_raw_content: true,
+        max_results: 3,
+        include_domains: [],
+        exclude_domains: []
+      }.to_json,
+      {content_type: :json, accept: :json}
+    )
+    data = JSON.parse(response)
+    tool_response = 
+  end
+
+    # Restclient to look into their post request
     # travily needs the base url as a fetch reponse with the nested requirements in the json body.
-    {
-      "api_key": "ENV FILE",
-      "query": @prompt,
-      "search_depth": "basic",
-      "include_answer": false,
-      "include_images": false,
-      "include_raw_content": true,
-      "max_results": 3,
-      "include_domains": [],
-      "exclude_domains": []
-    }
 
   end
 
   def tools
-    [{
-      type: "function",
-      function: {
-        name: "get_weather_report",
-        description: "Get the weather report for a city",
-        parameters: {
+  [{
+    type: "function",
+    function: {
+      name: "get_weather_report",
+      description: "Get the weather report for a city",
+      parameters: {
         type: "object",
         properties: {
           city: {
@@ -139,22 +147,25 @@ class GroqchatService
           }
         },
         required: ["city"]
-        }
-      }
-    }, {
-      type: "function",
-      function: {
-        name: "tavily_search",
-        description: "Call this to search on the web and get the relevant information based on the query.",
-        parmeters: {
-          type: "object",
-          properties: {
-
-          }
-        }
       }
     }
-  ]
+  }, {
+    type: "function",
+    function: {
+      name: "tavily_search",
+      description: "Call this to search on the web and get the relevant information based on the query.",
+      parameters: {
+        type: "object",
+        properties: {
+          query: {
+            type: "string",
+            description: "The prompt you need to search the web for"
+          }
+        },
+        required: ["query"]
+      }
+    }
+  }]
 
   'You are a helpful assistant. Answer all questions to the best of your ability. Use the suite of tools provided if needed. You may not need to use tools for every query - the user may just want to chat!'
   end

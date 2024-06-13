@@ -1,7 +1,8 @@
   <%= simple_form_for @task,
-    data: {
+  data: {
         action: ("submit->task-cards#submit")
-    } do |f| %>
+    }
+    do |f| %>
 
     <%= f.input :title, label: "name of task" %>
 
