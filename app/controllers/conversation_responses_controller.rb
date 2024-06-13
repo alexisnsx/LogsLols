@@ -5,8 +5,13 @@ class ConversationResponsesController < ApplicationController
     response.headers['Content-Type'] = "text/event-stream"
     response.headers['Last-Modified'] = Time.now.httpdate
     prompt = params[:prompt]
-
     # Change this service whenever another is needed
-    GroqchatService::ToolUseStream.new(prompt: prompt, response: response).call
+    begin
+      GroqchatService::ToolUseStream.new(prompt: prompt, response: response).call
+    rescue StandardError => e
+      puts "An error occurred: #{e.message}"
+      GroqchatService::RescueStream.new(response: response).call
+    end
+
   end
 end
