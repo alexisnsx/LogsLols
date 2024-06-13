@@ -12,7 +12,7 @@ class Task < ApplicationRecord
   pg_search_scope :search_full_text, against: {
     title: 'A',
     description: 'B'
-  },using: {
+  }, using: {
     tsearch: { prefix: true }
   }
 end
