@@ -24,4 +24,5 @@ Rails.application.routes.draw do
   # if we would like for the url to be custom /logslols/username
   # get '*username', to: 'pages#home'
   get "get_tasks_due", to: "tasks#get_tasks_due"
+  get "search", to: "tasks#search"
 end
