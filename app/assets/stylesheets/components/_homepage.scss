@@ -42,11 +42,6 @@
   display: block;
 }
 
-.task {
-  width: 243px;
-  height: 230px;
-  margin: 10px;
-}
 
 .task-font-size > h2 {
   font-size: 24px;
@@ -54,6 +49,13 @@
 
 .task-font-size > p {
   font-size: 14px;
+}
+
+.task {
+  width: 243px;
+  height: 230px;
+  margin: 10px;
+  position: relative;
 }
 
 .tasks-cards {
@@ -65,8 +67,9 @@
   border-radius: 22px;
   transition: all 0.5s;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
+  position: absolute;
 
+}
 
 .tasks-date {
   font-size: 15px;
@@ -107,6 +110,13 @@
   border-radius: 25px;
   position: fixed;
   z-index: 10;
+  position: absolute;
+
+}
+
+.col-4:nth-child(3n) > .task > .tasks-cards {
+  position: absolute;
+  right: 0;
 }
 
 body {

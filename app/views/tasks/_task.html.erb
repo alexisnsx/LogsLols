@@ -10,7 +10,7 @@
     </div>
 
     <div class="task-font-size px-2">
-      <h2><%= task.title %></h2>
+      <h2><%= task.title.truncate(27) %></h2>
 
       <p class= "mt-2"><%= task.description.truncate(50) %></p>
     </div>

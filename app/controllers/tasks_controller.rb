@@ -37,12 +37,10 @@ class TasksController < ApplicationController
   end
 
   def original
-    tasks = Task.all
-    @index = tasks.index(@task)
     respond_to do |format|
       format.html
       # format.text { render plain: 'test' }
-      format.text { render partial: 'tasks/task', locals: { task: @task, index: @index }, formats: [:html] }
+      format.text { render partial: 'tasks/task', locals: { task: @task }, formats: [:html] }
     end
   end
 
@@ -54,8 +52,6 @@ class TasksController < ApplicationController
   end
 
   def update
-    tasks = Task.all
-    @index = tasks.index(@task)
     respond_to do |format|
       if @task.update(task_params.except(:documents))
         @task.documents.attach(task_params[:documents])
