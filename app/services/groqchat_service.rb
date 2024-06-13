@@ -55,18 +55,21 @@ class GroqchatService
       args = JSON.parse(args).symbolize_keys
       tool_response = ""
 
-      return stream_response(@response, messages) if !tools.include?(func)
-
-      messages << first_reply
-      case func
-      when "get_weather_report"
-        begin
-          tool_response = get_weather_report(**args)
-          messages << T(tool_response, tool_call_id: tool_call_id, name: func)
-          stream_response(@response, messages)
-        rescue => e
-          puts "An error occurred: #{e.message}"
-          stream_response(@response, messages)
+      if !tools.include?(func)
+        # add in new message for the bot to stop using tools
+        return stream_response(@response, messages)
+      else
+        messages << first_reply
+        case func
+        when "get_weather_report"
+          begin
+            tool_response = get_weather_report(**args)
+            messages << T(tool_response, tool_call_id: tool_call_id, name: func)
+            stream_response(@response, messages)
+          rescue => e
+            puts "An error occurred: #{e.message}"
+            stream_response(@response, messages)
+          end
         end
       end
     end
@@ -75,6 +78,8 @@ class GroqchatService
   private
 
   def stream_response(response, messages)
+    pp "------------These are the messages used to stream:-------------"
+    pp messages
     sse = SSE.new(response.stream, event: "message")
     metadata = ""
     begin
@@ -120,6 +125,8 @@ class GroqchatService
         }
       }
     }]
+
+
   end
 
   def models
