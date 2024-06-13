@@ -125,3 +125,12 @@ body {
   object-fit: fill;
   background-attachment: fixed;
 }
+
+.task-header {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
