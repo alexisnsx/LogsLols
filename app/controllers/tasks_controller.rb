@@ -3,6 +3,12 @@ class TasksController < ApplicationController
 
   def index
     @tasks = current_user.tasks
+    @query = params[:search]
+    if query.present?
+      @tasks = Task.text_search(query)
+    else
+      @tasks = Task.all
+    end
   end
 
   def show
@@ -109,7 +115,7 @@ class TasksController < ApplicationController
 
   def search
     @query = params[:q]
-    @tasks = Task.where("title ILIKE :query OR description ILIKE :query", query: "%#{@query}%")
+    @tasks = Task.where("LOWER(title) ILIKE :query OR LOWER(description) ILIKE :query", query: "%#{@query}%")
 
     render json: {
       task_cards: render_to_string(

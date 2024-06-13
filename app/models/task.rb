@@ -8,8 +8,8 @@ class Task < ApplicationRecord
   validates :priority, inclusion: { in: PRIORITY }
 
   def self.search(query)
-    if query.present?
-      where('title LIKE ? OR content LIKE ?', "%#{task}%")
+    if query.present
+      where('title ILIKE ? OR content ILIKE ?', "%#{task}%", "%#{query}%")
     else
       all
     end
