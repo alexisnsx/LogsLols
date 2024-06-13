@@ -35,6 +35,9 @@ gem "ruby-openai"
 # Groq
 gem "groq"
 
+# Rest Client
+gem "rest-client"
+
 # Use Redis adapter to run Action Cable in production
 gem "redis", ">= 4.0.1"
 
