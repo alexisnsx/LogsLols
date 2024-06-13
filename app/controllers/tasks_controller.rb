@@ -2,6 +2,7 @@ class TasksController < ApplicationController
   before_action :set_task, only: [ :show, :edit, :update, :destroy, :original, :completion ]
 
   def index
+    @tasks = Task.all
     @tasks = current_user.tasks
     @query = params[:search]
     if query.present?
@@ -115,7 +116,7 @@ class TasksController < ApplicationController
 
   def search
     @query = params[:q]
-    @tasks = Task.where("LOWER(title) ILIKE :query OR LOWER(description) ILIKE :query", query: "%#{@query}%")
+    @tasks = Task.search_full_text(@query)
 
     render json: {
       task_cards: render_to_string(

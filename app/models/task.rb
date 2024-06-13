@@ -1,4 +1,6 @@
 class Task < ApplicationRecord
+  include PgSearch::Model
+
   STATUS = %w[Incomplete Complete]
   PRIORITY = %w[High Medium Low]
   belongs_to :user
@@ -7,11 +9,10 @@ class Task < ApplicationRecord
   validates :status, inclusion: { in: STATUS }
   validates :priority, inclusion: { in: PRIORITY }
 
-  def self.search(query)
-    if query.present
-      where('title ILIKE ? OR content ILIKE ?', "%#{task}%", "%#{query}%")
-    else
-      all
-    end
-  end
+  pg_search_scope :search_full_text, against: {
+    title: 'A',
+    description: 'B'
+  },using: {
+    tsearch: { prefix: true }
+  }
 end
