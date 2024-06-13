@@ -1,5 +1,4 @@
 import { Application } from "@hotwired/stimulus"
-import text_search_controller from "./text_search_controller"
 
 const application = Application.start()
 
