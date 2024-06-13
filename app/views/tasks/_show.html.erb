@@ -1,6 +1,6 @@
 <div class="container p-2" style="height: 100%;">
   <div class="row" style="height: 100%;">
-    <div class="col-11">
+    <div class="col-11 position-relative">
       <div>
         <% if @task.priority %>
           <% if @task.priority == "High" %>
@@ -24,16 +24,16 @@
         <p><%= @task.description %></p>
       </div>
 
-      <div class="row position-fixed bottom-0 mb-4">
-      <% @task.documents.each do |doc| %>
-        <% url = cloudinary_url(doc.key) %>
-        <% image_url = url.sub('/upload/', '/upload/f_jpg/') %>
+      <div class="d-flex position-absolute bottom-0">
+        <% @task.documents.each do |doc| %>
+          <% url = cloudinary_url(doc.key) %>
+          <% image_url = url.sub('/upload/', '/upload/f_jpg/') %>
 
-        <div class="col-3 card border-0 mx-1">
-          <a href="<%= url %>"><img src="<%= image_url %>" class="w-100 border" alt=""></a>
-        </div>
+          <div class="col-3 card border-0 mx-1">
+            <a href="<%= url %>"><img src="<%= image_url %>" class="w-100 border" alt=""></a>
+          </div>
 
-      <% end %>
+        <% end %>
       </div>
     </div>
 
