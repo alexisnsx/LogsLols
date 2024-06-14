@@ -5,9 +5,11 @@ class GroqchatService
 
   attr_reader :message
 
-  def initialize(prompt:, response:)
+  def initialize(prompt: "", response:, user:, chat_number:)
     @prompt = prompt
     @response = response
+    @user = user
+    @chat_number = chat_number
   end
 
   class CompletionStream < GroqchatService
@@ -36,46 +38,54 @@ class GroqchatService
 
   class ToolUseStream < GroqchatService
     def call
-      messages = [
-        S(%q(
-          You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should incorporate the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user. You should never mention the tool. But if there are no relevant tools, answer as yourself.
-          )),
-        U(@prompt)
-      ]
+      # System instructions
+      instructions = S(%q(You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should incorporate the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user. You should never mention the tool. But if there are no relevant tools, answer as yourself.))
 
+      # User prompt
+      prompt_msg = U(@prompt)
+
+      # Call memory service to store current conversation
+      Conversation.create!(chat: memory, message: prompt_msg)
+      stored_messages = memory.conversations.pluck(:message)
+
+      # Make first request to LLM
+      messages = stored_messages.unshift(instructions)
       first_reply = llama70b_client.chat(messages, tools: tools)
 
-      # Catch malformed first_reply i.e. no content and no tool calls e.g.{"role"=>""}, {"role"=>"assistant", "content"=>"<tool-use>{}</tool-use>"}, ool-use//{ "tool_calls": [ { "id": "pending", "type": "function", "function": { "name": "get_weather_report" }, "parameters": { "city": "romance" } } ]}</tool-use>. StandardError triggers RescueStream
+      # Catch malformed first_reply i.e. no content and no tool calls
       if (first_reply.nil? || !first_reply.include?("content") || first_reply["content"].include?("tool-use")) && !first_reply.include?("tool_calls")
-        raise StandardError
+        raise StandardError # triggers RescueStream
       end
 
+      # Format first_reply as hash
       first_reply = first_reply.symbolize_keys
       pp "--------------This is the first reply:---------------"
       pp first_reply
 
-      # Return first_reply immediately if it has no tool_calls
-      return stream_direct(@response, first_reply[:content]) if !first_reply.include?(:tool_calls)
+      # Return first_reply immediately (and store it) if it has no tool_calls
+      return stream_direct(@response, first_reply) if !first_reply.include?(:tool_calls)
 
+      # Else, extract information for tool call
       tool_call_id = first_reply[:tool_calls].first["id"]
       func = first_reply[:tool_calls].first["function"]["name"]
       args = first_reply[:tool_calls].first["function"]["arguments"]
       args = JSON.parse(args).symbolize_keys
       tool_response = ""
 
-      # Correct the LLM if the tool identified does not exist
+      # If the tool identified doesn't exist, send new system msg to correct LLM and try again
       if !tools.any? { |tool| tool[:function][:name] == func }
         messages << S("There was no relevant tool. Answer as yourself.")
         pp "---------This is the system note to answer directly:-----------"
         pp messages
         return get_final_response(@response, messages)
       else
-        # If tool exists, call it and add to messages for LLM to summarise
+        # If tool exists, call it
         messages << first_reply
         case func
         when "get_weather_report"
           begin
             tool_response = get_weather_report(**args)
+            # Pass tool response to 2nd llm to craft final response
             messages << T(tool_response, tool_call_id: tool_call_id, name: func)
             get_final_response(@response, messages)
           rescue => e
@@ -86,17 +96,15 @@ class GroqchatService
         pp "------------Tool response:-------------"
         pp tool_response if tool_response
       end
+      pp "------------Messages:-------------"
+      pp messages
     end
   end
 
 
   class RescueStream < GroqchatService
-    def initialize(response:)
-      @response = response
-    end
-
     def call
-      rescue_msg = "Great question! As I am still a young LLM, I may not be able to answer your question or I sometimes get stuck. Could you try rephrasing or ask another question instead?"
+      rescue_msg = A("Great question! As I am still a young LLM, I may not be able to answer your question or I sometimes get stuck. Could you try rephrasing or ask another question instead?")
       stream_direct(@response, rescue_msg)
     end
   end
@@ -104,25 +112,30 @@ class GroqchatService
 
   private
 
+  # Use this method to fake stream a response already received
   def stream_direct(response, reply)
     sse = SSE.new(response.stream, event: "message")
-    bits = reply.scan(/.{1,2}/)
+    bits = reply[:content].scan(/.{1,2}/)
     bits.each do |bit|
       sse.write({ message: bit })
     end
+    Conversation.create!(chat: memory, message: reply)
    rescue ActionController::Live::ClientDisconnected
     sse.close
    ensure
     sse.close
   end
 
+  # Use this method to stream an incoming llm response
   def get_final_response(response, messages)
     sse = SSE.new(response.stream, event: "message")
     metadata = ""
+    full_reply = []
     begin
       mixtral7b_client.chat(messages, stream: ->(chunk, response) {
       unless chunk == nil
         sse.write({ message: chunk })
+        full_reply << chunk
       else
         metadata = response
       end
@@ -130,10 +143,15 @@ class GroqchatService
     ensure
       sse.close
     end
-    # pp "--------------The metadata related to the last chat:---------------"
-    # pp metadata
+    if full_reply.count != 0
+      to_store = { role: "assistant", content: full_reply.join }
+      Conversation.create!(chat: memory, message: to_store)
+    end
+      # pp "--------------The metadata related to the last chat:---------------"
+      # pp metadata
   end
 
+  # ----------------------------- TOOLS ------------------------------------
   def get_weather_report(city:)
     url = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=#{city}&appid=#{ENV['OPENWEATHER_API_KEY']}"
     response = RestClient.get(url)
@@ -162,6 +180,8 @@ class GroqchatService
     [ get_weather_report_tool ]
   end
 
+  # ----------------------------- MODELS ------------------------------------
+
   def models
     @_models = Groq::Model.model_ids
     # => ["llama3-8b-8192", "llama3-70b-8192", "llama2-70b-4096", "mixtral-8x7b-32768", "gemma-7b-it"]
@@ -178,17 +198,18 @@ class GroqchatService
     @_mixtral7b_client ||= Groq::Client.new(api_key: ENV["GROQ_API_KEY"], model_id: "mixtral-8x7b-32768")
   end
 
-  # def llama8b_client
-  #   @_llama8b_client ||= Groq::Client.new(api_key: ENV["GROQ_API_KEY"], model_id: "llama3-8b-8192")
-  # end
+  def llama8b_client
+    @_llama8b_client ||= Groq::Client.new(api_key: ENV["GROQ_API_KEY"], model_id: "llama3-8b-8192")
+  end
 
   def llama70b_client  # 8K tokens context window
     @_llama70b_client ||= Groq::Client.new(api_key: ENV["GROQ_API_KEY"], model_id: "llama3-70b-8192")
   end
 
-  def logger
-      # Create a logger instance
-    @_logger = Logger.new(STDOUT)
-    @_logger.level = Logger::DEBUG
+  # ----------------------------- MEMORY MANAGEMENT ----------------------------------
+
+  def memory
+    @_memory ||= Chat.find(@chat_number)
   end
+
 end

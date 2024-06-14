@@ -7,6 +7,17 @@ export default class extends Controller {
   connect() {
     console.log("connected!");
     this.csrfToken = document.head.querySelector("[name~=csrf-token][content]").content;
+    const url = '/chats'
+    fetch(url, {
+      headers: {
+        "X-CSRF-Token": this.csrfToken,
+        "Accept": "application/json"
+      }
+    })
+    .then(response => response.json())
+    .then((data) => {
+      this.chatNumber = data.chat_id
+    })
   }
 
   generateResponse(event) {
@@ -17,6 +28,22 @@ export default class extends Controller {
     this.currentContent = this.#createMessage("")
     this.#setupEventSource()
     this.promptTarget.value = ""
+  }
+
+  resetChat(event) {
+    this.responseTarget.innerHTML = ''
+    const url = '/chats'
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "X-CSRF-Token": this.csrfToken,
+        "Accept": "application/json"
+      }
+    })
+    .then(response => response.json())
+    .then((data) => {
+      this.chatNumber = data.chat_id
+    })
   }
 
   #createLabel(text) {
@@ -35,7 +62,7 @@ export default class extends Controller {
   }
 
   #setupEventSource() {
-    this.eventSource = new EventSource(`/conversation_responses?prompt=${this.promptTarget.value}`)
+    this.eventSource = new EventSource(`/conversation_responses?prompt=${this.promptTarget.value}&chat_number=${this.chatNumber}`)
     this.eventSource.addEventListener("message", this.#handleMessage.bind(this))
     this.eventSource.addEventListener("error", this.#handleError.bind(this)) // we get this error event automatically once the server closes the connection
   }
