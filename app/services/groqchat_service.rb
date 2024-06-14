@@ -38,7 +38,7 @@ class GroqchatService
     def call
       messages = [
         S(%q(
-          You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should incorporate the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user. You should never mention the tool. But if there are no relevant tools, answer as yourself. If url sources are provided, cite them with the anchor tag intact.
+          You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should incorporate the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user. You should never mention the tool, and never mention it is from a tool. But if there are no relevant tools, answer as yourself. If url sources are provided, cite them with the anchor tag intact.
           )),
         U(@prompt)
       ]
@@ -132,6 +132,7 @@ class GroqchatService
     metadata = ""
     begin
       mixtral7b_client.chat(messages, stream: ->(chunk, response) {
+
       unless chunk == nil
         sse.write({ message: chunk })
       else
@@ -195,7 +196,7 @@ class GroqchatService
       type: "function",
       function: {
         name: "tavily_search",
-        description: "Call this to search the web and get the relevant information based on the query.",
+        description: "Search the web and get the relevant information based on the query.",
         parameters: {
           type: "object",
           properties: {
