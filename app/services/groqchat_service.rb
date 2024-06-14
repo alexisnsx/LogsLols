@@ -38,7 +38,7 @@ class GroqchatService
     def call
       messages = [
         S(%q(
-          You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should incorporate the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user. You should never mention the tool. But if there are no relevant tools, answer as yourself.
+          You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should incorporate the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user. You should never mention the tool. But if there are no relevant tools, answer as yourself. If url sources are provided, cite them with the anchor tag intact.
           )),
         U(@prompt)
       ]
@@ -76,6 +76,19 @@ class GroqchatService
         when "get_weather_report"
           begin
             tool_response = get_weather_report(**args)
+            pp "------------Tool response:-------------"
+            pp tool_response if tool_response
+            messages << T(tool_response, tool_call_id: tool_call_id, name: func)
+            get_final_response(@response, messages)
+          rescue => e
+            puts "An error occurred: #{e.message}"
+            raise StandardError
+          end
+        when "tavily_search"
+          begin
+            tool_response = tavily_search(**args)
+            pp "------------Tool response:-------------"
+            pp tool_response if tool_response
             messages << T(tool_response, tool_call_id: tool_call_id, name: func)
             get_final_response(@response, messages)
           rescue => e
@@ -83,8 +96,6 @@ class GroqchatService
             raise StandardError
           end
         end
-        pp "------------Tool response:-------------"
-        pp tool_response if tool_response
       end
     end
   end
@@ -143,52 +154,22 @@ class GroqchatService
 
   def tavily_search(query:)
     url = "https://api.tavily.com/search"
-    response = RestClient.post(url,
-      {
-        api_key: "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",
-        query:,
-        search_depth: "basic",
-        include_answer: true,
-        include_images: false,
-        include_raw_content: true,
-        max_results: 3,
-        include_domains: [],
-        exclude_domains: []
-      }.to_json,
-      {content_type: :json, accept: :json}
-    )
+    response = RestClient.post(url, {
+      api_key: ENV['TAVILY_API_KEY'],
+      query:,
+      search_depth: "basic",
+      include_answer: false,
+      include_images: false,
+      include_raw_content: false,
+      max_results: 3,
+      include_domains: [],
+      exclude_domains: []
+    }.to_json, {
+      content_type: :json, accept: :json
+    })
     data = JSON.parse(response)
-    tool_response =
-  end
-
-    # Restclient to look into their post request
-    # travily needs the base url as a fetch reponse with the nested requirements in the json body.
-
-  end
-
-  def tavily_search(query:)
-    url = "https://api.tavily.com/search"
-    response = RestClient.post(url,
-      {
-        api_key: "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",
-        query:,
-        search_depth: "basic",
-        include_answer: true,
-        include_images: false,
-        include_raw_content: true,
-        max_results: 3,
-        include_domains: [],
-        exclude_domains: []
-      }.to_json,
-      {content_type: :json, accept: :json}
-    )
-    data = JSON.parse(response)
-    tool_response =
-  end
-
-    # Restclient to look into their post request
-    # travily needs the base url as a fetch reponse with the nested requirements in the json body.
-
+    results = data["results"]
+    "First Paragraph: #{results[0]["content"]} from source: <a href=#{results[0]["url"]}></a>, Second Paragraph: #{results[1]["content"]} from source: <a href=#{results[1]["url"]}></a>, Third Paragraph: #{results[2]["content"]} from source: <a href=#{results[2]["url"]}></a>"
   end
 
   def tools
@@ -208,25 +189,27 @@ class GroqchatService
         required: ["city"]
       }
     }
-  }, {
-    type: "function",
-    function: {
-      name: "tavily_search",
-      description: "Call this to search on the web and get the relevant information based on the query.",
-      parameters: {
-        type: "object",
-        properties: {
-          query: {
-            type: "string",
-            description: "The prompt you need to search the web for"
-          }
-        },
-        required: ["query"]
+  }
+
+    web_search_tool = {
+      type: "function",
+      function: {
+        name: "tavily_search",
+        description: "Call this to search the web and get the relevant information based on the query.",
+        parameters: {
+          type: "object",
+          properties: {
+            query: {
+              type: "string",
+              description: "The query you need to search the web for"
+            }
+          },
+          required: ["query"]
+        }
       }
     }
-  }]
 
-  'You are a helpful assistant. Answer all questions to the best of your ability. Use the suite of tools provided if needed. You may not need to use tools for every query - the user may just want to chat!'
+    [ get_weather_report_tool, web_search_tool ]
   end
 
   def models
