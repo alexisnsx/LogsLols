@@ -38,6 +38,13 @@ class GroqchatService
 
   class ToolUseStream < GroqchatService
     def call
+      messages = [
+        S(%q(
+          You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should incorporate the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user. You should never mention the tool, and never mention it is from a tool, and never mention it is from a tool. But if there are no relevant tools, answer as yourself. If url sources are provided, cite them with the anchor tag intact.
+          )),
+        U(@prompt)
+      ]
+
       # System instructions
       instructions = S(%q(You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should incorporate the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user. You should never mention the tool. But if there are no relevant tools, answer as yourself.))
 
@@ -86,6 +93,19 @@ class GroqchatService
           begin
             tool_response = get_weather_report(**args)
             # Pass tool response to 2nd llm to craft final response
+            pp "------------Tool response:-------------"
+            pp tool_response if tool_response
+            messages << T(tool_response, tool_call_id: tool_call_id, name: func)
+            get_final_response(@response, messages)
+          rescue => e
+            puts "An error occurred: #{e.message}"
+            raise StandardError
+          end
+        when "tavily_search"
+          begin
+            tool_response = tavily_search(**args)
+            pp "------------Tool response:-------------"
+            pp tool_response if tool_response
             messages << T(tool_response, tool_call_id: tool_call_id, name: func)
             get_final_response(@response, messages)
           rescue => e
@@ -93,8 +113,6 @@ class GroqchatService
             raise StandardError
           end
         end
-        pp "------------Tool response:-------------"
-        pp tool_response if tool_response
       end
       pp "------------Messages:-------------"
       pp messages
@@ -133,6 +151,7 @@ class GroqchatService
     full_reply = []
     begin
       mixtral7b_client.chat(messages, stream: ->(chunk, response) {
+
       unless chunk == nil
         sse.write({ message: chunk })
         full_reply << chunk
@@ -159,6 +178,26 @@ class GroqchatService
     "Description: #{data["weather"][0]["description"]}, Temperature: #{data["main"]["temp"]}, Feels like: #{data["main"]["feels_like"]}"
   end
 
+  def tavily_search(query:)
+    url = "https://api.tavily.com/search"
+    response = RestClient.post(url, {
+      api_key: ENV['TAVILY_API_KEY'],
+      query:,
+      search_depth: "basic",
+      include_answer: false,
+      include_images: false,
+      include_raw_content: false,
+      max_results: 3,
+      include_domains: [],
+      exclude_domains: []
+    }.to_json, {
+      content_type: :json, accept: :json
+    })
+    data = JSON.parse(response)
+    results = data["results"]
+    "First Paragraph: #{results[0]["content"]} from source: <a href=#{results[0]["url"]}></a>, Second Paragraph: #{results[1]["content"]} from source: <a href=#{results[1]["url"]}></a>, Third Paragraph: #{results[2]["content"]} from source: <a href=#{results[2]["url"]}></a>"
+  end
+
   def tools
     get_weather_report_tool = {
       type: "function",
@@ -174,10 +213,29 @@ class GroqchatService
           }
         },
         required: ["city"]
+      }
+    }
+  }
+
+    web_search_tool = {
+      type: "function",
+      function: {
+        name: "tavily_search",
+        description: "Search the web and get the relevant information based on the query.",
+        parameters: {
+          type: "object",
+          properties: {
+            query: {
+              type: "string",
+              description: "The query you need to search the web for"
+            }
+          },
+          required: ["query"]
         }
       }
     }
-    [ get_weather_report_tool ]
+
+    [ get_weather_report_tool, web_search_tool ]
   end
 
   # ----------------------------- MODELS ------------------------------------
