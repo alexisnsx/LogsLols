@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="conversation"
 export default class extends Controller {
-  static targets = ["prompt", "response"]
+  static targets = ["prompt", "response", "paragraph"]
 
   connect() {
     console.log("connected!");
@@ -19,6 +19,10 @@ export default class extends Controller {
     this.promptTarget.value = ""
   }
 
+  paragraphTargetConnected(element) {
+    console.log(element);
+  }
+
   #createLabel(text) {
     const label = document.createElement('strong')
     label.innerText = `${text}`
@@ -28,6 +32,7 @@ export default class extends Controller {
   #createMessage(text) {
     const contentElement = document.createElement('p') // pre element preserves spaces and line breaks
     contentElement.classList.add('text-break')
+    contentElement.dataset.conversationTarget = "paragraph"
     contentElement.innerHTML = `${text}`
     this.responseTarget.appendChild(contentElement)
     this.responseTarget.scrollTop = this.responseTarget.scrollHeight
@@ -40,10 +45,22 @@ export default class extends Controller {
     this.eventSource.addEventListener("error", this.#handleError.bind(this)) // we get this error event automatically once the server closes the connection
   }
 
+  #htmlDecode(input) {
+    var doc = new DOMParser().parseFromString(input, "text/html");
+    return doc.documentElement.textContent;
+  }
+
   #handleMessage(event) {
     const parsedData = JSON.parse(event.data)
     this.currentContent.innerHTML += parsedData.message
     this.responseTarget.scrollTop = this.responseTarget.scrollHeight
+
+    this.paragraphTargets.forEach(paragraph => {
+      if(paragraph.innerHTML.includes("https")) {
+        console.log(paragraph.innerHTML);
+        paragraph.innerHTML = paragraph.innerHTML
+      }
+    });
   }
 
   #handleError(event) {
