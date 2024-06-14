@@ -28,7 +28,7 @@ export default class extends Controller {
   #createMessage(text) {
     const contentElement = document.createElement('p') // pre element preserves spaces and line breaks
     contentElement.classList.add('text-break')
-    contentElement.innerText = `${text}`
+    contentElement.innerHTML = `${text}`
     this.responseTarget.appendChild(contentElement)
     this.responseTarget.scrollTop = this.responseTarget.scrollHeight
     return contentElement
