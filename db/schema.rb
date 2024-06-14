@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_11_055300) do
+ActiveRecord::Schema[7.1].define(version: 2024_06_14_024025) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -51,11 +51,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_11_055300) do
   end
 
   create_table "conversations", force: :cascade do |t|
-    t.text "user_message"
-    t.text "ai_message"
     t.bigint "chat_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "message"
     t.index ["chat_id"], name: "index_conversations_on_chat_id"
   end
 
