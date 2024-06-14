@@ -38,15 +38,8 @@ class GroqchatService
 
   class ToolUseStream < GroqchatService
     def call
-      messages = [
-        S(%q(
-          You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should incorporate the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user. You should never mention the tool, and never mention it is from a tool, and never mention it is from a tool. But if there are no relevant tools, answer as yourself. If url sources are provided, cite them with the anchor tag intact.
-          )),
-        U(@prompt)
-      ]
-
       # System instructions
-      instructions = S(%q(You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should incorporate the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user. You should never mention the tool. But if there are no relevant tools, answer as yourself.))
+      instructions = S(%q(You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should incorporate the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user, and never mention it is from a tool. But if there are no relevant tools, answer as yourself. If url sources are provided, cite them with the anchor tag intact.))
 
       # User prompt
       prompt_msg = U(@prompt)
@@ -86,13 +79,12 @@ class GroqchatService
         pp messages
         return get_final_response(@response, messages)
       else
-        # If tool exists, call it
+        # If tool exists, call it and pass tool response to 2nd llm to craft final response
         messages << first_reply
         case func
         when "get_weather_report"
           begin
             tool_response = get_weather_report(**args)
-            # Pass tool response to 2nd llm to craft final response
             pp "------------Tool response:-------------"
             pp tool_response if tool_response
             messages << T(tool_response, tool_call_id: tool_call_id, name: func)
@@ -122,7 +114,7 @@ class GroqchatService
 
   class RescueStream < GroqchatService
     def call
-      rescue_msg = A("Great question! As I am still a young LLM, I may not be able to answer your question or I sometimes get stuck. Could you try rephrasing or ask another question instead?")
+      rescue_msg = A("Erm...😬 as I am still a young 👼 LLM, I may not be able to answer your question or I sometimes get stuck. I'm so sorry 🙇🏻‍♂️ Could you try rephrasing or ask another question instead? You can also try resetting the chat. My makers are 🤡💩🤡")
       stream_direct(@response, rescue_msg)
     end
   end
