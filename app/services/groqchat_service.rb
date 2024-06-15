@@ -75,46 +75,28 @@ class GroqchatService
       # If the tool identified doesn't exist, send new system msg to correct LLM and try again
       if !tools.any? { |tool| tool[:function][:name] == func }
         messages << S("There was no relevant tool. Answer as yourself.")
-        pp "---------This is the system note to answer directly:-----------"
-        pp messages
         return get_final_response(@response, messages)
       else
         # If tool exists, call it and pass tool response to 2nd llm to craft final response
         messages << first_reply
         case func
         when "get_weather_report"
-          begin
-            tool_response = get_weather_report(**args)
-            pp "------------Tool response:-------------"
-            pp tool_response if tool_response
-            messages << T(tool_response, tool_call_id: tool_call_id, name: func)
-            get_final_response(@response, messages)
-          rescue => e
-            puts "An error occurred: #{e.message}"
-            raise StandardError
-          end
+          call_tool(get_weather_report(**args), tool_call_id, func, messages)
         when "tavily_search"
-          begin
-            tool_response = tavily_search(**args)
-            pp "------------Tool response:-------------"
-            pp tool_response if tool_response
-            messages << T(tool_response, tool_call_id: tool_call_id, name: func)
-            get_final_response(@response, messages)
-          rescue => e
-            puts "An error occurred: #{e.message}"
-            raise StandardError
-          end
+          call_tool(tavily_search(**args), tool_call_id, func, messages)
+        when "find_task_details"
+          call_tool(find_task_details(**args), tool_call_id, func, messages)
         end
       end
-      pp "------------Messages:-------------"
-      pp messages
+      # pp "------------Messages:-------------"
+      # pp messages
     end
   end
 
 
   class RescueStream < GroqchatService
     def call
-      rescue_msg = A("Erm...😬 as I am still a young 👼 LLM, I may not be able to answer your question or I sometimes get stuck. I'm so sorry 🙇🏻‍♂️ Could you try rephrasing or ask another question instead? You can also try resetting the chat. My makers are 🤡💩🤡")
+      rescue_msg = A("Erm...😬 as I am still a young 👼 LLM, I may not be able to answer your question or I sometimes get stuck. I'm so sorry 🙇🏻‍♂️ Could you try rephrasing or ask another question instead? You can also try resetting the chat. Also, I wish to highlight that my makers are 🤡💩🤡")
       stream_direct(@response, rescue_msg)
     end
   end
@@ -163,6 +145,21 @@ class GroqchatService
   end
 
   # ----------------------------- TOOLS ------------------------------------
+
+  def call_tool(function, tool_call_id, func_name, messages)
+    begin
+      tool_response = function
+      pp "------------Tool response:-------------"
+      pp tool_response if tool_response
+      messages << T(tool_response, tool_call_id: tool_call_id, name: func_name)
+      get_final_response(@response, messages)
+    rescue => e
+      puts "An error occurred: #{e.message}"
+      raise StandardError
+    end
+  end
+
+
   def get_weather_report(city:)
     url = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=#{city}&appid=#{ENV['OPENWEATHER_API_KEY']}"
     response = RestClient.get(url)
@@ -190,6 +187,10 @@ class GroqchatService
     "First Paragraph: #{results[0]["content"]} from source: <a href=#{results[0]["url"]}></a>, Second Paragraph: #{results[1]["content"]} from source: <a href=#{results[1]["url"]}></a>, Third Paragraph: #{results[2]["content"]} from source: <a href=#{results[2]["url"]}></a>"
   end
 
+  def find_task_details(query:)
+    tasks = Task.where(status: "Incomplete").search_full_text(query)
+  end
+
   def tools
     get_weather_report_tool = {
       type: "function",
@@ -213,7 +214,7 @@ class GroqchatService
       type: "function",
       function: {
         name: "tavily_search",
-        description: "Search the web and get the relevant information based on the query.",
+        description: "Get current news and information about places, events, personalities from the internet",
         parameters: {
           type: "object",
           properties: {
@@ -227,7 +228,25 @@ class GroqchatService
       }
     }
 
-    [ get_weather_report_tool, web_search_tool ]
+    find_task_details_tool = {
+      type: "function",
+      function: {
+        name: "find_task_details",
+        description: "Get the user's task details based on his query",
+        parameters: {
+          type: "object",
+          properties: {
+            query: {
+              type: "string",
+              description: "The keyword(s) to search tasks for"
+            }
+          },
+          required: ["query"]
+        }
+      }
+    }
+
+    [ get_weather_report_tool, web_search_tool, find_task_details_tool ]
   end
 
   # ----------------------------- MODELS ------------------------------------
