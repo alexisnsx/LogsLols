@@ -13,7 +13,8 @@ Rails.application.routes.draw do
     resources :reminders, only: [ :create]
     member do
       patch :completion
-      get 'original'
+      get :original
+      get :show_ai
     end
   end
   resources :chats, only: [ :index, :create ] do

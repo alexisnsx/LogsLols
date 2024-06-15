@@ -19,6 +19,10 @@ class TasksController < ApplicationController
     end
   end
 
+  def show_ai
+    Task.find(138)
+  end
+
   def new
     @task = Task.new
     respond_to do |format|

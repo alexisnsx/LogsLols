@@ -5,11 +5,12 @@ class GroqchatService
 
   attr_reader :message
 
-  def initialize(prompt: "", response:, user:, chat_number:)
+  def initialize(prompt: "", response:, user:, chat_number:, task_number: 0)
     @prompt = prompt
     @response = response
     @user = user
     @chat_number = chat_number
+    @task_number = task_number
   end
 
   class CompletionStream < GroqchatService
@@ -39,7 +40,7 @@ class GroqchatService
   class ToolUseStream < GroqchatService
     def call
       # System instructions
-      instructions = S(%q(You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should incorporate the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user, and never mention it is from a tool. But if there are no relevant tools, answer as yourself. If url sources are provided, cite them with the anchor tag intact.))
+      instructions = S(%q(You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should include the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user, and never mention it is from a tool. But if there are no relevant tools, answer as yourself. If url sources are provided, cite them with the anchor tag intact.))
 
       # User prompt
       prompt_msg = U(@prompt)
@@ -66,26 +67,31 @@ class GroqchatService
       return stream_direct(@response, first_reply) if !first_reply.include?(:tool_calls)
 
       # Else, extract information for tool call
-      tool_call_id = first_reply[:tool_calls].first["id"]
-      func = first_reply[:tool_calls].first["function"]["name"]
-      args = first_reply[:tool_calls].first["function"]["arguments"]
-      args = JSON.parse(args).symbolize_keys
-      tool_response = ""
+      first_reply[:tool_calls].each do |tool_call|
+        tool_call_id = tool_call["id"]
+        func = tool_call["function"]["name"]
+        args = tool_call["function"]["arguments"]
+        args = JSON.parse(args).symbolize_keys
+        tool_response = ""
 
-      # If the tool identified doesn't exist, send new system msg to correct LLM and try again
-      if !tools.any? { |tool| tool[:function][:name] == func }
-        messages << S("There was no relevant tool. Answer as yourself.")
-        return get_final_response(@response, messages)
-      else
-        # If tool exists, call it and pass tool response to 2nd llm to craft final response
-        messages << first_reply
-        case func
-        when "get_weather_report"
-          call_tool(get_weather_report(**args), tool_call_id, func, messages)
-        when "tavily_search"
-          call_tool(tavily_search(**args), tool_call_id, func, messages)
-        when "find_task_details"
-          call_tool(find_task_details(**args), tool_call_id, func, messages)
+        # If the tool identified doesn't exist, send new system msg to correct LLM and try again
+        if !tools.any? { |tool| tool[:function][:name] == func }
+          messages << S("There was no relevant tool. Answer as yourself.")
+          return get_final_response(@response, messages)
+        else
+          # If tool exists, call it and pass tool response to 2nd llm to craft final response
+          messages << first_reply
+          case func
+          when "get_weather_report"
+            call_tool(get_weather_report(**args), tool_call_id, func, messages)
+          when "tavily_search"
+            call_tool(tavily_search(**args), tool_call_id, func, messages)
+          when "find_my_task"
+            # args = { id: @task_number }
+            call_tool(get_current_task(**args), tool_call_id, func, messages)
+          # when "create_task"
+          #   call_tool(create_task(**args), tool_call_id, func, messages)
+          end
         end
       end
       # pp "------------Messages:-------------"
@@ -103,6 +109,7 @@ class GroqchatService
 
 
   private
+  # ----------------------------- STREAMING ------------------------------------
 
   # Use this method to fake stream a response already received
   def stream_direct(response, reply)
@@ -125,7 +132,6 @@ class GroqchatService
     full_reply = []
     begin
       mixtral7b_client.chat(messages, stream: ->(chunk, response) {
-
       unless chunk == nil
         sse.write({ message: chunk })
         full_reply << chunk
@@ -142,7 +148,7 @@ class GroqchatService
     end
       # pp "--------------The metadata related to the last chat:---------------"
       # pp metadata
-  end
+    end
 
   # ----------------------------- TOOLS ------------------------------------
 
@@ -158,7 +164,6 @@ class GroqchatService
       raise StandardError
     end
   end
-
 
   def get_weather_report(city:)
     url = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=#{city}&appid=#{ENV['OPENWEATHER_API_KEY']}"
@@ -187,8 +192,43 @@ class GroqchatService
     "First Paragraph: #{results[0]["content"]} from source: <a href=#{results[0]["url"]}></a>, Second Paragraph: #{results[1]["content"]} from source: <a href=#{results[1]["url"]}></a>, Third Paragraph: #{results[2]["content"]} from source: <a href=#{results[2]["url"]}></a>"
   end
 
-  def find_task_details(query:)
-    tasks = Task.where(status: "Incomplete").search_full_text(query)
+  def get_current_task(query)
+    # `[#<Task:0x000000010b0d96a0
+    # id: 138,
+    # title: "Marketing Campaign",
+    # description:
+    #  "Social Media Content Plan to develop a content calendar for social media posts for the next quarter, focusing on engagement and brand awareness. Create email newsletter draft for the monthly email newsletter, including articles, news, and updates.\n    ",
+    # priority: "Medium",
+    # status: "Incomplete",
+    # due_date: Sat, 20 Jul 2024,
+    # reminder_datetime: nil,
+    # user_id: 13,
+    # documents: nil,
+    # created_at:
+    #  Fri, 14 Jun 2024 11:59:58.575614000 UTC +00:00,
+    # updated_at:
+    #  Fri, 14 Jun 2024 12:00:00.753528000 UTC +00:00>]`
+    tasks = Task.search_full_text(query)
+    task = tasks[0]
+    JSON.parse(task)
+    # render json: task
+    # "Task: #{task.title}, Description: #{task.description}, Due Date: #{task.due_date}"
+  end
+
+  def create_task(title:, description:, due_date:, priority:)
+    task = Task.new(
+      title:,
+      description:,
+      due_date:,
+      priority:,
+      status: "Incomplete",
+      user: @user
+      )
+    if task.save
+      "Task created successfully"
+    else
+      "Failed to create task"
+    end
   end
 
   def tools
@@ -209,7 +249,6 @@ class GroqchatService
       }
     }
   }
-
     web_search_tool = {
       type: "function",
       function: {
@@ -227,26 +266,53 @@ class GroqchatService
         }
       }
     }
-
-    find_task_details_tool = {
+    get_current_task_tool = {
       type: "function",
       function: {
-        name: "find_task_details",
-        description: "Get the user's task details based on his query",
+        name: "get_current_task",
+        description: "Get the user's current task. Must be used when user says 'find my task'.",
         parameters: {
           type: "object",
           properties: {
             query: {
               type: "string",
-              description: "The keyword(s) to search tasks for"
+              description: "The keyword of the task you need to search the Task database for"
             }
           },
           required: ["query"]
         }
       }
     }
-
-    [ get_weather_report_tool, web_search_tool, find_task_details_tool ]
+    create_task_tool = {
+      type: "function",
+      function: {
+        name: "create_task",
+        description: "Create a new task based on the user's request",
+        parameters: {
+          type: "object",
+          properties: {
+            title: {
+              type: "string",
+              description: "The header of the task"
+            },
+            description: {
+              type: "string",
+              description: "The description of the task"
+            },
+            due_date: {
+              type: "date",
+              description: "The due date of the task"
+            },
+            priority: {
+              type: "string",
+              description: "The priority of the task"
+            }
+          },
+          required: ["query"]
+        }
+      }
+    }
+    [ get_weather_report_tool, web_search_tool, get_current_task_tool ]
   end
 
   # ----------------------------- MODELS ------------------------------------
