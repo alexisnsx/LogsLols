@@ -32,7 +32,7 @@ class GroqchatService
       ensure
         sse.close
       end
-      pp "--------------The metadata related to the last chat:---------------"
+      pp "-----------------------The metadata related to the last chat:-------------------------"
       pp metadata
     end
   end
@@ -60,7 +60,7 @@ class GroqchatService
 
       # Format first_reply as hash
       first_reply = first_reply.symbolize_keys
-      pp "--------------This is the first reply:---------------"
+      pp "-----------------------------This is the first reply:---------------------------------"
       pp first_reply
 
       # Return first_reply immediately (and store it) if it has no tool_calls
@@ -72,7 +72,6 @@ class GroqchatService
         func = tool_call["function"]["name"]
         args = tool_call["function"]["arguments"]
         args = JSON.parse(args).symbolize_keys
-        tool_response = ""
 
         # If the tool identified doesn't exist, send new system msg to correct LLM and try again
         if !tools.any? { |tool| tool[:function][:name] == func }
@@ -86,15 +85,18 @@ class GroqchatService
             call_tool(get_weather_report(**args), tool_call_id, func, messages)
           when "tavily_search"
             call_tool(tavily_search(**args), tool_call_id, func, messages)
-          when "find_my_task"
-            # args = { id: @task_number }
-            call_tool(get_current_task(**args), tool_call_id, func, messages)
+          when "get_current_task"
+            args[:id] = @task_number
+            get_current_task(**args)
+          when "update_current_task"
+            args[:id] = @task_number
+            update_current_task(**args)
           # when "create_task"
           #   call_tool(create_task(**args), tool_call_id, func, messages)
           end
         end
       end
-      # pp "------------Messages:-------------"
+      # pp "------------------------------------Messages:-------------------------------------"
       # pp messages
     end
   end
@@ -119,10 +121,10 @@ class GroqchatService
       sse.write({ message: bit })
     end
     Conversation.create!(chat: memory, message: reply)
-   rescue ActionController::Live::ClientDisconnected
-    sse.close
-   ensure
-    sse.close
+    rescue ActionController::Live::ClientDisconnected
+      sse.close
+    ensure
+      sse.close
   end
 
   # Use this method to stream an incoming llm response
@@ -146,16 +148,17 @@ class GroqchatService
       to_store = { role: "assistant", content: full_reply.join }
       Conversation.create!(chat: memory, message: to_store)
     end
-      # pp "--------------The metadata related to the last chat:---------------"
+      # pp "--------------------------The metadata related to the last chat:--------------------------"
       # pp metadata
-    end
+  end
 
   # ----------------------------- TOOLS ------------------------------------
 
+  # Use this to call external tools
   def call_tool(function, tool_call_id, func_name, messages)
     begin
       tool_response = function
-      pp "------------Tool response:-------------"
+      pp "------------------------Tool response:---------------------------"
       pp tool_response if tool_response
       messages << T(tool_response, tool_call_id: tool_call_id, name: func_name)
       get_final_response(@response, messages)
@@ -165,6 +168,7 @@ class GroqchatService
     end
   end
 
+  # Various tools
   def get_weather_report(city:)
     url = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=#{city}&appid=#{ENV['OPENWEATHER_API_KEY']}"
     response = RestClient.get(url)
@@ -192,27 +196,20 @@ class GroqchatService
     "First Paragraph: #{results[0]["content"]} from source: <a href=#{results[0]["url"]}></a>, Second Paragraph: #{results[1]["content"]} from source: <a href=#{results[1]["url"]}></a>, Third Paragraph: #{results[2]["content"]} from source: <a href=#{results[2]["url"]}></a>"
   end
 
-  def get_current_task(query)
-    # `[#<Task:0x000000010b0d96a0
-    # id: 138,
-    # title: "Marketing Campaign",
-    # description:
-    #  "Social Media Content Plan to develop a content calendar for social media posts for the next quarter, focusing on engagement and brand awareness. Create email newsletter draft for the monthly email newsletter, including articles, news, and updates.\n    ",
-    # priority: "Medium",
-    # status: "Incomplete",
-    # due_date: Sat, 20 Jul 2024,
-    # reminder_datetime: nil,
-    # user_id: 13,
-    # documents: nil,
-    # created_at:
-    #  Fri, 14 Jun 2024 11:59:58.575614000 UTC +00:00,
-    # updated_at:
-    #  Fri, 14 Jun 2024 12:00:00.753528000 UTC +00:00>]`
-    tasks = Task.search_full_text(query)
-    task = tasks[0]
-    JSON.parse(task)
-    # render json: task
-    # "Task: #{task.title}, Description: #{task.description}, Due Date: #{task.due_date}"
+  def get_current_task(id:)
+    task = Task.find(id)
+    reply = A("I found this: *** Task ID: #{task.id}, Task: #{task.title}, Description: #{task.description}, Due Date: #{task.due_date} *** Is this your task? How may I help you with it?")
+    stream_direct(@response, reply)
+  end
+
+  def update_current_task(id:, description:)
+    task = Task.find(id)
+    if task.update(description: description)
+      reply = A("Ok I've updated the description for your task '#{task.title}'! Is there anything else you need help with?")
+    else
+      reply = A("It seems that I either can't find your task or I've forgotten the description. Can we start again (please)?")
+    end
+    stream_direct(@response, reply)
   end
 
   def create_task(title:, description:, due_date:, priority:)
@@ -231,6 +228,7 @@ class GroqchatService
     end
   end
 
+  # Tools list which is passed to the llm
   def tools
     get_weather_report_tool = {
       type: "function",
@@ -270,16 +268,37 @@ class GroqchatService
       type: "function",
       function: {
         name: "get_current_task",
-        description: "Get the user's current task. Must be used when user says 'find my task'.",
+        description: "Get the user's current task. Must be used when user says 'find my current task'.",
         parameters: {
           type: "object",
           properties: {
-            query: {
-              type: "string",
-              description: "The keyword of the task you need to search the Task database for"
+            id: {
+              type: "integer",
+              description: "The id of the task you need to search the Task database for"
             }
           },
-          required: ["query"]
+          required: ["id"]
+        }
+      }
+    }
+    update_current_task_tool = {
+      type: "function",
+      function: {
+        name: "update_current_task",
+        description: "Update the user's current task description. Must be used when user says 'update my current task'.",
+        parameters: {
+          type: "object",
+          properties: {
+            id: {
+              type: "integer",
+              description: "The id of the task you need to search the Task database for"
+            },
+            description: {
+              type: "string",
+              description: "The description to update the task with"
+            }
+          },
+          required: ["id", "description"]
         }
       }
     }
@@ -312,7 +331,7 @@ class GroqchatService
         }
       }
     }
-    [ get_weather_report_tool, web_search_tool, get_current_task_tool ]
+    [ get_weather_report_tool, web_search_tool, get_current_task_tool, update_current_task_tool ]
   end
 
   # ----------------------------- MODELS ------------------------------------
