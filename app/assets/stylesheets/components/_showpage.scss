@@ -18,6 +18,14 @@
   border: 1px solid black;
 }
 
+.task-documents {
+  overflow-x: scroll;
+}
+
+.task-icons-wrapper {
+  z-index: 10;
+}
+
 // .edit {
 //   position: fixed;
 //   top: 50px;
