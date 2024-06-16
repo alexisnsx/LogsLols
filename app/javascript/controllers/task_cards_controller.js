@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="task-cards"
 export default class extends Controller {
-  static targets = ["content", "checkbox", "newcontent", "insertform"]
+  static targets = ["content", "checkbox", "newcontent", "insertform", "textarea"]
   static values = { id: String };
 
   connect() {
@@ -33,8 +33,6 @@ export default class extends Controller {
 
 submit(e) {
   e.preventDefault()
-  console.log('can it click');
-  console.log(e.currentTarget);
   const cardActive = e.currentTarget.closest('div[data-id]')
 
   fetch(e.currentTarget.action, {
@@ -80,10 +78,21 @@ openCard(e) {
 
 closeCard(e) {
   const cardActive = e.currentTarget.closest('div[data-id]')
-  cardActive.classList.remove("active")
   const id = cardActive.dataset.id
-  this.getOriginalContent(id, cardActive)
+
+  fetch(this.textareaTarget.action, {
+    method: this.textareaTarget.method,
+    headers: { "Accept": "application/json" },
+    body: new FormData(this.textareaTarget)
+  })
+  .then(response => response.json())
+  .then((data) => {
+    cardActive.classList.remove("active")
+    cardActive.innerHTML = data.updated_form
+    this.getOriginalContent(id, cardActive)
+  })
 }
+
 
 // load edit page
 // press the icon, card should zoom in
