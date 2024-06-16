@@ -33,6 +33,8 @@ export default class extends Controller {
 
 submit(e) {
   e.preventDefault()
+  console.log('can it click');
+  console.log(e.currentTarget);
   const cardActive = e.currentTarget.closest('div[data-id]')
 
   fetch(e.currentTarget.action, {

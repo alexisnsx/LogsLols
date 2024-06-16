@@ -18,7 +18,17 @@
   </div>
 
   <h1><%= @task.title %></h1>
-  <textarea class="task-description flex-grow-1" name="" id=""><%= @task.description %></textarea>
+
+  <%= simple_form_for @task,
+  html: {
+    class: 'flex-grow-1 d-flex flex-column' },
+  data: {
+        action: ("submit->task-cards#submit")
+    } do |f| %>
+  <%= f.input :description, as: :text, input_html: { class: 'flex-grow-1 task-description' }, wrapper_html: { class: 'flex-grow-1 d-flex flex-column' } %>
+  <%= f.submit 'Save' %>
+  <% end %>
+
   <%# to delete %>
 
 
@@ -33,7 +43,7 @@
     <% end %>
 
     <div>
-      <p class="task-icons" data-action="click->task-cards#closeCard"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
+      <p class="task-icons" data-action="click->task-cards#submit"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
 
       <%= render "tasks/checkbox", task: task %>
 
