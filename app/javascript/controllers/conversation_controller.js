@@ -62,7 +62,7 @@ export default class extends Controller {
   }
 
   #setupEventSource() {
-    this.eventSource = new EventSource(`/conversation_responses?prompt=${this.promptTarget.value}&chat_number=${this.chatNumber}&task_number=138`)
+    this.eventSource = new EventSource(`/conversation_responses?prompt=${this.promptTarget.value}&chat_number=${this.chatNumber}&task_number=142`)
     this.eventSource.addEventListener("message", this.#handleMessage.bind(this))
     this.eventSource.addEventListener("error", this.#handleError.bind(this)) // we get this error event automatically once the server closes the connection
   }

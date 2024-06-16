@@ -205,7 +205,7 @@ class GroqchatService
   def update_current_task(id:, description:)
     task = Task.find(id)
     if task.update(description: description)
-      reply = A("Ok I've updated the description for your task '#{task.title}'! Is there anything else you need help with?")
+      reply = A("Ok I've updated the description for your task '#{task.title}' as Description: #{task.description}! Is there anything else you need help with?")
     else
       reply = A("It seems that I either can't find your task or I've forgotten the description. Can we start again (please)?")
     end
