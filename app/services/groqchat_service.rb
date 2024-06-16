@@ -5,11 +5,12 @@ class GroqchatService
 
   attr_reader :message
 
-  def initialize(prompt: "", response:, user:, chat_number:)
+  def initialize(prompt: "", response:, user:, chat_number:, task_number: 0)
     @prompt = prompt
     @response = response
     @user = user
     @chat_number = chat_number
+    @task_number = task_number
   end
 
   class CompletionStream < GroqchatService
@@ -31,7 +32,7 @@ class GroqchatService
       ensure
         sse.close
       end
-      pp "--------------The metadata related to the last chat:---------------"
+      pp "-----------------------The metadata related to the last chat:-------------------------"
       pp metadata
     end
   end
@@ -39,7 +40,7 @@ class GroqchatService
   class ToolUseStream < GroqchatService
     def call
       # System instructions
-      instructions = S(%q(You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should incorporate the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user, and never mention it is from a tool. But if there are no relevant tools, answer as yourself. If url sources are provided, cite them with the anchor tag intact.))
+      instructions = S(%q(You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should include the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user, and never mention it is from a tool. But if there are no relevant tools, answer as yourself. If url sources are provided, cite them with the anchor tag intact.))
 
       # User prompt
       prompt_msg = U(@prompt)
@@ -59,68 +60,58 @@ class GroqchatService
 
       # Format first_reply as hash
       first_reply = first_reply.symbolize_keys
-      pp "--------------This is the first reply:---------------"
+      pp "-----------------------------This is the first reply:---------------------------------"
       pp first_reply
 
       # Return first_reply immediately (and store it) if it has no tool_calls
       return stream_direct(@response, first_reply) if !first_reply.include?(:tool_calls)
 
       # Else, extract information for tool call
-      tool_call_id = first_reply[:tool_calls].first["id"]
-      func = first_reply[:tool_calls].first["function"]["name"]
-      args = first_reply[:tool_calls].first["function"]["arguments"]
-      args = JSON.parse(args).symbolize_keys
-      tool_response = ""
+      first_reply[:tool_calls].each do |tool_call|
+        tool_call_id = tool_call["id"]
+        func = tool_call["function"]["name"]
+        args = tool_call["function"]["arguments"]
+        args = JSON.parse(args).symbolize_keys
 
-      # If the tool identified doesn't exist, send new system msg to correct LLM and try again
-      if !tools.any? { |tool| tool[:function][:name] == func }
-        messages << S("There was no relevant tool. Answer as yourself.")
-        pp "---------This is the system note to answer directly:-----------"
-        pp messages
-        return get_final_response(@response, messages)
-      else
-        # If tool exists, call it and pass tool response to 2nd llm to craft final response
-        messages << first_reply
-        case func
-        when "get_weather_report"
-          begin
-            tool_response = get_weather_report(**args)
-            pp "------------Tool response:-------------"
-            pp tool_response if tool_response
-            messages << T(tool_response, tool_call_id: tool_call_id, name: func)
-            get_final_response(@response, messages)
-          rescue => e
-            puts "An error occurred: #{e.message}"
-            raise StandardError
-          end
-        when "tavily_search"
-          begin
-            tool_response = tavily_search(**args)
-            pp "------------Tool response:-------------"
-            pp tool_response if tool_response
-            messages << T(tool_response, tool_call_id: tool_call_id, name: func)
-            get_final_response(@response, messages)
-          rescue => e
-            puts "An error occurred: #{e.message}"
-            raise StandardError
+        # If the tool identified doesn't exist, send new system msg to correct LLM and try again
+        if !tools.any? { |tool| tool[:function][:name] == func }
+          messages << S("There was no relevant tool. Answer as yourself.")
+          return get_final_response(@response, messages)
+        else
+          # If tool exists, call it and pass tool response to 2nd llm to craft final response
+          messages << first_reply
+          case func
+          when "get_weather_report"
+            call_tool(get_weather_report(**args), tool_call_id, func, messages)
+          when "tavily_search"
+            call_tool(tavily_search(**args), tool_call_id, func, messages)
+          when "get_current_task"
+            args[:id] = @task_number
+            get_current_task(**args)
+          when "update_current_task"
+            args[:id] = @task_number
+            update_current_task(**args)
+          # when "create_task"
+          #   call_tool(create_task(**args), tool_call_id, func, messages)
           end
         end
       end
-      pp "------------Messages:-------------"
-      pp messages
+      # pp "------------------------------------Messages:-------------------------------------"
+      # pp messages
     end
   end
 
 
   class RescueStream < GroqchatService
     def call
-      rescue_msg = A("Erm...😬 as I am still a young 👼 LLM, I may not be able to answer your question or I sometimes get stuck. I'm so sorry 🙇🏻‍♂️ Could you try rephrasing or ask another question instead? You can also try resetting the chat. My makers are 🤡💩🤡")
+      rescue_msg = A("Erm...😬 as I am still a young 👼 LLM, I may not be able to answer your question or I sometimes get stuck. I'm so sorry 🙇🏻‍♂️ Could you try rephrasing or ask another question instead? You can also try resetting the chat. Also, I wish to highlight that my makers are 🤡💩🤡")
       stream_direct(@response, rescue_msg)
     end
   end
 
 
   private
+  # ----------------------------- STREAMING ------------------------------------
 
   # Use this method to fake stream a response already received
   def stream_direct(response, reply)
@@ -130,10 +121,10 @@ class GroqchatService
       sse.write({ message: bit })
     end
     Conversation.create!(chat: memory, message: reply)
-   rescue ActionController::Live::ClientDisconnected
-    sse.close
-   ensure
-    sse.close
+    rescue ActionController::Live::ClientDisconnected
+      sse.close
+    ensure
+      sse.close
   end
 
   # Use this method to stream an incoming llm response
@@ -143,7 +134,6 @@ class GroqchatService
     full_reply = []
     begin
       mixtral7b_client.chat(messages, stream: ->(chunk, response) {
-
       unless chunk == nil
         sse.write({ message: chunk })
         full_reply << chunk
@@ -158,11 +148,27 @@ class GroqchatService
       to_store = { role: "assistant", content: full_reply.join }
       Conversation.create!(chat: memory, message: to_store)
     end
-      # pp "--------------The metadata related to the last chat:---------------"
+      # pp "--------------------------The metadata related to the last chat:--------------------------"
       # pp metadata
   end
 
   # ----------------------------- TOOLS ------------------------------------
+
+  # Use this to call external tools
+  def call_tool(function, tool_call_id, func_name, messages)
+    begin
+      tool_response = function
+      pp "------------------------Tool response:---------------------------"
+      pp tool_response if tool_response
+      messages << T(tool_response, tool_call_id: tool_call_id, name: func_name)
+      get_final_response(@response, messages)
+    rescue => e
+      puts "An error occurred: #{e.message}"
+      raise StandardError
+    end
+  end
+
+  # Various tools
   def get_weather_report(city:)
     url = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=#{city}&appid=#{ENV['OPENWEATHER_API_KEY']}"
     response = RestClient.get(url)
@@ -190,6 +196,39 @@ class GroqchatService
     "First Paragraph: #{results[0]["content"]} from source: <a href=#{results[0]["url"]}></a>, Second Paragraph: #{results[1]["content"]} from source: <a href=#{results[1]["url"]}></a>, Third Paragraph: #{results[2]["content"]} from source: <a href=#{results[2]["url"]}></a>"
   end
 
+  def get_current_task(id:)
+    task = Task.find(id)
+    reply = A("I found this: *** Task ID: #{task.id}, Task: #{task.title}, Description: #{task.description}, Due Date: #{task.due_date} *** Is this your task? How may I help you with it?")
+    stream_direct(@response, reply)
+  end
+
+  def update_current_task(id:, description:)
+    task = Task.find(id)
+    if task.update(description: description)
+      reply = A("Ok I've updated the description for your task '#{task.title}' as Description: #{task.description}! Is there anything else you need help with?")
+    else
+      reply = A("It seems that I either can't find your task or I've forgotten the description. Can we start again (please)?")
+    end
+    stream_direct(@response, reply)
+  end
+
+  def create_task(title:, description:, due_date:, priority:)
+    task = Task.new(
+      title:,
+      description:,
+      due_date:,
+      priority:,
+      status: "Incomplete",
+      user: @user
+      )
+    if task.save
+      "Task created successfully"
+    else
+      "Failed to create task"
+    end
+  end
+
+  # Tools list which is passed to the llm
   def tools
     get_weather_report_tool = {
       type: "function",
@@ -208,12 +247,11 @@ class GroqchatService
       }
     }
   }
-
     web_search_tool = {
       type: "function",
       function: {
         name: "tavily_search",
-        description: "Search the web and get the relevant information based on the query.",
+        description: "Get current news and information about places, events, personalities from the internet",
         parameters: {
           type: "object",
           properties: {
@@ -226,8 +264,74 @@ class GroqchatService
         }
       }
     }
-
-    [ get_weather_report_tool, web_search_tool ]
+    get_current_task_tool = {
+      type: "function",
+      function: {
+        name: "get_current_task",
+        description: "Get the user's current task. Must be used when user says 'find my current task'.",
+        parameters: {
+          type: "object",
+          properties: {
+            id: {
+              type: "integer",
+              description: "The id of the task you need to search the Task database for"
+            }
+          },
+          required: ["id"]
+        }
+      }
+    }
+    update_current_task_tool = {
+      type: "function",
+      function: {
+        name: "update_current_task",
+        description: "Update the user's current task description. Must be used when user says 'update my current task'.",
+        parameters: {
+          type: "object",
+          properties: {
+            id: {
+              type: "integer",
+              description: "The id of the task you need to search the Task database for"
+            },
+            description: {
+              type: "string",
+              description: "The description to update the task with"
+            }
+          },
+          required: ["id", "description"]
+        }
+      }
+    }
+    create_task_tool = {
+      type: "function",
+      function: {
+        name: "create_task",
+        description: "Create a new task based on the user's request",
+        parameters: {
+          type: "object",
+          properties: {
+            title: {
+              type: "string",
+              description: "The header of the task"
+            },
+            description: {
+              type: "string",
+              description: "The description of the task"
+            },
+            due_date: {
+              type: "date",
+              description: "The due date of the task"
+            },
+            priority: {
+              type: "string",
+              description: "The priority of the task"
+            }
+          },
+          required: ["query"]
+        }
+      }
+    }
+    [ get_weather_report_tool, web_search_tool, get_current_task_tool, update_current_task_tool ]
   end
 
   # ----------------------------- MODELS ------------------------------------
