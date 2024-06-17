@@ -7,6 +7,17 @@ export default class extends Controller {
   connect() {
     console.log("connected!");
     this.csrfToken = document.head.querySelector("[name~=csrf-token][content]").content;
+    const url = '/chats'
+    fetch(url, {
+      headers: {
+        "X-CSRF-Token": this.csrfToken,
+        "Accept": "application/json"
+      }
+    })
+    .then(response => response.json())
+    .then((data) => {
+      this.chatNumber = data.chat_id
+    })
   }
 
   generateResponse(event) {
@@ -19,6 +30,22 @@ export default class extends Controller {
     this.promptTarget.value = ""
   }
 
+  resetChat(event) {
+    this.responseTarget.innerHTML = ''
+    const url = '/chats'
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "X-CSRF-Token": this.csrfToken,
+        "Accept": "application/json"
+      }
+    })
+    .then(response => response.json())
+    .then((data) => {
+      this.chatNumber = data.chat_id
+    })
+  }
+
   #createLabel(text) {
     const label = document.createElement('strong')
     label.innerText = `${text}`
@@ -28,14 +55,14 @@ export default class extends Controller {
   #createMessage(text) {
     const contentElement = document.createElement('p') // pre element preserves spaces and line breaks
     contentElement.classList.add('text-break')
-    contentElement.innerText = `${text}`
+    contentElement.innerHTML = `${text}`
     this.responseTarget.appendChild(contentElement)
     this.responseTarget.scrollTop = this.responseTarget.scrollHeight
     return contentElement
   }
 
   #setupEventSource() {
-    this.eventSource = new EventSource(`/conversation_responses?prompt=${this.promptTarget.value}`)
+    this.eventSource = new EventSource(`/conversation_responses?prompt=${this.promptTarget.value}&chat_number=${this.chatNumber}&task_number=142`)
     this.eventSource.addEventListener("message", this.#handleMessage.bind(this))
     this.eventSource.addEventListener("error", this.#handleError.bind(this)) // we get this error event automatically once the server closes the connection
   }

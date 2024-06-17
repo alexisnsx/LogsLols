@@ -7,8 +7,10 @@
   </section>
 
   <div class="flex-shrink-0">
-    <%= simple_form_for [ chat, conversation ], data: { action: "conversation#generateResponse" } do |f| %>
-      <%= f.input :user_message, label: "ask me anything", as: :string, input_html: { data: { conversation_target: "prompt" } } %>
+    <%= form_with html: {class: "mb-2", data: { action: "conversation#generateResponse" }}  do |f| %>
+      <%= f.label :message, "ask me anything" %>
+      <%= f.text_field :message, { data: { conversation_target: "prompt" }, class: "form-control"} %>
     <% end %>
+    <button class="btn btn-primary btn-sm mb-2" data-action="click->conversation#resetChat">reset chat</button>
   </div>
 </div>

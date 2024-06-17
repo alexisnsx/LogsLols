@@ -1,43 +1,51 @@
-<div class="container p-2" style="height: 100%;">
-  <div class="row" style="height: 100%;">
-    <div class="col-11 position-relative">
-      <div>
-        <% if @task.priority %>
-          <% if @task.priority == "High" %>
-            <span class="rectangular-highlight bg-danger">
-                High priority
-            </span>
-          <% elsif @task.priority == "Medium" %>
-            <span class="rectangular-highlight bg-warning">
-                Medium priority
-            </span>
-          <% elsif @task.priority == "Low" %>
-            <span class="rectangular-highlight bg-success">
-                Low priority
-            </span>
-          <% end %>
-        <% end %>
-      </div>
+<div class="container px-2 d-flex flex-column" style="height: 100%; overflow-y: scroll;">
+  <div>
+    <% if @task.priority %>
+      <% if @task.priority == "High" %>
+        <span class="rectangular-highlight bg-danger">
+            High priority
+        </span>
+      <% elsif @task.priority == "Medium" %>
+        <span class="rectangular-highlight bg-warning">
+            Medium priority
+        </span>
+      <% elsif @task.priority == "Low" %>
+        <span class="rectangular-highlight bg-success">
+            Low priority
+        </span>
+      <% end %>
+    <% end %>
+  </div>
 
-      <h1><%= @task.title %></h1>
-      <div class="task-description overflow-auto">
-        <p><%= @task.description %></p>
-      </div>
+  <h1><%= @task.title %></h1>
 
-      <div class="d-flex position-absolute bottom-0">
-        <% @task.documents.each do |doc| %>
-          <% url = cloudinary_url(doc.key) %>
-          <% image_url = url.sub('/upload/', '/upload/f_jpg/') %>
+  <%= simple_form_for @task,
+  html: {
+    class: 'flex-grow-1 d-flex flex-column' },
+  data: {
+        action: ("submit->task-cards#submit"),
+        task_cards_target: "textarea"
+    } do |f| %>
+  <%= f.input :description, as: :text, input_html: { class: 'flex-grow-1 task-description' }, wrapper_html: { class: 'flex-grow-1 d-flex flex-column' } %>
+  <%= f.submit 'Save' %>
+  <% end %>
 
-          <div class="col-3 card border-0 mx-1">
-            <a href="<%= url %>"><img src="<%= image_url %>" class="w-100 border" alt=""></a>
-          </div>
+  <%# to delete %>
 
-        <% end %>
-      </div>
+
+  <div class="d-flex justify-content-end align-items-end mt-2">
+    <div class="flex-grow-1 d-flex align-items-center task-documents">
+      <% @task.documents.each do |doc| %>
+        <% url = cloudinary_url(doc.key) %>
+        <% image_url = url.sub('/upload/', '/upload/f_jpg/') %>
+
+        <div class="col-3 card border-0 mx-1">
+          <a href="<%= url %>"><img src="<%= image_url %>" class="w-100 border" alt=""></a>
+        </div>
+      <% end %>
     </div>
 
-    <div class="col-1 d-flex flex-column justify-content-end">
+    <div class="task-icons-wrapper">
       <p class="task-icons" data-action="click->task-cards#closeCard"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
 
       <%= render "tasks/checkbox", task: task %>
@@ -48,5 +56,8 @@
 
       <p data-action="click->task-cards#openEdit" class="task-icons"><i class="fa-regular fa-pen-to-square"></i></p>
     </div>
+
+
   </div>
+
 </div>
