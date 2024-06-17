@@ -130,7 +130,11 @@ class TasksController < ApplicationController
     end
 
     if @tasks.empty?
-      @tasks = current_user.tasks.order(:id).reverse
+      if params[:sorted] && (params[:sorted] != 'none')
+        @tasks = current_user.tasks.order(params[:sorted])
+      else
+        @tasks = current_user.tasks.order(:id).reverse
+      end
     end
 
     # if params[:sorted] == "priority"
@@ -143,8 +147,6 @@ class TasksController < ApplicationController
     #   @tasks = current_user.tasks.order(:due_date)
     # end
 
-
-
     render json: {
       task_cards: render_to_string(
         partial: 'tasks/index',
@@ -154,36 +156,36 @@ class TasksController < ApplicationController
     }
   end
 
-  def filter
-    puts "paramshere>"
-    puts params
-    filters = {}
-    if params[:priority]
-      filters[:priority] = params[:priority]
-    end
-    if params[:status]
-      filters[:status] = params[:status]
-    end
-    if params[:dueDate]
-      filters[:due_date] = params[:dueDate]
-    end
+  # def filter
+  #   puts "paramshere>"
+  #   puts params
+  #   filters = {}
+  #   if params[:priority]
+  #     filters[:priority] = params[:priority]
+  #   end
+  #   if params[:status]
+  #     filters[:status] = params[:status]
+  #   end
+  #   if params[:dueDate]
+  #     filters[:due_date] = params[:dueDate]
+  #   end
 
     # filters[:priority] = params[:priority] == 'None' ? nil : params[:priorty]
-    puts "filters>>"
-    puts filters
-    @tasks = Task.where(filters)
-    # @tasks = Task.where(priority: params[:priority], status: params[:status])
+    # puts "filters>>"
+    # puts filters
+    # @tasks = Task.where(filters)
+    # # @tasks = Task.where(priority: params[:priority], status: params[:status])
 
-    puts(@tasks)
+    # puts(@tasks)
 
-    render json: {
-      task_cards: render_to_string(
-        partial: 'tasks/index',
-        locals: { tasks: @tasks },
-        formats: [:html]
-      )
-    }
-  end
+    # render json: {
+    #   task_cards: render_to_string(
+    #     partial: 'tasks/index',
+    #     locals: { tasks: @tasks },
+    #     formats: [:html]
+    #   )
+    # }
+  # end
 
   private
 
@@ -195,5 +197,10 @@ class TasksController < ApplicationController
     params.require(:task).permit(:title, :content, :priority, :due_date, :status, :reminder_datetime, documents: [])
   end
 
+  def sorted_by(current_user, field)
+    return current_user.tasks.order(:status).reverse if field == 'status'
+
+    return current_user.tasks.order(field)
+  end
 
 end

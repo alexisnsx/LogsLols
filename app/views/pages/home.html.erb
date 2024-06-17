@@ -26,17 +26,18 @@
         <input class="form-control mr-sm-2 my-2" type="search" placeholder="Text search" aria-label="Search" name="texts"  data-action="keyup->text-search#searchTask" data-text-search-target="search">
       </form>
 
+      <%# sort form%>
       <div class="col-12">
-      Sorted by:
-      <input type="radio" id="priority" name="sort" value="priority" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
-      <label for="priority">Priority</label>
-      <input type="radio" id="status" name="sort" value="status" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
-      <label for="status">Status</label>
-      <input type="radio" id="due_date" name="sort" value="due_date" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
-      <label for="due_date">Due Date</label>
-      <input type="radio" id="none" name="sort" value="none" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
-      <label for="none">None</label>
-
+        <span class="fw-bold">Sorted By:</span>
+        <input type="radio" class="btn-check" id="priority" name="sort" value="priority" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
+        <label class="btn btn-outline-primary" for="priority">Priority</label>
+        <input type="radio" class="btn-check" id="status" name="sort" value="status" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
+        <label class="btn btn-outline-primary" for="status">Status</label>
+        <input type="radio" class="btn-check" id="due_date" name="sort" value="due_date" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
+        <label class="btn btn-outline-primary" for="due_date">Due Date</label>
+        <input type="radio" class="btn-check" id="none" name="sort" value="none" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
+        <label class="btn btn-outline-primary" for="none">None</label>
+      </div>
 
       <%# filter form %>
         <%# <form action="<%= filter_path %>
