@@ -121,10 +121,28 @@ class TasksController < ApplicationController
 
   def search
     @query = params[:q]
+    puts params
     @tasks = current_user.tasks.search_full_text(@query)
+
+    #if query.length
+
+    
+    # else
+
     if @tasks.empty?
       @tasks = current_user.tasks.order(:id).reverse
     end
+    if params[:sorted] == "priority"
+      @tasks = current_user.tasks.order(:priority)
+    end
+    if params[:sorted] == "status"
+      @tasks = current_user.tasks.order(:status).reverse
+    end
+    if params[:sorted] == "due_date"
+      @tasks = current_user.tasks.order(:due_date)
+    end
+
+
     render json: {
       task_cards: render_to_string(
         partial: 'tasks/index',
@@ -132,7 +150,6 @@ class TasksController < ApplicationController
         formats: [:html]
       )
     }
-
   end
 
   def filter

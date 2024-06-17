@@ -26,10 +26,18 @@
         <input class="form-control mr-sm-2 my-2" type="search" placeholder="Text search" aria-label="Search" name="texts"  data-action="keyup->text-search#searchTask" data-text-search-target="search">
       </form>
 
-      <%# filter form %>
       <div class="col-12">
-        <form action="<%= filter_path %>">
-          <label for="priority">Priority Filter:</label>
+      Sorted by:
+      <input type="radio" id="priority" name="sort" value="priority" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
+      <label for="priority">Priority</label>
+      <input type="radio" id="status" name="sort" value="status" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
+      <label for="status">Status</label>
+      <input type="radio" id="due_date" name="sort" value="due_date" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
+      <label for="due_date">Due Date</label>
+
+      <%# filter form %>
+        <%# <form action="<%= filter_path %>
+          <%# <label for="priority">Priority Filter:</label>
           <select name="priority" id="priority" data-action="change->task-filter#filterTask" data-task-filter-target="priority">
             <option value="High">High</option>
             <option value="Medium">Medium</option>
@@ -43,13 +51,13 @@
             <option value="None">None</option>
           </select>
           <label for="dueDate">Due Date Filter:</label>
-            <input type="date" id="dueDate" name="dueDate" data-action="change->task-filter#filterTask" data-task-filter-target="dueDate"/>
+            <input type="date" id="dueDate" name="dueDate" data-action="change->task-filter#filterTask" data-task-filter-target="dueDate"/> %>
       <div class="row">
         <div class="mt-4 position relative home-icons col-1 d-flex flex-column align-items-center justify-content-start">
           <p><i class="fa-regular fa-calendar fs-3"></i></p>
           <p><i class="fa-solid fa-chalkboard fs-3"></i></p>
           <p data-action="click->task-cards#openCreate"><i class="fa-regular fa-square-plus fs-3"></i></p>
-          <div class="new-task popup" data-task-cards-target="newcontent">
+          <div class="new-task popup"data-task-cards-target="newcontent">
           </div>
         </div>
 
@@ -59,7 +67,7 @@
           </div>
         </div>
       </div>
-      </div>
+    </div>
 
 
     </div>
