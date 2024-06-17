@@ -39,7 +39,7 @@ class TasksController < ApplicationController
       if @task.save
         format.html { redirect_to root_path }
         format.json
-        flash[:notice] = "'#{@task.title}' task successfully saved!"
+        # flash[:notice] = "'#{@task.title}' task successfully saved!"
       else
         format.html { render partial: 'new', status: :unprocessable_entity }
         format.json
@@ -120,8 +120,10 @@ class TasksController < ApplicationController
 
   def search
     @query = params[:q]
-    @tasks = Task.search_full_text(@query)
-
+    @tasks = current_user.tasks.search_full_text(@query)
+    if @tasks.empty?
+      @tasks = current_user.tasks.order(:id).reverse
+    end
     render json: {
       task_cards: render_to_string(
         partial: 'tasks/index',
@@ -146,6 +148,6 @@ class TasksController < ApplicationController
   end
 
   def task_params
-    params.require(:task).permit(:title, :description, :priority, :due_date, :status, :reminder_datetime, documents: [])
+    params.require(:task).permit(:title, :content, :priority, :due_date, :status, :reminder_datetime, documents: [])
   end
 end

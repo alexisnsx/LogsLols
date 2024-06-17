@@ -6,12 +6,18 @@
     <%= f.input :title, label: "name of task" %>
 
     <div class="row g-3">
-      <div class="col-10">
-        <%= f.input :description, label: "description" %>
-      </div>
-      <div class="col-2">
-        <%= f.input :priority, as: :radio_buttons, collection: Task::PRIORITY, label: "set priority" %>
-      </div>
+      <% if @task.persisted? %>
+        <div class="col">
+          <%= f.input :priority, as: :radio_buttons, collection: Task::PRIORITY, label: "set priority" %>
+        </div>
+      <% else %>
+        <div class="col-10">
+          <%= f.input :content %>
+        </div>
+        <div class="col-2">
+          <%= f.input :priority, as: :radio_buttons, collection: Task::PRIORITY, label: "set priority" %>
+        </div>
+      <% end %>
     </div>
 
     <div class="row g-3" data-controller="datepicker">
@@ -38,9 +44,9 @@
     <div class="d-flex justify-content-between align-items-center">
       <%= f.submit class:"btn btn-primary mt-3" %>
         <% if @task.persisted? %>
-      <p data-action="click->task-cards#closeEdit" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
-      <% else %>
-        <p data-action="click->task-cards#closeCreate" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
-      <% end %>
+          <p data-action="click->task-cards#closeEdit" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
+        <% else %>
+          <p data-action="click->task-cards#closeCreate" class="task-icons"><i class="fa-solid fa-arrow-up-right-from-square"></i></p>
+        <% end %>
     </div>
   <% end %>
