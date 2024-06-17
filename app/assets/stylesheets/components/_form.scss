@@ -6,3 +6,8 @@
   color: #339989
 }
 
+// removed the tick.
+.form-control {
+  background-color: initial !important;
+  background-image: none !important;
+}

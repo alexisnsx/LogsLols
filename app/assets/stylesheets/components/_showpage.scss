@@ -15,8 +15,15 @@
 }
 
 .task-description {
-  width: 100%;
-  height: 350px;
+  border: 1px solid black;
+}
+
+.task-documents {
+  overflow-x: scroll;
+}
+
+.task-icons-wrapper {
+  z-index: 10;
 }
 
 // .edit {
