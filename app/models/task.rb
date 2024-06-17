@@ -1,5 +1,6 @@
 class Task < ApplicationRecord
   include PgSearch::Model
+  has_rich_text :content
 
   STATUS = %w[Incomplete Complete]
   PRIORITY = %w[High Medium Low]
@@ -11,8 +12,10 @@ class Task < ApplicationRecord
 
   pg_search_scope :search_full_text, against: {
     title: 'A',
-    description: 'B'
-  }, using: {
+  },
+  associated_against: {
+    rich_text_content: [:body] # Associated against the ActionText content
+}, using: {
     tsearch: { prefix: true }
   }
 end
