@@ -22,7 +22,7 @@ class TasksController < ApplicationController
   def show_ai
     task_id = params[:id]
     task = Task.find(task_id)
-    render json: { title: task.title, description: task.description }
+    render json: { task_id: task_id, title: task.title, content: task.content.body }
   end
 
   def new

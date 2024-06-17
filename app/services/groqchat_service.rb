@@ -5,12 +5,11 @@ class GroqchatService
 
   attr_reader :message
 
-  def initialize(prompt: "", response:, user:, chat_number:, task_number: 0)
+  def initialize(prompt: "", response:, user:, chat_number:)
     @prompt = prompt
     @response = response
     @user = user
     @chat_number = chat_number
-    @task_number = task_number
   end
 
   class CompletionStream < GroqchatService
@@ -86,10 +85,8 @@ class GroqchatService
           when "tavily_search"
             call_tool(tavily_search(**args), tool_call_id, func, messages)
           when "get_current_task"
-            args[:id] = @task_number
             get_current_task(**args)
           when "update_current_task"
-            args[:id] = @task_number
             update_current_task(**args)
           # when "create_task"
           #   call_tool(create_task(**args), tool_call_id, func, messages)
@@ -198,14 +195,14 @@ class GroqchatService
 
   def get_current_task(id:)
     task = Task.find(id)
-    reply = A("I found this: *** Task ID: #{task.id}, Task: #{task.title}, Description: #{task.description} *** Is this your task? How may I help you with it?")
+    reply = A("Ok I've got your task: *** Task id: #{task.id}, Task: #{task.title}, Content: #{task.content} *** How may I help you with it?")
     stream_direct(@response, reply)
   end
 
-  def update_current_task(id:, description:)
+  def update_current_task(id:, content:)
     task = Task.find(id)
-    if task.update(description: description)
-      reply = A("Ok I've updated the description for your task '#{task.title}' as Description: #{task.description}! Is there anything else you need help with?")
+    if task.update(content: content)
+      reply = A("Ok I've updated the description for your task '#{task.title}' as Content: #{task.content}! Is there anything else you need help with?")
     else
       reply = A("It seems that I either can't find your task or I've forgotten the description. Can we start again (please)?")
     end
@@ -285,7 +282,7 @@ class GroqchatService
       type: "function",
       function: {
         name: "update_current_task",
-        description: "Update the user's current task description. Must be used when user says 'update my current task'.",
+        description: "Updates the user's task content. Only use this tool when the user specifically says 'update my task'.",
         parameters: {
           type: "object",
           properties: {
@@ -293,12 +290,12 @@ class GroqchatService
               type: "integer",
               description: "The id of the task you need to search the Task database for"
             },
-            description: {
+            content: {
               type: "string",
               description: "The description to update the task with"
             }
           },
-          required: ["id", "description"]
+          required: ["id", "content"]
         }
       }
     }
@@ -331,7 +328,7 @@ class GroqchatService
         }
       }
     }
-    [ get_weather_report_tool, web_search_tool, get_current_task_tool, update_current_task_tool ]
+    [ get_weather_report_tool, web_search_tool ]
   end
 
   # ----------------------------- MODELS ------------------------------------
