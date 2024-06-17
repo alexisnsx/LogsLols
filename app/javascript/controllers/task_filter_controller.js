@@ -3,16 +3,36 @@ import { Controller } from "@hotwired/stimulus"
 // Connects to data-controller="task-filter"
 export default class extends Controller {
 
-  static targets = ["results"]
+  static targets = ["results", "priority", "status", "dueDate"]
 
 
   connect() {
     console.log("Hello from our task filter controller");
   }
 
+
+/**
+ Object.keys(params).forEach((key)=> {
+  filters[]
+ })
+
+ */
+
   filterTask(event) {
-    console.log(event.currentTarget.value)
-    fetch(`filter?sort=${event.currentTarget.value}`,{
+    const filter = {}
+    if (this.priorityTarget.value !='None'){
+      filter.priority = this.priorityTarget.value
+    }
+    if (this.statusTarget.value !='None'){
+      filter.status = this.statusTarget.value
+    }
+    if (this.dueDateTarget.value){
+      filter.dueDate = this.dueDateTarget.value
+    }
+    console.log(this.priorityTarget.value)
+    console.log(this.statusTarget.value)
+    console.log(this.dueDateTarget.value)
+    fetch(`filter?` + new URLSearchParams(filter),{
       headers: {
         Accept: "application/json",
       }

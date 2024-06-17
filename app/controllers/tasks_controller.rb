@@ -134,7 +134,26 @@ class TasksController < ApplicationController
   end
 
   def filter
-    @tasks = Task.where(priority: params[:sort])
+    puts "paramshere>"
+    puts params
+    filters = {}
+    if params[:priority]
+      filters[:priority] = params[:priority]
+    end
+    if params[:status]
+      filters[:status] = params[:status]
+    end
+    if params[:dueDate]
+      filters[:due_date] = params[:dueDate]
+    end
+
+    # filters[:priority] = params[:priority] == 'None' ? nil : params[:priorty]
+    puts "filters>>"
+    puts filters
+    @tasks = Task.where(filters)
+    # @tasks = Task.where(priority: params[:priority], status: params[:status])
+
+    puts(@tasks)
 
     render json: {
       task_cards: render_to_string(

@@ -20,20 +20,30 @@
 
       <%# right side for tasks cards %>
       <div class="col-8" data-controller="task-cards">
+
+      <%# text-search form%>
       <form class="form-inline my-2 my-lg-0" action="<%= search_path %>" method="get">
         <input class="form-control mr-sm-2" type="search" placeholder="Text search" aria-label="Search" name="texts"  data-action="keyup->text-search#searchTask" data-text-search-target="search">
       </form>
 
       <%# filter form %>
-      <div class="col-8">
+      <div class="col-12">
         <form action="<%= filter_path %>">
-          <label for="priority">Sort by:</label>
-            <select name="priority" id="priority" data-action="change->task-filter#filterTask">
-              <option value="High">High priority</option>
-              <option value="Medium">Medium priority</option>
-              <option value="Low">Low priority</option>
-              <option value="Clear">Clear filter</option>
-            </select>
+          <label for="priority">Priority Filter:</label>
+          <select name="priority" id="priority" data-action="change->task-filter#filterTask" data-task-filter-target="priority">
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+            <option value="None">None</option>
+          </select>
+          <label for="status">Status Filter:</label>
+          <select name="status" id="status" data-action="change->task-filter#filterTask" data-task-filter-target="status">
+            <option value="Complete">Complete</option>
+            <option value="Incomplete">Incomplete</option>
+            <option value="None">None</option>
+          </select>
+          <label for="dueDate">Due Date Filter:</label>
+            <input type="date" id="dueDate" name="dueDate" data-action="change->task-filter#filterTask" data-task-filter-target="dueDate"/>
       <div class="row">
         <div class="mt-4 position relative home-icons col-1 d-flex flex-column align-items-center justify-content-start">
           <p><i class="fa-regular fa-calendar fs-3"></i></p>
