@@ -1,7 +1,7 @@
 <%# main row for the entire page %>
 <div class="d-flex justify-content-center px-2">
   <div class="container-fluid">
-    <div class="row" data-controller="text-search">
+    <div class="row" data-controller="text-search task-filter">
       <%# left side comprising of chat and spotify %>
       <div class="col-4 left-column gap-3 vh-100 sticky-top">
         <%# chatbot %>
@@ -23,6 +23,17 @@
       <form class="form-inline my-2 my-lg-0" action="<%= search_path %>" method="get">
         <input class="form-control mr-sm-2" type="search" placeholder="Text search" aria-label="Search" name="texts"  data-action="keyup->text-search#searchTask" data-text-search-target="search">
       </form>
+
+      <%# filter form %>
+      <div class="col-8">
+        <form action="<%= filter_path %>">
+          <label for="priority">Sort by:</label>
+            <select name="priority" id="priority" data-action="change->task-filter#filterTask">
+              <option value="High">High priority</option>
+              <option value="Medium">Medium priority</option>
+              <option value="Low">Low priority</option>
+              <option value="Clear">Clear filter</option>
+            </select>
       <div class="row">
         <div class="mt-4 position relative home-icons col-1 d-flex flex-column align-items-center justify-content-start">
           <p><i class="fa-regular fa-calendar fs-3"></i></p>
@@ -33,7 +44,7 @@
         </div>
 
         <div class="col-11">
-          <div class="row" data-task-cards-target="insertform" data-text-search-target="results">
+          <div class="row" data-task-cards-target="insertform" data-text-search-target="results" data-task-filter-target="results">
             <%= render 'tasks/index', tasks: @tasks %>
           </div>
         </div>

@@ -10,6 +10,7 @@ class TasksController < ApplicationController
     else
       @tasks = Task.all
     end
+
   end
 
   def show
@@ -125,14 +126,19 @@ class TasksController < ApplicationController
         formats: [:html]
       )
     }
-    # @tasks = Task.where("description ILIKE ?", "%#{@query}%")
-    # render json: {
-    #   task_cards: render_to_string(
-    #     partial: 'tasks/index',
-    #     locals: { tasks: @tasks },
-    #     formats: [:html]
-    #   )
-    # }
+
+  end
+
+  def filter
+    @tasks = Task.where(priority: params[:sort])
+
+    render json: {
+      task_cards: render_to_string(
+        partial: 'tasks/index',
+        locals: { tasks: @tasks },
+        formats: [:html]
+      )
+    }
   end
 
   private
@@ -144,4 +150,6 @@ class TasksController < ApplicationController
   def task_params
     params.require(:task).permit(:title, :description, :priority, :due_date, :status, :reminder_datetime, documents: [])
   end
+
+
 end
