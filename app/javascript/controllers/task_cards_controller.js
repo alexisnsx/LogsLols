@@ -8,6 +8,17 @@ export default class extends Controller {
   connect() {
     this.csrfToken = document.head.querySelector("[name~=csrf-token][content]").content;
     // this.handleDocumentClick = this.handleDocumentClick.bind(this);
+    const url = '/chats'
+    fetch(url, {
+      headers: {
+        "X-CSRF-Token": this.csrfToken,
+        "Accept": "application/json"
+      }
+    })
+    .then(response => response.json())
+    .then((data) => {
+      this.chatNumber = data.chat_id
+    })
 }
 
   openCreate() {
@@ -181,6 +192,34 @@ delete(e) {
       document.body.insertAdjacentHTML("beforeend", data)
     })
   }
+}
+
+postToAsst(e) {
+  const taskId = e.currentTarget.closest('div[data-id]')['dataset']['id']
+  const showTaskUrl = `/tasks/${taskId}/show_ai`
+  const postConvoUrl = `/chats/${this.chatNumber}/conversations`
+
+  fetch (showTaskUrl, { headers: {
+    "Accept": "application/json" },
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    fetch(postConvoUrl, {
+      method: "POST",
+      headers: {
+        "X-CSRF-Token": this.csrfToken,
+        "Accept": "application/json"
+      },
+      body: response
+    })
+    .then(response => response.json())
+    .then((data) => {
+      console.log(data);
+    })
+
+  })
+
 }
 
 // to close the card anywhere on the page

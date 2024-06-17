@@ -1,7 +1,7 @@
 <%# main row for the entire page %>
 <div class="d-flex justify-content-center px-2">
   <div class="container-fluid">
-    <div class="row" data-controller="text-search">
+    <div class="row" data-controller="task-cards">
       <%# left side comprising of chat and spotify %>
       <div class="col-4 left-column gap-3 vh-100 sticky-top">
         <%# chatbot %>
@@ -19,7 +19,7 @@
       </div>
 
       <%# right side for tasks cards %>
-      <div class="col-8" data-controller="task-cards">
+      <div class="col-8" data-controller="text-search">
       <form class="form-inline my-2 my-lg-0" action="<%= search_path %>" method="get">
         <input class="form-control mr-sm-2" type="search" placeholder="Text search" aria-label="Search" name="texts"  data-action="keyup->text-search#searchTask" data-text-search-target="search">
       </form>

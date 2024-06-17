@@ -198,7 +198,7 @@ class GroqchatService
 
   def get_current_task(id:)
     task = Task.find(id)
-    reply = A("I found this: *** Task ID: #{task.id}, Task: #{task.title}, Description: #{task.description}, Due Date: #{task.due_date} *** Is this your task? How may I help you with it?")
+    reply = A("I found this: *** Task ID: #{task.id}, Task: #{task.title}, Description: #{task.description} *** Is this your task? How may I help you with it?")
     stream_direct(@response, reply)
   end
 
