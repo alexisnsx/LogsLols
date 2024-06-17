@@ -26,6 +26,10 @@
   z-index: 10;
 }
 
+.form-control.is-valid {
+  border: 1px solid lightgray;
+}
+
 // .edit {
 //   position: fixed;
 //   top: 50px;
