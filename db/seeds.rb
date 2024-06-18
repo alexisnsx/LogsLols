@@ -28,8 +28,6 @@ Chat.create!(user: brendan)
 
 puts 'creating new tasks'
 
-Certainly! Here are six more tasks added to the array:
-
 tasks = [
   {
     title: 'Media campaign for new coffee flavour "Pomelo Americano"',
@@ -149,6 +147,136 @@ tasks = [
     due_date: Date.new(2024, 7, 20),
     reminder_datetime: DateTime.new(2024, 7, 19, 13, 0, 0),
     user: alexis,
+    status: 'Incomplete'
+  },
+  {
+    title: 'Finish Q3 audit for RE Bank',
+    content: 'Work off Q2 audit findings to identify if recommendations had been implemented. Contact Joseph from Data team to get latest industry risk findings. Ensure I have latest cashflow statements (check with Alice). Remember to add in new section in observation notes as requested by RE Bank manager.',
+    priority: 'High',
+    documents_path: ['documents/pdpc-guidelines.pdf', 'documents/Expedia.pdf', 'documents/ESGrelease.pdf'],
+    due_date: Date.new(2024, 8, 20),
+    reminder_datetime: DateTime.new(2024, 8, 20, 15, 30, 00),
+    user: brendan,
+    status: 'Incomplete'
+  },
+  {
+    title: 'Prepare audit report for Global Tech Ltd.',
+    content: 'Compile the findings from the audit of Global Tech Ltd. Ensure all sections are thoroughly reviewed and provide clear recommendations. Follow up with the IT department to validate the data security measures in place. Arrange a meeting with the finance team to discuss discrepancies found in the financial statements.',
+    priority: 'High',
+    documents_path: ['documents/checklist.pdf', 'documents/minutes.pdf'],
+    due_date: Date.new(2024, 7, 15),
+    reminder_datetime: DateTime.new(2024, 7, 14, 10, 0, 0),
+    user: brendan,
+    status: 'Incomplete'
+  },
+  {
+    title: 'Review compliance with new financial regulations',
+    content: 'Evaluate the company adherence to the latest financial regulations. Coordinate with the compliance officer to get updates on the regulatory changes. Cross-check the compliance checklist and ensure all points are covered. Prepare a summary report highlighting any non-compliance issues.',
+    priority: 'Medium',
+    documents_path: ['documents/Expedia.pdf', 'documents/claims-guide.pdf'],
+    due_date: Date.new(2024, 7, 25),
+    reminder_datetime: DateTime.new(2024, 7, 24, 14, 0, 0),
+    user: brendan,
+    status: 'Incomplete'
+  },
+  {
+    title: 'Conduct risk assessment for XYZ Corporation',
+    content: 'Perform a thorough risk assessment for XYZ Corporation. Identify potential financial and operational risks. Consult with the risk management team to discuss mitigation strategies. Document all findings and ensure the report is aligned with the company risk management framework.',
+    priority: 'High',
+    documents_path: ['documents/instructions.pdf', 'documents/Expedia.pdf'],
+    due_date: Date.new(2024, 8, 10),
+    reminder_datetime: DateTime.new(2024, 8, 9, 13, 0, 0),
+    user: brendan,
+    status: 'Incomplete'
+  },
+  {
+    title: 'Verify asset valuation for DEF Industries',
+    content: 'Check the accuracy of asset valuations for DEF Industries. Liaise with the valuation experts to ensure the valuations are up-to-date and compliant with industry standards. Confirm that all necessary documentation is available and properly filed. Prepare a detailed report on the findings.',
+    priority: 'Low',
+    documents_path: ['documents/faqs.pdf', 'documents/checklist.pdf'],
+    due_date: Date.new(2024, 8, 5),
+    reminder_datetime: DateTime.new(2024, 8, 4, 16, 0, 0),
+    user: brendan,
+    status: 'Incomplete'
+  },
+  {
+    title: 'Audit internal controls for GHI Enterprises',
+    content: 'Examine the internal control systems of GHI Enterprises. Verify the effectiveness of the controls and identify any weaknesses. Meet with the internal audit team to discuss their findings and incorporate them into the final report. Recommend improvements where necessary.',
+    priority: 'High',
+    documents_path: ['documents/claims-guide.pdf', 'documents/ESGrelease.pdf'],
+    due_date: Date.new(2024, 7, 30),
+    reminder_datetime: DateTime.new(2024, 7, 29, 11, 0, 0),
+    user: brendan,
+    status: 'Complete'
+  },
+  {
+    title: 'Review quarterly financial statements for JKL Ltd.',
+    content: 'Analyze the quarterly financial statements of JKL Ltd. Check for accuracy and compliance with accounting standards. Highlight any significant variances or anomalies. Prepare a summary of the key findings and share it with the finance team for their review.',
+    priority: 'Medium',
+    documents_path: ['documents/instructions.pdf', 'documents/minutes.pdf'],
+    due_date: Date.new(2024, 7, 20),
+    reminder_datetime: DateTime.new(2024, 7, 19, 15, 0, 0),
+    user: brendan,
+    status: 'Complete'
+  },
+  {
+    title: 'Conduct due diligence for MNO merger',
+    content: 'Perform a comprehensive due diligence review for the upcoming merger between MNO and PQR Inc. Evaluate the financial health and operational efficiency of both companies. Identify any potential risks or red flags. Prepare a detailed report to support the merger decision-making process.',
+    priority: 'High',
+    documents_path: ['documents/checklist.pdf', 'documents/claims-guide.pdf'],
+    due_date: Date.new(2024, 8, 15),
+    reminder_datetime: DateTime.new(2024, 8, 14, 10, 0, 0),
+    user: brendan,
+    status: 'Incomplete'
+  },
+  {
+    title: 'Assess cybersecurity measures for STU Corp.',
+    content: 'Evaluate the cybersecurity measures in place at STU Corp. Conduct interviews with the IT security team to understand their protocols and practices. Review recent cybersecurity incidents and assess the company response. Provide recommendations to enhance security and prevent future breaches.',
+    priority: 'Medium',
+    documents_path: ['documents/faqs.pdf', 'documents/minutes.pdf'],
+    due_date: Date.new(2024, 8, 25),
+    reminder_datetime: DateTime.new(2024, 8, 24, 11, 0, 0),
+    user: brendan,
+    status: 'Incomplete'
+  },
+  {
+    title: 'Prepare annual audit plan',
+    content: 'Develop the annual audit plan, outlining the scope and objectives for the upcoming year. Coordinate with the audit committee to ensure alignment with the organization strategic goals. Identify key areas of focus and allocate resources accordingly. Submit the plan for approval and communicate it to the relevant stakeholders.',
+    priority: 'High',
+    documents_path: ['documents/claims-guide.pdf', 'documents/ESGrelease.pdf'],
+    due_date: Date.new(2024, 7, 31),
+    reminder_datetime: DateTime.new(2024, 7, 30, 14, 0, 0),
+    user: brendan,
+    status: 'Incomplete'
+  },
+  {
+    title: 'Evaluate investment portfolio for VWX Investments',
+    content: 'Assess the performance of VWX Investments portfolio. Analyze the returns on investment and compare them with industry benchmarks. Identify underperforming assets and provide recommendations for portfolio rebalancing. Prepare a comprehensive report for the investment committee.',
+    priority: 'Medium',
+    documents_path: ['documents/Expedia.pdf', 'documents/faqs.pdf'],
+    due_date: Date.new(2024, 8, 18),
+    reminder_datetime: DateTime.new(2024, 8, 17, 13, 0, 0),
+    user: brendan,
+    status: 'Incomplete'
+  },
+  {
+    title: 'Audit payroll processes for XYZ Inc.',
+    content: 'Review the payroll processes at XYZ Inc. Ensure compliance with labor laws and regulations. Verify the accuracy of payroll records and identify any discrepancies. Meet with the HR department to discuss findings and suggest improvements to enhance payroll accuracy and efficiency.',
+    priority: 'High',
+    documents_path: ['documents/instructions.pdf', 'documents/pdpc-guidelines.pdf'],
+    due_date: Date.new(2024, 8, 1),
+    reminder_datetime: DateTime.new(2024, 7, 31, 10, 0, 0),
+    user: brendan,
+    status: 'Incomplete'
+  },
+  {
+    title: 'Investigate fraud allegations at ABC Corp.',
+    content: 'Conduct a thorough investigation into the fraud allegations at ABC Corp. Gather and analyze evidence to substantiate the claims. Interview relevant employees and stakeholders to gather information. Prepare a detailed report outlining the findings and recommendations for corrective actions.',
+    priority: 'High',
+    documents_path: ['documents/claims-guide.pdf', 'documents/minutes.pdf'],
+    due_date: Date.new(2024, 8, 12),
+    reminder_datetime: DateTime.new(2024, 8, 11, 11, 0, 0),
+    user: brendan,
     status: 'Incomplete'
   }
 ]
