@@ -18,7 +18,7 @@ Rails.application.routes.draw do
     end
   end
   resources :chats, only: [ :index, :create ] do
-    resources :conversations, only: [ :index ]
+    resources :conversations, only: [ :index, :create ]
   end
   resources :conversation_responses, only: [ :index ]
 
