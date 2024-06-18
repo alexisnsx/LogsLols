@@ -123,6 +123,7 @@ class TasksController < ApplicationController
     @query = params[:q]
     puts params
 
+
     if params[:sorted] && (params[:sorted] != 'none')
       @tasks = current_user.tasks.order(params[:sorted]).search_full_text(@query)
     else
