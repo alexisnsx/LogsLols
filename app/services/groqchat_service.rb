@@ -39,7 +39,7 @@ class GroqchatService
   class ToolUseStream < GroqchatService
     def call
       # System instructions
-      instructions = S(%q(You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should include the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user, and never mention it is from a tool. But if there are no relevant tools, answer as yourself. If url sources are provided, cite them with the anchor tag intact.))
+      instructions = S(%q(You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should include the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user, and never mention it is from a tool. Cite all url sources. But if there are no relevant tools, answer as yourself.))
 
       # User prompt
       prompt_msg = U(@prompt)
@@ -63,7 +63,9 @@ class GroqchatService
       pp first_reply
 
       # Return first_reply immediately (and store it) if it has no tool_calls
-      return stream_direct(@response, first_reply) if !first_reply.include?(:tool_calls)
+      unless first_reply.include?(:tool_calls)
+        return stream_direct(@response, first_reply)
+      end
 
       # Else, extract information for tool call
       first_reply[:tool_calls].each do |tool_call|
@@ -113,10 +115,8 @@ class GroqchatService
   # Use this method to fake stream a response already received
   def stream_direct(response, reply)
     sse = SSE.new(response.stream, event: "message")
-    bits = reply[:content].scan(/.{1,2}/)
-    bits.each do |bit|
-      sse.write({ message: bit })
-    end
+    bits = reply[:content]
+    sse.write({ message: bits})
     Conversation.create!(chat: memory, message: reply)
     rescue ActionController::Live::ClientDisconnected
       sse.close
@@ -132,13 +132,13 @@ class GroqchatService
     begin
       mixtral7b_client.chat(messages, stream: ->(chunk, response) {
       unless chunk == nil
-        sse.write({ message: chunk })
         full_reply << chunk
       else
         metadata = response
       end
     })
     ensure
+      sse.write({ message: full_reply.join })
       sse.close
     end
     if full_reply.count != 0
@@ -248,7 +248,7 @@ class GroqchatService
       type: "function",
       function: {
         name: "tavily_search",
-        description: "Get current news and information about places, events, personalities from the internet",
+        description: "Get current news and information about places, events, personalities from the internet.",
         parameters: {
           type: "object",
           properties: {
