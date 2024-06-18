@@ -18,6 +18,12 @@ export default class extends Controller {
     .then((data) => {
       this.chatNumber = data.chat_id
     })
+
+    this.element.addEventListener('pass-task-to-ai-event', (e) => {
+      const { task_id, title, content } = JSON.parse(e.detail)
+      this.promptTarget.value = `Can you work with me to think of how to improve a task? I would like to do this step by step. *** Task id: ${task_id} -- Title: ${title} -- Content: ${content} ***`
+      this.generateResponse(e);
+    });
   }
 
   generateResponse(event) {
@@ -54,7 +60,6 @@ export default class extends Controller {
 
   #createMessage(text) {
     const contentElement = document.createElement('p') // pre element preserves spaces and line breaks
-    contentElement.classList.add('text-break')
     contentElement.innerHTML = `${text}`
     this.responseTarget.appendChild(contentElement)
     this.responseTarget.scrollTop = this.responseTarget.scrollHeight
@@ -62,7 +67,7 @@ export default class extends Controller {
   }
 
   #setupEventSource() {
-    this.eventSource = new EventSource(`/conversation_responses?prompt=${this.promptTarget.value}&chat_number=${this.chatNumber}&task_number=142`)
+    this.eventSource = new EventSource(`/conversation_responses?prompt=${this.promptTarget.value}&chat_number=${this.chatNumber}`)
     this.eventSource.addEventListener("message", this.#handleMessage.bind(this))
     this.eventSource.addEventListener("error", this.#handleError.bind(this)) // we get this error event automatically once the server closes the connection
   }
@@ -83,5 +88,6 @@ export default class extends Controller {
     if (this.eventSource) { // if event source somehow still open, close it!!
       this.eventSource.close()
     }
+    this.element.removeEventListener('triggerMethod', this.handleTrigger.bind(this))
   }
 }

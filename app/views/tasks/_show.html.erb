@@ -27,8 +27,8 @@
         task_cards_target: "textarea"
     } do |f| %>
   <%= f.input :content, as: :rich_text_area, input_html: { class: 'flex-grow-1' }, wrapper_html: { class: 'flex-grow-1 d-flex flex-column' }, label: false %>
-  <%= f.submit 'Save' %>
   <% end %>
+  <button data-action="click->task-cards#postToAsst">ask assistant for help</button>
 
   <%# to delete %>
 

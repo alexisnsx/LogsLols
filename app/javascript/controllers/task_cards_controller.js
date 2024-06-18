@@ -205,6 +205,30 @@ delete(e) {
   }
 }
 
+postToAsst(e) {
+  const taskId = e.currentTarget.closest('div[data-id]')['dataset']['id']
+  const showTaskUrl = `/tasks/${taskId}/show_ai`
+  fetch (showTaskUrl, { headers: {
+    "Accept": "application/json" },
+  })
+  .then(response => response.json())
+  .then(data => {
+    const customEvent = new CustomEvent('pass-task-to-ai-event', {
+      bubbles: true,
+      detail: JSON.stringify(data)
+    }
+  );
+    // Dispatching the custom event to the '.chatbot' element
+    const chatbotElement = document.querySelector('.chatbot');
+    if (chatbotElement) {
+      chatbotElement.dispatchEvent(customEvent);
+    } else {
+      console.error('Element with class "chatbot" not found.');
+    }
+  });
+}
+
+
 // to close the card anywhere on the page
 
 // close(e) {
