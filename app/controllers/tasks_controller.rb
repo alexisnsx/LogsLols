@@ -2,7 +2,6 @@ class TasksController < ApplicationController
   before_action :set_task, only: [ :show, :edit, :update, :destroy, :original, :completion ]
 
   def index
-    @tasks = Task.all
     @tasks = current_user.tasks
     @query = params[:search]
     if query.present?
@@ -21,7 +20,9 @@ class TasksController < ApplicationController
   end
 
   def show_ai
-    Task.find(138)
+    task_id = params[:id]
+    task = Task.find(task_id)
+    render json: { task_id: task_id, title: task.title, content: task.content.body }
   end
 
   def new
@@ -127,13 +128,13 @@ class TasksController < ApplicationController
     if params[:sorted].present?
       case params[:sorted]
       when "priority"
-        @tasks = Task.in_order_of(:priority, ["High", "Medium", "Low"])
+        @tasks = Task.where(user: current_user).in_order_of(:priority, ["High", "Medium", "Low"])
         @tasks = @tasks.search_full_text(@query) if @query.present?
       when "status"
-        @tasks = Task.in_order_of(:status, ["Incomplete", "Complete"])
+        @tasks = Task.where(user: current_user).in_order_of(:status, ["Incomplete", "Complete"])
         @tasks = @tasks.search_full_text(@query) if @query.present?
       when "due_date"
-        @tasks = Task.order(:due_date)
+        @tasks = Task.where(user: current_user).order(:due_date)
         @tasks = @tasks.search_full_text(@query) if @query.present?
       end
     end
