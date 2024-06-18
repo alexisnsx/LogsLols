@@ -114,9 +114,8 @@ class GroqchatService
   def stream_direct(response, reply)
     sse = SSE.new(response.stream, event: "message")
     bits = reply[:content].scan(/.{1,2}/)
-    bits.each do |bit|
-      sse.write({ message: bit })
-    end
+    joined_bits = bits.join
+    sse.write({ message: joined_bits})
     Conversation.create!(chat: memory, message: reply)
     rescue ActionController::Live::ClientDisconnected
       sse.close
@@ -132,13 +131,13 @@ class GroqchatService
     begin
       mixtral7b_client.chat(messages, stream: ->(chunk, response) {
       unless chunk == nil
-        sse.write({ message: chunk })
         full_reply << chunk
       else
         metadata = response
       end
     })
     ensure
+      sse.write({ message: full_reply.join })
       sse.close
     end
     if full_reply.count != 0
