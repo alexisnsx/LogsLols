@@ -5,7 +5,6 @@ export default class extends Controller {
   static targets = ["prompt", "response"]
 
   connect() {
-    console.log("connected!");
     this.csrfToken = document.head.querySelector("[name~=csrf-token][content]").content;
     const url = '/chats'
     fetch(url, {
@@ -36,7 +35,7 @@ export default class extends Controller {
     this.promptTarget.value = ""
   }
 
-  resetChat(event) {
+  resetChat() {
     this.responseTarget.innerHTML = ''
     const url = '/chats'
     fetch(url, {

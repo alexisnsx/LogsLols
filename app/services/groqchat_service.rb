@@ -282,7 +282,7 @@ class GroqchatService
       type: "function",
       function: {
         name: "update_current_task",
-        description: "Updates the user's task content. Only use this tool when the user specifically says 'update my task'.",
+        description: "Updates the user's task content. You must ask the user for permission to call this tool.",
         parameters: {
           type: "object",
           properties: {
@@ -328,7 +328,7 @@ class GroqchatService
         }
       }
     }
-    [ get_weather_report_tool, web_search_tool ]
+    [ get_weather_report_tool, web_search_tool, update_current_task_tool ]
   end
 
   # ----------------------------- MODELS ------------------------------------
