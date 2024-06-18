@@ -13,3 +13,4 @@ pin "@rails/actioncable", to: "@rails--actioncable.js" # @7.1.3
 pin "trix"
 pin "@rails/actiontext", to: "actiontext.esm.js"
 pin "marked" # @13.0.0
+pin "typed.js" # @2.1.0
