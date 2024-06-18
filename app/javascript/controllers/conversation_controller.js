@@ -1,4 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
+import { marked } from 'marked';
+import Typed from 'typed.js'
 
 // Connects to data-controller="conversation"
 export default class extends Controller {
@@ -73,8 +75,14 @@ export default class extends Controller {
 
   #handleMessage(event) {
     const parsedData = JSON.parse(event.data)
-    this.currentContent.innerHTML += parsedData.message
-    this.responseTarget.scrollTop = this.responseTarget.scrollHeight
+    // this.currentContent.innerHTML += marked.parse(parsedData.message
+    new Typed(this.currentContent, {
+      strings: [marked.parse(parsedData.message)],
+      showCursor: false,
+      onComplete: () => {
+        this.responseTarget.scrollTop = this.responseTarget.scrollHeight
+      }
+    });
   }
 
   #handleError(event) {

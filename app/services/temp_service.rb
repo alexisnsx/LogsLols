@@ -26,7 +26,6 @@ end
 
 
 # pp trialResponse()
-pp tavily_search(query: "what can i do in bali?")
 
 
 ##### USING THIS TO DUMP SOME CODE WHICH I MIGHT USE AGAIN. DONT ERASE!
