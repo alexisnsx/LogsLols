@@ -59,6 +59,12 @@ submit(e) {
    * document fetches the new display to display.
    */
 openCard(e) {
+
+  /**
+   * closing all open cards
+   */
+  document.querySelectorAll('div[data-id].active').forEach(this.closeAllCards.bind(this))
+
   const cardActive = e.currentTarget.closest('div[data-id]')
   cardActive.classList.add("active")
   const url = `/tasks/${cardActive.dataset.id}`
@@ -94,6 +100,22 @@ closeCard(e) {
 }
 
 
+closeAllCards(card) {
+  const id = card.dataset.id
+  const form = card.querySelector('form')
+
+  fetch(form.action, {
+    method: form.method,
+    headers: { "Accept": "application/json" },
+    body: new FormData(form)
+  })
+  .then(response => response.json())
+  .then((data) => {
+    card.classList.remove("active")
+    card.innerHTML = data.updated_form
+    this.getOriginalContent(id, card)
+  })
+}
 // load edit page
 // press the icon, card should zoom in
 // fetch form from edit and display on the card.
