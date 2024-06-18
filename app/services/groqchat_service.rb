@@ -130,7 +130,7 @@ class GroqchatService
     metadata = ""
     full_reply = []
     begin
-      mixtral7b_client.chat(messages, stream: ->(chunk, response) {
+      llama70b_client.chat(messages, stream: ->(chunk, response) {
       unless chunk == nil
         full_reply << chunk
       else
