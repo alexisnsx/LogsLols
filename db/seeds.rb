@@ -51,8 +51,8 @@ tasks = [
   },
   {
     title: 'Email marketing campaign for summer promotions',
-    content: 'Plan and execute a series of email newsletters to promote summer discounts and new product launches. The campaign should be segmented to target different customer groups based on their preferences and purchase history. Design visually appealing emails that highlight the summer promotions and include exclusive offers for loyalty program members. Ensure each email contains a clear call-to-action to drive traffic to our website and increase sales. Monitor the performance of the campaign and adjust the strategy as needed to optimize results.',
-    priority: 'High',
+    content: 'Plan and execute a series of email newsletters to promote summer discounts and new product launches. The campaign should be segmented to target different customer groups based on their preferences and purchase history. Design visually appealing emails that highlight the summer promotions and include exclusive offers for loyalty program members. Add photo shoot for the newsletters. Ensure each email contains a clear call-to-action to drive traffic to our website and increase sales. Monitor the performance of the campaign and adjust the strategy as needed to optimize results.',
+    priority: 'Low',
     documents_path: ['documents/pdpc-guidelines.pdf'],
     due_date: Date.new(2024, 6, 15),
     reminder_datetime: DateTime.new(2024, 6, 14, 14, 0, 0),
@@ -72,7 +72,7 @@ tasks = [
   {
     title: 'Plan and execute a coffee tasting event',
     content: 'Organize a coffee tasting event at the main store, inviting loyal customers and media representatives to sample the new flavours. Coordinate with the event planning team to handle logistics, including venue setup, catering, and guest list management. Prepare marketing materials to promote the event and ensure media coverage to maximize exposure. Capture photos and videos during the event for use in future marketing campaigns and social media posts. Collect feedback from attendees to gauge their reactions and preferences.',
-    priority: 'High',
+    priority: 'Low',
     documents_path: ['documents/faqs.pdf'],
     due_date: Date.new(2024, 8, 5),
     reminder_datetime: DateTime.new(2024, 8, 4, 16, 0, 0),
@@ -81,7 +81,7 @@ tasks = [
   },
   {
     title: 'Update website with new product information',
-    content: 'Collaborate with the web development team to update the website with information about new coffee flavours and current promotions. Ensure the content is SEO optimized to improve search engine rankings and drive organic traffic. Use high-quality images and detailed product descriptions to entice customers. Regularly check the website for any issues and make necessary updates to maintain a smooth user experience. Analyze web traffic data to assess the impact of the updates and identify areas for further improvement.',
+    content: 'Collaborate with the web development team to update the website with information about new coffee flavours and current promotions. Ensure the content is SEO optimized to improve search engine rankings and drive organic traffic. Use high-quality photos and detailed product descriptions to entice customers. Regularly check the website for any issues and make necessary updates to maintain a smooth user experience. Analyze web traffic data to assess the impact of the updates and identify areas for further improvement.',
     priority: 'Medium',
     documents_path: ['documents/ESGrelease.pdf', 'documents/Expedia.pdf'],
     due_date: Date.new(2024, 7, 25),
@@ -91,7 +91,7 @@ tasks = [
   },
   {
     title: 'Conduct market research for new product ideas',
-    content: 'Design and distribute surveys to gather customer feedback on potential new coffee flavours and products. Use a variety of channels, including email, social media, and in-store questionnaires, to reach a broad audience. Analyze the survey data to identify trends and preferences, and prepare a comprehensive report with recommendations for new product development. Share the findings with the product development team to inform their decisions and ensure that new products align with customer desires.',
+    content: 'Design and distribute surveys to gather customer feedback on potential new coffee flavours and products. Add product photos in survey. Use a variety of channels, including email, social media, and in-store questionnaires, to reach a broad audience. Analyze the survey data to identify trends and preferences, and prepare a comprehensive report with recommendations for new product development. Share the findings with the product development team to inform their decisions and ensure that new products align with customer desires.',
     priority: 'Low',
     documents_path: ['documents/claims-guide.pdf'],
     due_date: Date.new(2024, 9, 1),
@@ -122,7 +122,7 @@ tasks = [
   {
     title: 'Prepare Q2 marketing performance report',
     content: 'Compile and analyze data from various marketing campaigns executed in Q2 to prepare a comprehensive performance report. Include metrics such as ROI, engagement rates, and customer feedback. Identify successful strategies and areas for improvement. Present the findings to the management team and suggest actionable insights for Q3 marketing plans. Ensure the report is visually appealing and easy to understand, with clear graphs and summaries.',
-    priority: 'High',
+    priority: 'Medium',
     documents_path: ['documents/minutes.pdf'],
     due_date: Date.new(2024, 7, 5),
     reminder_datetime: DateTime.new(2024, 7, 4, 14, 0, 0),
@@ -131,8 +131,8 @@ tasks = [
   },
   {
     title: 'Redesign product packaging',
-    content: 'Collaborate with the design team to create new packaging designs for the coffee products that align with the brand’s image and appeal to the target audience. Conduct market research to gather customer preferences and feedback on current packaging. Ensure the new designs are practical, eco-friendly, and compliant with industry standards. Present the final designs to the management team for approval and coordinate with suppliers for production.',
-    priority: 'Medium',
+    content: 'Collaborate with the design team to create new packaging designs and photos for the coffee products that align with the brand image and appeal to the target audience. Conduct market research to gather customer preferences and feedback on current packaging. Ensure the new designs are practical, eco-friendly, and compliant with industry standards. Present the final designs to the management team for approval and coordinate with suppliers for production.',
+    priority: 'Low',
     documents_path: ['documents/instructions.pdf'],
     due_date: Date.new(2024, 8, 30),
     reminder_datetime: DateTime.new(2024, 8, 29, 11, 0, 0),

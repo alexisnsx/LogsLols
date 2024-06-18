@@ -39,7 +39,7 @@ class GroqchatService
   class ToolUseStream < GroqchatService
     def call
       # System instructions
-      instructions = S(%q(You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, you should include the tool's response in your answer to the user. For example, based on a function call to 'get_weather_report', you receive the information of "35 degrees celsius. So hot". You should then include the specific mention of '35 degrees celsius' in your response to the user, and never mention it is from a tool. Always cite url sources and show it to the user. But if there are no relevant tools, answer as yourself.))
+      instructions = S(%q(You are a friendly assistant who is provided with tools to find answers for the user. If a tool is relevant, include the tool's response in your answer to the user. Provide the user with the url sources given in the tool's response. Never mention to the user what tools you are using. But if there are no relevant tools, answer as yourself.))
 
       # User prompt
       prompt_msg = U(@prompt)
