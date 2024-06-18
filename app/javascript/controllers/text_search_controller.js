@@ -4,11 +4,7 @@ export default class extends Controller {
   // static values = {
   //   text: String
   // }
-  static targets = ["search", "results"]
-
-  connect() {
-    console.log("Hello from our text search controller");
-  }
+  static targets = ["search", "results", "sort"]
 
   searchTask(event) {
     console.log(this.searchTarget.value);
@@ -26,6 +22,32 @@ export default class extends Controller {
       //   </li>`
       //   this.resultsTarget.insertAdjacentHTML("beforeend", textTag)
       // })
+    })
+  }
+
+  sortTasks(e) {
+    // this.sortTargets.forEach(checkbox => {
+    //   checkbox.checked = false
+    // })
+
+    // e.currentTarget.checked = !e.currentTarget.checked
+    e.currentTarget.classList.toggle("checked")
+    let url = `/search?q=${this.searchTarget.value}`
+
+    if(!e.currentTarget.classList.contains("checked")) {
+      e.currentTarget.checked = false
+    } else {
+      url += `&sorted=${e.currentTarget.value}`
+    }
+
+    fetch(url,{
+      headers: {
+        Accept: "application/json",
+      }
+    })
+    .then(response => response.json())
+    .then((data) => {
+      this.resultsTarget.innerHTML = data.task_cards
     })
   }
 }

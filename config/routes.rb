@@ -26,4 +26,5 @@ Rails.application.routes.draw do
   # get '*username', to: 'pages#home'
   get "get_tasks_due", to: "tasks#get_tasks_due"
   get "search", to: "tasks#search"
+  get "filter", to: "tasks#filter"
 end

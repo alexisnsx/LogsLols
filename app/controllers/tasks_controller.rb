@@ -10,6 +10,7 @@ class TasksController < ApplicationController
     else
       @tasks = Task.all
     end
+
   end
 
   def show
@@ -20,9 +21,7 @@ class TasksController < ApplicationController
   end
 
   def show_ai
-    task_id = params[:id]
-    task = Task.find(task_id)
-    render json: { task_id: task_id, title: task.title, content: task.content.body }
+    Task.find(138)
   end
 
   def new
@@ -122,10 +121,23 @@ class TasksController < ApplicationController
 
   def search
     @query = params[:q]
-    @tasks = current_user.tasks.search_full_text(@query)
-    if @tasks.empty?
-      @tasks = current_user.tasks.order(:id).reverse
+    @tasks = current_user.tasks
+    @tasks = @tasks.search_full_text(@query) if @query.present?
+
+    if params[:sorted].present?
+      case params[:sorted]
+      when "priority"
+        @tasks = Task.in_order_of(:priority, ["High", "Medium", "Low"])
+        @tasks = @tasks.search_full_text(@query) if @query.present?
+      when "status"
+        @tasks = Task.in_order_of(:status, ["Incomplete", "Complete"])
+        @tasks = @tasks.search_full_text(@query) if @query.present?
+      when "due_date"
+        @tasks = Task.order(:due_date)
+        @tasks = @tasks.search_full_text(@query) if @query.present?
+      end
     end
+
     render json: {
       task_cards: render_to_string(
         partial: 'tasks/index',
@@ -133,14 +145,6 @@ class TasksController < ApplicationController
         formats: [:html]
       )
     }
-    # @tasks = Task.where("description ILIKE ?", "%#{@query}%")
-    # render json: {
-    #   task_cards: render_to_string(
-    #     partial: 'tasks/index',
-    #     locals: { tasks: @tasks },
-    #     formats: [:html]
-    #   )
-    # }
   end
 
   private
@@ -152,4 +156,66 @@ class TasksController < ApplicationController
   def task_params
     params.require(:task).permit(:title, :content, :priority, :due_date, :status, :reminder_datetime, documents: [])
   end
+
+  def sorted_by(current_user, field)
+    return current_user.tasks.order(:status).reverse if field == 'status'
+
+    return current_user.tasks.order(field)
+  end
 end
+
+  # if params[:sorted] && (params[:sorted] != 'none')
+  #   @tasks = current_user.tasks.ordered_by_priority_and_name.search_full_text(@query)
+  # else
+  #   @tasks = current_user.tasks.search_full_text(@query)
+  # end
+
+  # if @tasks.empty?
+  #   if params[:sorted] && (params[:sorted] != 'none')
+  #     @tasks = current_user.tasks.order(params[:sorted])
+  #   else
+  #     @tasks = current_user.tasks.order(:id).reverse
+  #   end
+  # end
+
+  # if params[:sorted] == "priority"
+  #   @tasks = current_user.tasks.order(:priority)
+  # end
+  # if params[:sorted] == "status"
+  #   @tasks = current_user.tasks.order(:status).reverse
+  # end
+  # if params[:sorted] == "due_date"
+  #   @tasks = current_user.tasks.order(:due_date)
+  # end
+
+
+# def filter
+#   puts "paramshere>"
+#   puts params
+#   filters = {}
+#   if params[:priority]
+#     filters[:priority] = params[:priority]
+#   end
+#   if params[:status]
+#     filters[:status] = params[:status]
+#   end
+#   if params[:dueDate]
+#     filters[:due_date] = params[:dueDate]
+#   end
+
+  # filters[:priority] = params[:priority] == 'None' ? nil : params[:priorty]
+  # puts "filters>>"
+  # puts filters
+  # @tasks = Task.where(filters)
+  # # @tasks = Task.where(priority: params[:priority], status: params[:status])
+
+  # puts(@tasks)
+
+  # render json: {
+  #   task_cards: render_to_string(
+  #     partial: 'tasks/index',
+  #     locals: { tasks: @tasks },
+  #     formats: [:html]
+  #   )
+  # }
+# end
