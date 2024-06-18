@@ -1,7 +1,7 @@
 <%# main row for the entire page %>
 <div class="d-flex justify-content-center px-2">
   <div class="container-fluid">
-    <div class="row" data-controller="task-cards task-filter">
+    <div class="row" data-controller="task-cards">
       <%# left side comprising of chat and spotify %>
       <div class="col-4 left-column gap-3 vh-100 sticky-top">
         <%# chatbot %>
@@ -19,7 +19,7 @@
       </div>
 
       <%# right side for tasks cards %>
-      <div class="col-8" data-controller="task-cards">
+      <div class="col-8" data-controller="task-cards text-search">
       <form class="form-inline my-2 my-lg-0" action="<%= search_path %>" method="get">
         <input class="form-control mr-sm-2 my-2" type="search" placeholder="Text search" aria-label="Search" name="texts"  data-action="keyup->text-search#searchTask" data-text-search-target="search">
       </form>
@@ -33,8 +33,6 @@
         <label class="btn btn-outline-primary" for="status">Status</label>
         <input type="radio" class="btn-check" id="due_date" name="sort" value="due_date" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
         <label class="btn btn-outline-primary" for="due_date">Due Date</label>
-        <input type="radio" class="btn-check" id="none" name="sort" value="none" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
-        <label class="btn btn-outline-primary" for="none">None</label>
       </div>
 
       <%# filter form %>

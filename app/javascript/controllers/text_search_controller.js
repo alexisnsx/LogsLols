@@ -6,10 +6,6 @@ export default class extends Controller {
   // }
   static targets = ["search", "results", "sort"]
 
-  connect() {
-    console.log("Hello from our text search controller");
-  }
-
   searchTask(event) {
     console.log(this.searchTarget.value);
     fetch(`/search?q=${this.searchTarget.value}`,{
@@ -29,30 +25,29 @@ export default class extends Controller {
     })
   }
 
-  sortTasks() {
-    console.log(this.searchTarget.value);
-    console.log(this.sortTargets);
+  sortTasks(e) {
+    // this.sortTargets.forEach(checkbox => {
+    //   checkbox.checked = false
+    // })
 
-    // 1. get the clicked value - what is sorted
-    const clicked = this.sortTargets.find((element) => element.checked);
-    console.log(clicked)
-    // 2. fetch based on sorted and search parameters
+    // e.currentTarget.checked = !e.currentTarget.checked
+    e.currentTarget.classList.toggle("checked")
+    let url = `/search?q=${this.searchTarget.value}`
 
-    // 3. [backend] sort tasks
-    fetch(`/search?q=${this.searchTarget.value}&sorted=${clicked.value}`,{
+    if(!e.currentTarget.classList.contains("checked")) {
+      e.currentTarget.checked = false
+    } else {
+      url += `&sorted=${e.currentTarget.value}`
+    }
+
+    fetch(url,{
       headers: {
         Accept: "application/json",
       }
     })
     .then(response => response.json())
     .then((data) => {
-      console.log(data)
       this.resultsTarget.innerHTML = data.task_cards
-      // data.Search.forEach((result) => {
-      //   const textTag = `<li class="list-group-item border-0">
-      //   </li>`
-      //   this.resultsTarget.insertAdjacentHTML("beforeend", textTag)
-      // })
     })
   }
 }
