@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { marked } from 'marked';
 
 // Connects to data-controller="conversation"
 export default class extends Controller {
@@ -74,7 +75,7 @@ export default class extends Controller {
 
   #handleMessage(event) {
     const parsedData = JSON.parse(event.data)
-    this.currentContent.innerHTML += parsedData.message
+    this.currentContent.innerHTML += marked.parse(parsedData.message)
     this.responseTarget.scrollTop = this.responseTarget.scrollHeight
   }
 
