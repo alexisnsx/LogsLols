@@ -11,3 +11,8 @@
   // background-color: initial !important;
   background-image: none !important;
 }
+
+
+.form-check-input.is-valid ~ .form-check-label {
+  color: #185b51;
+}
