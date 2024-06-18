@@ -20,19 +20,20 @@
 
       <%# right side for tasks cards %>
       <div class="col-8" data-controller="task-cards text-search">
-      <form class="form-inline my-2 my-lg-0" action="<%= search_path %>" method="get">
-        <input class="form-control mr-sm-2 my-2" type="search" placeholder="Text search" aria-label="Search" name="texts"  data-action="keyup->text-search#searchTask" data-text-search-target="search">
-      </form>
+      <div class="d-flex align-items-center px-3">
+        <form class="flex-grow-1 form-inline my-2 my-lg-0" action="<%= search_path %>" method="get">
+          <input class="form-control mr-sm-2 my-2" type="search" placeholder="search" aria-label="Search" name="texts"  data-action="keyup->text-search#searchTask" data-text-search-target="search">
+        </form>
 
-      <%# sort form%>
-      <div class="col-12">
-        <span class="fw-bold">Sorted By:</span>
-        <input type="radio" class="btn-check" id="priority" name="sort" value="priority" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
-        <label class="btn btn-outline-primary" for="priority">Priority</label>
-        <input type="radio" class="btn-check" id="status" name="sort" value="status" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
-        <label class="btn btn-outline-primary" for="status">Status</label>
-        <input type="radio" class="btn-check" id="due_date" name="sort" value="due_date" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
-        <label class="btn btn-outline-primary" for="due_date">Due Date</label>
+        <%# sort form%>
+        <div class="ms-3">
+          <input type="radio" class="btn-check" id="priority" name="sort" value="priority" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
+          <label class="mx-2 btn header-button" for="priority"><i class="fa-solid fa-arrow-down-long"></i> priority</label>
+          <input type="radio" class="btn-check" id="status" name="sort" value="status" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
+          <label class="mx-2 btn header-button" for="status"><i class="fa-solid fa-arrow-down-long"></i> status</label>
+          <input type="radio" class="btn-check" id="due_date" name="sort" value="due_date" data-action="click->text-search#sortTasks" data-text-search-target="sort" />
+          <label class="mx-2 btn header-button" for="due_date"><i class="fa-solid fa-arrow-up-long"></i> due date</label>
+        </div>
       </div>
 
       <%# filter form %>
